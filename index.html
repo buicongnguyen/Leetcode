@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A searchable DSA problem-solving handbook with C++ and Python templates.">
+  <meta name="theme-color" content="#07111f">
+  <title>DSA Atlas — C++ & Python</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="#top" aria-label="DSA Atlas home">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <span>DSA <b>Atlas</b></span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="#flow">Solve flow</a>
+      <a href="#selector">Selector</a>
+      <a href="#templates">Templates</a>
+      <a href="#checklist">Checklist</a>
+    </nav>
+    <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">LeetCode reference system</p>
+        <h1>Turn problem signals into <span>working code.</span></h1>
+        <p class="hero-lead">A compact decision guide and searchable library of contest-ready C++17 and Python 3 templates.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#templates">Explore templates</a>
+          <a class="button secondary" href="DSA_Problem_Solving_Handbook_CPP_Python.docx" download>Download handbook</a>
+        </div>
+        <div class="hero-stats" aria-label="Site summary">
+          <div><strong id="template-count">0</strong><span>templates</span></div>
+          <div><strong>2</strong><span>languages</span></div>
+          <div><strong>1</strong><span>repeatable flow</span></div>
+        </div>
+      </div>
+      <div class="hero-panel" aria-label="Problem-solving preview">
+        <div class="terminal-bar"><i></i><i></i><i></i><span>solve.md</span></div>
+        <pre><code><span class="muted"># Read constraints first</span>
+signal = "shortest path"
+weights = "nonnegative"
+
+if graph.is_unweighted():
+    algorithm = <b>"BFS"</b>
+else:
+    algorithm = <b>"Dijkstra"</b>
+
+assert complexity_fits()
+write_invariant()
+implement_and_verify()</code></pre>
+      </div>
+    </section>
+
+    <section class="section" id="flow">
+      <div class="section-heading">
+        <p class="eyebrow">01 · Thinking flow</p>
+        <h2>One loop for every problem</h2>
+        <p>Move left to right. If you cannot state the invariant, pause before coding.</p>
+      </div>
+      <ol class="flow-grid">
+        <li><span>01</span><h3>Restate</h3><p>Inputs, output, validity, mutation.</p></li>
+        <li><span>02</span><h3>Bound</h3><p>Derive complexity from constraints.</p></li>
+        <li><span>03</span><h3>Shape</h3><p>Sequence, tree, graph, grid, state.</p></li>
+        <li><span>04</span><h3>Bottleneck</h3><p>Which repeated operation is expensive?</p></li>
+        <li><span>05</span><h3>Pattern</h3><p>Match the signal and write the invariant.</p></li>
+        <li><span>06</span><h3>Structure</h3><p>Make the bottleneck operation cheap.</p></li>
+        <li><span>07</span><h3>Prove</h3><p>Trace a tiny case and boundaries.</p></li>
+        <li><span>08</span><h3>Ship</h3><p>Implement, test, audit complexity.</p></li>
+      </ol>
+    </section>
+
+    <section class="section split" id="selector">
+      <div class="section-heading sticky-heading">
+        <p class="eyebrow">02 · Pattern selector</p>
+        <h2>Follow the strongest signal</h2>
+        <p>Choose the algorithm from the required fast operation—not from the story wrapped around the problem.</p>
+        <div class="note"><b>Database or data structure?</b> LeetCode problems nearly always need an in-memory data structure. Use a persistent database only for explicit SQL, storage, joins, or transaction tasks.</div>
+      </div>
+      <div class="selector-list">
+        <article><span>Contiguous + longest/shortest</span><strong>Sliding window</strong><small>Counter · map · deque</small></article>
+        <article><span>Many range queries</span><strong>Prefix sum</strong><small>Array · frequency map</small></article>
+        <article><span>Next greater/smaller</span><strong>Monotonic stack</strong><small>Stack of indices</small></article>
+        <article><span>Repeated min/max or top-k</span><strong>Heap</strong><small>Priority queue</small></article>
+        <article><span>Monotone feasible answer</span><strong>Binary search</strong><small>Predicate + bounds</small></article>
+        <article><span>Unweighted minimum steps</span><strong>BFS</strong><small>Queue + visited</small></article>
+        <article><span>Nonnegative weighted path</span><strong>Dijkstra</strong><small>Adjacency list + min-heap</small></article>
+        <article><span>Dependencies / prerequisites</span><strong>Topological sort</strong><small>Indegree + queue</small></article>
+        <article><span>Repeated connectivity merges</span><strong>Union-find</strong><small>Parent + size</small></article>
+        <article><span>Overlapping optimal states</span><strong>Dynamic programming</strong><small>Memo · table</small></article>
+      </div>
+    </section>
+
+    <section class="section complexity">
+      <div class="section-heading">
+        <p class="eyebrow">03 · Complexity compass</p>
+        <h2>Let constraints eliminate bad ideas</h2>
+      </div>
+      <div class="complexity-grid">
+        <article><strong>n ≤ 20</strong><span>O(2ⁿ)</span><p>Backtracking, bitmask DP</p></article>
+        <article><strong>n ≤ 200</strong><span>O(n³)</span><p>Interval DP, Floyd–Warshall</p></article>
+        <article><strong>n ≤ 2,000</strong><span>O(n²)</span><p>2D DP, pair enumeration</p></article>
+        <article><strong>n ≤ 100k</strong><span>O(n log n)</span><p>Sort, heap, divide-and-conquer</p></article>
+        <article><strong>n ≤ 1m</strong><span>O(n)</span><p>Hashing, prefix, two pointers</p></article>
+        <article><strong>Huge values</strong><span>O(log value)</span><p>Binary search on answer</p></article>
+      </div>
+    </section>
+
+    <section class="section template-section" id="templates">
+      <div class="section-heading">
+        <p class="eyebrow">04 · Template library</p>
+        <h2>Search. Select. Copy. Adapt.</h2>
+        <p>Each template includes its trigger, target complexity, invariant, and paired implementation.</p>
+      </div>
+      <div class="toolbar" role="search">
+        <label class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <span class="sr-only">Search templates</span>
+          <input id="search" type="search" placeholder="Search: graph, window, top-k…" autocomplete="off">
+        </label>
+        <div class="filters" id="filters" aria-label="Filter template topics"></div>
+      </div>
+      <p class="result-count" id="result-count" aria-live="polite"></p>
+      <div class="template-grid" id="template-grid"></div>
+      <div class="empty-state" id="empty-state" hidden>
+        <h3>No template matches yet.</h3>
+        <p>Try a broader signal such as “range”, “graph”, “minimum”, or “count”.</p>
+      </div>
+    </section>
+
+    <section class="section" id="checklist">
+      <div class="checklist-card">
+        <div>
+          <p class="eyebrow">05 · Before submit</p>
+          <h2>Seven checks between “works” and “accepted”</h2>
+        </div>
+        <ul>
+          <li><span>01</span>I can state the invariant.</li>
+          <li><span>02</span>Complexity fits the maximum constraints.</li>
+          <li><span>03</span>All ranges and bounds are intentional.</li>
+          <li><span>04</span>Duplicates and visited states are handled once.</li>
+          <li><span>05</span>Sums, products, and distances cannot overflow.</li>
+          <li><span>06</span>Mutation and copied paths are deliberate.</li>
+          <li><span>07</span>A tiny hand trace matches the code.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><b>DSA Atlas</b></div>
+    <p>Built for deliberate practice. Templates are starting points; invariants do the real work.</p>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+</body>
+</html>
