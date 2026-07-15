@@ -28,8 +28,15 @@ for (const target of ["styles.css", "app.js", "index.html"]) {
 if (!js.includes("const templates = [") || !js.includes("render();")) {
   throw new Error("Template application did not initialize correctly");
 }
+if (!js.includes("const codeMaps = {") || !js.includes('class="code-map"')) {
+  throw new Error("Every template must render a concise code explanation map");
+}
 const templateCount = (js.match(/title: "/g) || []).length;
 if (templateCount < 30) throw new Error(`Expected at least 30 templates, found ${templateCount}`);
+const codeMapCount = (js.match(/^  "[^"]+": \[$/gm) || []).length;
+if (codeMapCount !== templateCount) {
+  throw new Error(`Expected one code map per template: ${codeMapCount} maps for ${templateCount} templates`);
+}
 for (const advanced of ["Dinic maximum flow", "Red-black tree insertion", "KD-tree nearest neighbor", "Kruskal minimum spanning tree"]) {
   if (!js.includes(advanced)) throw new Error(`Missing advanced template: ${advanced}`);
 }

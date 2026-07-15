@@ -12,6 +12,7 @@ A searchable data structures and algorithms reference for LeetCode practice, wit
 - Four detailed selection and execution flowcharts for advanced algorithms
 - Advanced topics: MST, Dinic flow, SCC, bridges, Bellman–Ford, Floyd–Warshall, A*, LCA, KD-tree, and red-black tree insertion
 - C++/Python tabs and copy buttons
+- A three-step code map before every template explaining the purpose of each implementation block
 - Responsive dark/light interface
 - Downloadable Word handbook
 

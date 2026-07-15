@@ -946,6 +946,161 @@ class RBTree:
   }
 ];
 
+const codeMaps = {
+  "Frequency map / complement lookup": [
+    "Create a map from a value already seen to its index.",
+    "For each number, compute the complement that would complete the target.",
+    "Return immediately when the complement exists; otherwise remember the current number."
+  ],
+  "Prefix sum / subarray count": [
+    "Seed prefix sum 0 once so subarrays starting at index 0 are counted.",
+    "Extend the running prefix sum with the current value.",
+    "Count earlier prefixes equal to current sum − k, then record the current prefix."
+  ],
+  "Two pointers": [
+    "Place one pointer at each end of the sorted search range.",
+    "Compare the pair with the target on every iteration.",
+    "Move only the side that can make the sum approach the target."
+  ],
+  "Sliding window": [
+    "Expand the right edge and add the new element to the window state.",
+    "Shrink from the left until the validity condition is restored.",
+    "Measure the valid window after shrinking, when its invariant is true."
+  ],
+  "Monotonic stack": [
+    "Store indices whose answer has not been found yet.",
+    "Pop every smaller value solved by the current value.",
+    "Push the current index so a future value can solve it."
+  ],
+  "Monotonic deque": [
+    "Remove indices that have left the current window.",
+    "Remove weaker values from the back because they can never become the maximum.",
+    "The front now identifies the maximum for every complete window."
+  ],
+  "Linked-list reversal": [
+    "Keep pointers to the reversed prefix and untouched suffix.",
+    "Save the next node before changing the current link.",
+    "Reverse one edge, advance both pointers, and return the new head."
+  ],
+  "Heap / top-k": [
+    "Push each candidate into a min-heap.",
+    "Remove the smallest item whenever more than k candidates are stored.",
+    "The heap root is the kth largest after every item is processed."
+  ],
+  "Merge intervals": [
+    "Sort intervals so possible overlaps become adjacent.",
+    "Start a new output interval when there is a gap.",
+    "Otherwise extend the last output interval to cover the overlap."
+  ],
+  "Binary search: first true": [
+    "Maintain a half-open range that still contains the first valid answer.",
+    "Test the midpoint without discarding a possible first true position.",
+    "Stop when both bounds meet at the first true index."
+  ],
+  "Backtracking": [
+    "Record the solution represented by the current choice path.",
+    "Choose one candidate and recurse into the smaller decision space.",
+    "Undo the choice so the next branch starts from the correct state."
+  ],
+  "Binary tree DFS": [
+    "Return the identity value at an empty subtree.",
+    "Recursively solve the complete left and right subtrees.",
+    "Combine both results into the answer for the current subtree."
+  ],
+  "Graph DFS": [
+    "Mark a node before exploring neighbors so cycles cannot revisit it.",
+    "Traverse every unvisited outgoing neighbor.",
+    "Start another traversal for each still-unvisited component when needed."
+  ],
+  "BFS shortest path": [
+    "Initialize the queue with the source at distance zero.",
+    "Pop nodes in increasing number of edges from the source.",
+    "Assign each unseen neighbor once, then enqueue it for the next layer."
+  ],
+  "Topological sort": [
+    "Count how many prerequisites enter each vertex.",
+    "Queue every vertex whose prerequisites are already satisfied.",
+    "Remove processed edges; a full output exists only when the graph is acyclic."
+  ],
+  "Dijkstra": [
+    "Store the best known source distance and prioritize the smallest one.",
+    "Skip heap entries made stale by a later, shorter route.",
+    "Relax each outgoing edge and enqueue only genuine improvements."
+  ],
+  "Union-find (DSU)": [
+    "Represent each connected component by a root parent.",
+    "Compress paths during find so future root queries become almost constant time.",
+    "Attach the smaller component below the larger root during union."
+  ],
+  "Top-down DP": [
+    "Define a recursive state that contains all information needed by future choices.",
+    "Return immediately when that state was solved before.",
+    "Try valid transitions, save the best result, and reuse it later."
+  ],
+  "0/1 knapsack": [
+    "Let dp[c] store the best value attainable with capacity c.",
+    "Process capacities backward so one item cannot be selected twice.",
+    "Compare skipping the item with taking it from the previous capacity state."
+  ],
+  "Bitmask subsets": [
+    "Use one integer bitmask to represent a complete subset.",
+    "Check each bit to decide whether its corresponding item is included.",
+    "Process the constructed subset, then advance to the next mask."
+  ],
+  "Kruskal minimum spanning tree": [
+    "Sort every edge from cheapest to most expensive.",
+    "Use DSU to reject edges whose endpoints are already connected.",
+    "Add accepted edge costs until the spanning tree has V−1 edges."
+  ],
+  "Dinic maximum flow": [
+    "Store forward and reverse residual edges for every capacity.",
+    "BFS builds levels containing only routes that can still reach the sink efficiently.",
+    "DFS sends blocking flow, updates both residual directions, and repeats by level graph."
+  ],
+  "Bellman–Ford shortest paths": [
+    "Initialize only the source distance; all other vertices begin unreachable.",
+    "Relax every edge repeatedly so paths gain at most one edge per pass.",
+    "A relaxation after V−1 passes proves a reachable negative cycle."
+  ],
+  "Floyd–Warshall all-pairs paths": [
+    "Initialize the matrix with direct edges, zero diagonals, and infinity elsewhere.",
+    "Introduce each vertex k as a newly allowed intermediate point.",
+    "Improve i→j whenever traveling through k is shorter."
+  ],
+  "Kosaraju strongly connected components": [
+    "First DFS records vertices after all descendants finish.",
+    "Reverse every graph edge.",
+    "Traverse in reverse finish order; each new DFS marks exactly one SCC."
+  ],
+  "Bridges in an undirected graph": [
+    "Assign discovery and low-link times when DFS first visits a vertex.",
+    "Propagate the earliest reachable discovery time back from each child.",
+    "Mark parent–child edge as a bridge when the child cannot reach the parent or earlier."
+  ],
+  "A* heuristic search": [
+    "Prioritize states by known route cost plus estimated remaining cost.",
+    "Discard a queued state when a cheaper route to it was already found.",
+    "Relax neighbors like Dijkstra while the heuristic guides expansion toward the goal."
+  ],
+  "Lowest common ancestor: binary lifting": [
+    "DFS records depth and every power-of-two ancestor for each vertex.",
+    "Lift the deeper query vertex until both depths match.",
+    "Lift both vertices together from large jumps to small until their parents match."
+  ],
+  "KD-tree nearest neighbor (2D)": [
+    "Build a balanced tree by alternating the coordinate used to split points.",
+    "Search the side of the split containing the query before the other side.",
+    "Visit the far side only when its splitting plane can beat the current best distance."
+  ],
+  "Red-black tree insertion": [
+    "Insert the key as a red node using ordinary binary-search-tree ordering.",
+    "While a red parent violates the rules, inspect the uncle to choose recoloring or rotation.",
+    "Rotate and recolor locally, then force the root black to restore every invariant."
+  ]
+};
+
+templates.forEach(item => { item.codeMap = codeMaps[item.title]; });
+
 const catalogMode = document.body.dataset.catalog || "all";
 const catalogTemplates = templates.filter(item => {
   if (catalogMode === "basic") return item.level !== "Advanced";
@@ -1020,11 +1175,16 @@ function cardFor(item) {
     ["title", "category", "complexity", "when", "invariant"].map(key => [key, escapeHtml(item[key])])
   );
   const levelBadge = item.level === "Advanced" ? '<span class="advanced-badge">Advanced</span>' : "";
+  const codeMap = item.codeMap.map((step, index) => `<li><span>${String(index + 1).padStart(2, "0")}</span>${escapeHtml(step)}</li>`).join("");
   article.innerHTML = `
     <div class="card-head">
       <div class="card-meta"><span class="card-topic"><span>${safe.category}</span>${levelBadge}</span><span class="complex">${safe.complexity}</span></div>
       <h3>${safe.title}</h3>
       <p>${safe.when}</p>
+    </div>
+    <div class="code-map">
+      <strong>Code map</strong>
+      <ol>${codeMap}</ol>
     </div>
     <p class="invariant"><b>Invariant:</b> ${safe.invariant}</p>
     <div class="code-shell">
