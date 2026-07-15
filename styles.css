@@ -86,8 +86,8 @@ h3 { font-size: 1.05rem; }
 .button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: .75rem 1.15rem; border-radius: .65rem; text-decoration: none; font-weight: 750; }
 .button.primary { background: var(--blue); color: #07111f; }
 .button.secondary { border: 1px solid var(--line); background: var(--surface); }
-.hero-stats { display: flex; gap: 2.4rem; }
-.hero-stats div { display: grid; }
+.hero-stats { display: flex; gap: 2.4rem; margin: 0; padding: 0; list-style: none; }
+.hero-stats li { display: grid; }
 .hero-stats strong { font-size: 1.35rem; }
 .hero-stats span { color: var(--muted); font-size: .78rem; }
 .hero-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 1rem; background: #08101c; box-shadow: var(--shadow); transform: rotate(1deg); }

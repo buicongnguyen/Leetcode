@@ -425,6 +425,12 @@ const resultCount = document.querySelector("#result-count");
 const emptyState = document.querySelector("#empty-state");
 let activeCategory = "All";
 
+function escapeHtml(value) {
+  return value.replace(/[&<>'"]/g, character => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+  })[character]);
+}
+
 document.querySelector("#template-count").textContent = templates.length;
 
 function makeFilter(category) {
@@ -450,40 +456,51 @@ categories.forEach(category => filters.append(makeFilter(category)));
 function cardFor(item) {
   const article = document.createElement("article");
   article.className = "template-card";
+  const safe = Object.fromEntries(
+    ["title", "category", "complexity", "when", "invariant"].map(key => [key, escapeHtml(item[key])])
+  );
   article.innerHTML = `
     <div class="card-head">
-      <div class="card-meta"><span>${item.category}</span><span class="complex">${item.complexity}</span></div>
-      <h3>${item.title}</h3>
-      <p>${item.when}</p>
+      <div class="card-meta"><span>${safe.category}</span><span class="complex">${safe.complexity}</span></div>
+      <h3>${safe.title}</h3>
+      <p>${safe.when}</p>
     </div>
-    <p class="invariant"><b>Invariant:</b> ${item.invariant}</p>
+    <p class="invariant"><b>Invariant:</b> ${safe.invariant}</p>
     <div class="code-shell">
-      <div class="code-tabs" role="tablist" aria-label="Choose code language">
-        <button class="code-tab active" type="button" role="tab" aria-selected="true">C++17</button>
-        <button class="code-tab" type="button" role="tab" aria-selected="false">Python 3</button>
-        <button class="copy-button" type="button">Copy</button>
+      <div class="code-tabs" role="group" aria-label="Choose code language">
+        <button class="code-tab active" type="button" aria-pressed="true">C++17</button>
+        <button class="code-tab" type="button" aria-pressed="false">Python 3</button>
+        <button class="copy-button" type="button" aria-label="Copy ${safe.title} C++17 template">Copy</button>
       </div>
       <pre tabindex="0"><code></code></pre>
+      <span class="copy-status sr-only" role="status" aria-live="polite"></span>
     </div>`;
   const code = article.querySelector("code");
   const tabs = article.querySelectorAll(".code-tab");
   const copy = article.querySelector(".copy-button");
+  const copyStatus = article.querySelector(".copy-status");
   let language = "cpp";
 
-  const showCode = () => { code.textContent = item[language]; };
+  const showCode = () => {
+    code.textContent = item[language];
+    const languageName = language === "cpp" ? "C++17" : "Python 3";
+    copy.setAttribute("aria-label", `Copy ${item.title} ${languageName} template`);
+  };
   tabs.forEach((tab, index) => tab.addEventListener("click", () => {
     language = index === 0 ? "cpp" : "python";
     tabs.forEach((other, otherIndex) => {
       const active = otherIndex === index;
       other.classList.toggle("active", active);
-      other.setAttribute("aria-selected", String(active));
+      other.setAttribute("aria-pressed", String(active));
     });
     showCode();
   }));
   copy.addEventListener("click", async () => {
+    const languageName = language === "cpp" ? "C++17" : "Python 3";
     try {
       await navigator.clipboard.writeText(item[language]);
       copy.textContent = "Copied";
+      copyStatus.textContent = `${item.title} ${languageName} template copied.`;
     } catch {
       const range = document.createRange();
       range.selectNodeContents(code);
@@ -491,6 +508,7 @@ function cardFor(item) {
       selection.removeAllRanges();
       selection.addRange(range);
       copy.textContent = "Selected";
+      copyStatus.textContent = `${item.title} ${languageName} template selected for manual copying.`;
     }
     window.setTimeout(() => { copy.textContent = "Copy"; }, 1400);
   });
@@ -502,7 +520,7 @@ function render() {
   const query = search.value.trim().toLowerCase();
   const visible = templates.filter(item => {
     const categoryMatch = activeCategory === "All" || item.category === activeCategory;
-    const haystack = `${item.title} ${item.category} ${item.when} ${item.invariant} ${item.complexity}`.toLowerCase();
+    const haystack = `${item.title} ${item.category} ${item.when} ${item.invariant} ${item.complexity} ${item.cpp} ${item.python}`.toLowerCase();
     return categoryMatch && haystack.includes(query);
   });
   grid.replaceChildren(...visible.map(cardFor));
@@ -514,13 +532,33 @@ search.addEventListener("input", render);
 
 const root = document.documentElement;
 const themeButton = document.querySelector("#theme-toggle");
-const savedTheme = localStorage.getItem("dsa-theme");
-if (savedTheme) root.dataset.theme = savedTheme;
+let savedTheme = null;
+try {
+  savedTheme = localStorage.getItem("dsa-theme");
+} catch {
+  // Storage can be unavailable in privacy-restricted browser contexts.
+}
+const preferredTheme = savedTheme || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+root.dataset.theme = preferredTheme;
+
+function updateThemeControl() {
+  const nextTheme = root.dataset.theme === "light" ? "dark" : "light";
+  themeButton.setAttribute("aria-label", `Switch to ${nextTheme} theme`);
+  themeButton.setAttribute("title", `Switch to ${nextTheme} theme`);
+  document.querySelector('meta[name="theme-color"]')
+    .setAttribute("content", root.dataset.theme === "light" ? "#f5f8fc" : "#07111f");
+}
+
+updateThemeControl();
 themeButton.addEventListener("click", () => {
   const next = root.dataset.theme === "light" ? "dark" : "light";
   root.dataset.theme = next;
-  localStorage.setItem("dsa-theme", next);
-  themeButton.setAttribute("aria-label", `Switch to ${next === "dark" ? "light" : "dark"} theme`);
+  try {
+    localStorage.setItem("dsa-theme", next);
+  } catch {
+    // Theme switching still works for this page view without persistence.
+  }
+  updateThemeControl();
 });
 
 render();

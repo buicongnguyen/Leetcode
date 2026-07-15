@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A searchable DSA problem-solving handbook with C++ and Python templates.">
   <meta name="theme-color" content="#07111f">
-  <title>DSA Atlas — C++ & Python</title>
+  <title>DSA Atlas — C++ &amp; Python</title>
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
@@ -37,13 +37,13 @@
           <a class="button primary" href="#templates">Explore templates</a>
           <a class="button secondary" href="DSA_Problem_Solving_Handbook_CPP_Python.docx" download>Download handbook</a>
         </div>
-        <div class="hero-stats" aria-label="Site summary">
-          <div><strong id="template-count">0</strong><span>templates</span></div>
-          <div><strong>2</strong><span>languages</span></div>
-          <div><strong>1</strong><span>repeatable flow</span></div>
-        </div>
+        <ul class="hero-stats" aria-label="Site summary">
+          <li><strong id="template-count">0</strong><span>templates</span></li>
+          <li><strong>2</strong><span>languages</span></li>
+          <li><strong>1</strong><span>repeatable flow</span></li>
+        </ul>
       </div>
-      <div class="hero-panel" aria-label="Problem-solving preview">
+      <section class="hero-panel" aria-label="Problem-solving preview">
         <div class="terminal-bar"><i></i><i></i><i></i><span>solve.md</span></div>
         <pre><code><span class="muted"># Read constraints first</span>
 signal = "shortest path"
@@ -57,7 +57,7 @@ else:
 assert complexity_fits()
 write_invariant()
 implement_and_verify()</code></pre>
-      </div>
+      </section>
     </section>
 
     <section class="section" id="flow">
@@ -121,12 +121,12 @@ implement_and_verify()</code></pre>
         <p>Each template includes its trigger, target complexity, invariant, and paired implementation.</p>
       </div>
       <div class="toolbar" role="search">
-        <label class="search-box">
+        <label class="sr-only" for="search">Search templates</label>
+        <div class="search-box">
           <span aria-hidden="true">⌕</span>
-          <span class="sr-only">Search templates</span>
           <input id="search" type="search" placeholder="Search: graph, window, top-k…" autocomplete="off">
-        </label>
-        <div class="filters" id="filters" aria-label="Filter template topics"></div>
+        </div>
+        <div class="filters" id="filters" role="group" aria-label="Filter template topics"></div>
       </div>
       <p class="result-count" id="result-count" aria-live="polite"></p>
       <div class="template-grid" id="template-grid"></div>
