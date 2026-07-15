@@ -946,7 +946,13 @@ class RBTree:
   }
 ];
 
-const categories = ["All", ...new Set(templates.map(item => item.category))];
+const catalogMode = document.body.dataset.catalog || "all";
+const catalogTemplates = templates.filter(item => {
+  if (catalogMode === "basic") return item.level !== "Advanced";
+  if (catalogMode === "advanced") return item.level === "Advanced";
+  return true;
+});
+const categories = ["All", ...new Set(catalogTemplates.map(item => item.category))];
 const grid = document.querySelector("#template-grid");
 const search = document.querySelector("#search");
 const filters = document.querySelector("#filters");
@@ -960,20 +966,20 @@ const decisionPaths = {
     algorithms: ["Sliding window", "Two pointers", "Prefix sum", "Binary search: first true", "Monotonic stack"]
   },
   graph: {
-    question: "Are edges weighted, negative, capacity-limited, cyclic, or only connecting components?",
-    algorithms: ["BFS shortest path", "Dijkstra", "Bellman–Ford shortest paths", "Kruskal minimum spanning tree", "Dinic maximum flow", "Kosaraju strongly connected components"]
+    question: "Is the goal traversal, minimum steps, a nonnegative shortest path, dependency order, or connectivity?",
+    algorithms: ["Graph DFS", "BFS shortest path", "Dijkstra", "Topological sort", "Union-find"]
+  },
+  tree: {
+    question: "Do you need subtree information, a root-to-leaf property, or ordered lookup?",
+    algorithms: ["Binary tree DFS", "Graph DFS", "Binary search: first true"]
   },
   state: {
     question: "Do choices repeat subproblems, require enumeration, or admit a provable local choice?",
     algorithms: ["Top-down DP", "0/1 knapsack", "Backtracking", "Bitmask subsets"]
   },
-  spatial: {
-    question: "Do you need nearest-neighbor or geometric path queries in a low-dimensional space?",
-    algorithms: ["KD-tree nearest neighbor (2D)", "A* heuristic search"]
-  },
-  ordered: {
-    question: "Must insertion, lookup, predecessor, or successor remain logarithmic as data changes?",
-    algorithms: ["Red-black tree insertion", "Heap / top-k", "Binary search: first true"]
+  interval: {
+    question: "Are ranges overlapping, events ordered, or repeated endpoints controlling the answer?",
+    algorithms: ["Merge intervals", "Heap / top-k", "Binary search: first true", "Prefix sum / subarray count"]
   }
 };
 
@@ -983,7 +989,7 @@ function escapeHtml(value) {
   })[character]);
 }
 
-document.querySelector("#template-count").textContent = templates.length;
+document.querySelector("#template-count").textContent = catalogTemplates.length;
 
 function makeFilter(category) {
   const button = document.createElement("button");
@@ -1073,13 +1079,13 @@ function cardFor(item) {
 
 function render() {
   const query = search.value.trim().toLowerCase();
-  const visible = templates.filter(item => {
+  const visible = catalogTemplates.filter(item => {
     const categoryMatch = activeCategory === "All" || item.category === activeCategory;
     const haystack = `${item.title} ${item.category} ${item.when} ${item.invariant} ${item.complexity} ${item.cpp} ${item.python}`.toLowerCase();
     return categoryMatch && haystack.includes(query);
   });
   grid.replaceChildren(...visible.map(cardFor));
-  resultCount.textContent = `${visible.length} of ${templates.length} templates`;
+  resultCount.textContent = `${visible.length} of ${catalogTemplates.length} templates`;
   emptyState.hidden = visible.length !== 0;
 }
 
@@ -1107,16 +1113,17 @@ function renderDecision(key) {
   }));
 }
 
-decisionNodes.forEach(node => node.addEventListener("click", () => {
-  decisionNodes.forEach(other => {
-    const active = other === node;
-    other.classList.toggle("active", active);
-    other.setAttribute("aria-pressed", String(active));
-  });
-  renderDecision(node.dataset.decision);
-}));
-
-renderDecision("sequence");
+if (decisionNodes.length) {
+  decisionNodes.forEach(node => node.addEventListener("click", () => {
+    decisionNodes.forEach(other => {
+      const active = other === node;
+      other.classList.toggle("active", active);
+      other.setAttribute("aria-pressed", String(active));
+    });
+    renderDecision(node.dataset.decision);
+  }));
+  renderDecision("sequence");
+}
 
 const root = document.documentElement;
 const themeButton = document.querySelector("#theme-toggle");

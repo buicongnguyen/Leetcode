@@ -1,9 +1,10 @@
 import { readFile, access } from "node:fs/promises";
 
-const required = ["index.html", "styles.css", "app.js", "DSA_Problem_Solving_Handbook_CPP_Python.docx"];
+const required = ["index.html", "advanced.html", "styles.css", "app.js", "DSA_Problem_Solving_Handbook_CPP_Python.docx"];
 await Promise.all(required.map(file => access(file)));
 
 const html = await readFile("index.html", "utf8");
+const advancedHtml = await readFile("advanced.html", "utf8");
 const js = await readFile("app.js", "utf8");
 const workflow = await readFile(".github/workflows/pages.yml", "utf8");
 
@@ -15,6 +16,15 @@ for (const id of ["main", "flow", "decision-map", "selector", "templates", "chec
 for (const target of ["styles.css", "app.js", "DSA_Problem_Solving_Handbook_CPP_Python.docx"]) {
   if (!html.includes(target)) throw new Error(`Missing reference to ${target}`);
 }
+if (!html.includes('data-catalog="basic"') || !advancedHtml.includes('data-catalog="advanced"')) {
+  throw new Error("Basic and advanced catalogs must remain separated by page mode");
+}
+for (const id of ["choose", "deep-flows", "path-flow", "structure-flow", "flow-lifecycle", "query-flow", "templates"]) {
+  if (!advancedHtml.includes(`id="${id}"`)) throw new Error(`Missing advanced-page landmark: ${id}`);
+}
+for (const target of ["styles.css", "app.js", "index.html"]) {
+  if (!advancedHtml.includes(target)) throw new Error(`Advanced page is missing reference to ${target}`);
+}
 if (!js.includes("const templates = [") || !js.includes("render();")) {
   throw new Error("Template application did not initialize correctly");
 }
@@ -25,6 +35,9 @@ for (const advanced of ["Dinic maximum flow", "Red-black tree insertion", "KD-tr
 }
 if (!html.includes('for="search"') || !html.includes('id="search"')) {
   throw new Error("Search control must have an explicit label association");
+}
+if (!advancedHtml.includes('for="search"') || !advancedHtml.includes('id="search"')) {
+  throw new Error("Advanced search control must have an explicit label association");
 }
 if (html.match(/<div(?=[^>]*aria-label=)(?![^>]*role=)[^>]*>/)) {
   throw new Error("Generic div elements with aria-label require an explicit semantic role");

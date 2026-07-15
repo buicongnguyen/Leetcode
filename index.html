@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="app.js" defer></script>
 </head>
-<body>
+<body data-catalog="basic">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="DSA Atlas home">
@@ -21,6 +21,7 @@
       <a href="#decision-map">Decision graph</a>
       <a href="#selector">Selector</a>
       <a href="#templates">Templates</a>
+      <a href="advanced.html">Advanced</a>
     </nav>
     <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
       <span aria-hidden="true">◐</span>
@@ -32,15 +33,16 @@
       <div class="hero-copy">
         <p class="eyebrow">LeetCode reference system</p>
         <h1>Turn problem signals into <span>working code.</span></h1>
-        <p class="hero-lead">A compact decision guide and searchable library of contest-ready C++17 and Python 3 templates.</p>
+        <p class="hero-lead">Build fluency with the essential patterns first: arrays, search, trees, graphs, and dynamic programming in contest-ready C++17 and Python 3.</p>
         <div class="hero-actions">
           <a class="button primary" href="#templates">Explore templates</a>
+          <a class="button secondary" href="advanced.html">Open advanced atlas →</a>
           <a class="button secondary" href="DSA_Problem_Solving_Handbook_CPP_Python.docx" download>Download handbook</a>
         </div>
         <ul class="hero-stats" aria-label="Site summary">
           <li><strong id="template-count">0</strong><span>templates</span></li>
           <li><strong>2</strong><span>languages</span></li>
-          <li><strong>1</strong><span>decision graph</span></li>
+          <li><strong>20</strong><span>core patterns</span></li>
         </ul>
       </div>
       <section class="hero-panel" aria-label="Problem-solving preview">
@@ -94,9 +96,9 @@ implement_and_verify()</code></pre>
         <div class="decision-branches" role="group" aria-label="Choose a problem shape">
           <button class="decision-node active" type="button" data-decision="sequence" aria-pressed="true"><span>01</span>Sequence / range</button>
           <button class="decision-node" type="button" data-decision="graph" aria-pressed="false"><span>02</span>Graph / network</button>
-          <button class="decision-node" type="button" data-decision="state" aria-pressed="false"><span>03</span>State space</button>
-          <button class="decision-node" type="button" data-decision="spatial" aria-pressed="false"><span>04</span>Spatial points</button>
-          <button class="decision-node" type="button" data-decision="ordered" aria-pressed="false"><span>05</span>Dynamic order</button>
+          <button class="decision-node" type="button" data-decision="tree" aria-pressed="false"><span>03</span>Tree / hierarchy</button>
+          <button class="decision-node" type="button" data-decision="state" aria-pressed="false"><span>04</span>State space</button>
+          <button class="decision-node" type="button" data-decision="interval" aria-pressed="false"><span>05</span>Intervals / events</button>
         </div>
         <div class="decision-result" id="decision-result" aria-live="polite">
           <div>
@@ -129,11 +131,6 @@ implement_and_verify()</code></pre>
         <article><span>Dependencies / prerequisites</span><strong>Topological sort</strong><small>Indegree + queue</small></article>
         <article><span>Repeated connectivity merges</span><strong>Union-find</strong><small>Parent + size</small></article>
         <article><span>Overlapping optimal states</span><strong>Dynamic programming</strong><small>Memo · table</small></article>
-        <article><span>Minimum total connection cost</span><strong>Spanning tree</strong><small>Kruskal · Prim · DSU</small></article>
-        <article><span>Capacity through a network</span><strong>Maximum flow</strong><small>Dinic · residual graph</small></article>
-        <article><span>Directed cycles / components</span><strong>SCC</strong><small>Kosaraju · Tarjan</small></article>
-        <article><span>Nearest point in low dimensions</span><strong>KD-tree</strong><small>Axis split · branch pruning</small></article>
-        <article><span>Dynamic predecessor / successor</span><strong>Red-black tree</strong><small>Balanced ordered set</small></article>
       </div>
     </section>
 
@@ -162,7 +159,7 @@ implement_and_verify()</code></pre>
         <label class="sr-only" for="search">Search templates</label>
         <div class="search-box">
           <span aria-hidden="true">⌕</span>
-          <input id="search" type="search" placeholder="Search: max flow, KD-tree, SCC…" autocomplete="off">
+          <input id="search" type="search" placeholder="Search: sliding window, BFS, dynamic programming…" autocomplete="off">
         </div>
         <div class="filters" id="filters" role="group" aria-label="Filter template topics"></div>
       </div>

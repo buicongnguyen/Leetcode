@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Advanced graph, tree, flow, spatial, and ordered data-structure algorithms with C++ and Python templates.">
+  <meta name="theme-color" content="#07111f">
+  <title>Advanced DSA Atlas — C++ &amp; Python</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body data-catalog="advanced">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="DSA Atlas basic algorithms">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <span>DSA <b>Atlas</b></span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="index.html">Basic atlas</a>
+      <a href="#choose">Choose</a>
+      <a href="#deep-flows">Flowcharts</a>
+      <a href="#templates">Templates</a>
+    </nav>
+    <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </header>
+
+  <main id="main">
+    <section class="hero advanced-hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">Advanced algorithm field guide</p>
+        <h1>Go beyond traversal. <span>Model the structure.</span></h1>
+        <p class="hero-lead">Choose by graph property, query type, and update pattern. Then follow the invariant through a detailed execution flow.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#choose">Choose an algorithm</a>
+          <a class="button secondary" href="index.html">← Return to basics</a>
+        </div>
+        <ul class="hero-stats" aria-label="Advanced catalog summary">
+          <li><strong id="template-count">0</strong><span>advanced templates</span></li>
+          <li><strong>4</strong><span>decision flowcharts</span></li>
+          <li><strong>2</strong><span>languages</span></li>
+        </ul>
+      </div>
+      <section class="hero-panel" aria-label="Advanced modeling preview">
+        <div class="terminal-bar"><i></i><i></i><i></i><span>model-first.md</span></div>
+        <pre><code><span class="muted"># Do not choose by name alone</span>
+goal = identify_objective()
+edge_property = inspect_weights()
+query_pattern = inspect_updates()
+
+if goal == <b>"connect all cheaply"</b>:
+    algorithm = <b>"minimum spanning tree"</b>
+elif goal == <b>"route capacity"</b>:
+    algorithm = <b>"maximum flow"</b>
+
+prove_invariant_before_code()</code></pre>
+      </section>
+    </section>
+
+    <section class="section advanced-choice" id="choose">
+      <div class="section-heading centered-heading">
+        <p class="eyebrow">01 · Selection map</p>
+        <h2>Start with the result you must produce</h2>
+        <p>The same graph can require a completely different algorithm when the objective changes.</p>
+      </div>
+      <ul class="choice-flow" aria-label="Advanced algorithm selection flow">
+        <li class="choice-start"><span>Input</span><strong>What must the output prove?</strong></li>
+        <li><span>Connect everything</span><strong>Minimum total cost</strong><a href="#structure-flow">Kruskal MST →</a></li>
+        <li><span>Move through capacity</span><strong>Maximum feasible amount</strong><a href="#flow-lifecycle">Dinic max flow →</a></li>
+        <li><span>Find shortest routes</span><strong>Weights decide the method</strong><a href="#path-flow">Path flow →</a></li>
+        <li><span>Expose structure</span><strong>Components or critical edges</strong><a href="#structure-flow">SCC / bridges →</a></li>
+        <li><span>Answer special queries</span><strong>Ancestor, nearest, ordered</strong><a href="#query-flow">Query structures →</a></li>
+      </ul>
+    </section>
+
+    <section class="section" id="deep-flows">
+      <div class="section-heading">
+        <p class="eyebrow">02 · Detailed flowcharts</p>
+        <h2>Follow the property that changes the answer</h2>
+        <p>Each branch names the deciding condition, the algorithm, and the invariant you must preserve.</p>
+      </div>
+
+      <div class="flowchart-stack">
+        <article class="detail-flow" id="path-flow">
+          <header><span>Shortest paths</span><h3>Which path algorithm fits the edge weights?</h3></header>
+          <div class="flow-lane">
+            <div class="flow-step root-step"><small>Start</small><strong>Need a shortest path?</strong></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-decision"><small>Inspect</small><strong>What are the weights?</strong></div>
+            <div class="flow-branches">
+              <div><span>Negative edges</span><strong>Bellman–Ford</strong><small>Relax every edge V−1 times; a later relaxation reveals a negative cycle.</small></div>
+              <div><span>All pairs, small V</span><strong>Floyd–Warshall</strong><small>After phase k, distances may use only vertices 0…k as intermediates.</small></div>
+              <div><span>One target + heuristic</span><strong>A*</strong><small>Expand the smallest known cost plus an admissible remaining-cost bound.</small></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-flow" id="structure-flow">
+          <header><span>Graph structure</span><h3>Connection cost, components, or failure points?</h3></header>
+          <div class="flow-lane">
+            <div class="flow-step root-step"><small>Objective</small><strong>What structure matters?</strong></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-branches three-way">
+              <div><span>Cheapest connected backbone</span><strong>Kruskal MST</strong><small>Process edges by cost; add an edge only when DSU joins two components.</small></div>
+              <div><span>Mutual reachability</span><strong>Kosaraju SCC</strong><small>Finish-time order exposes source components in the reversed graph.</small></div>
+              <div><span>Critical undirected edge</span><strong>Bridges</strong><small>An edge u–v is a bridge when low[v] &gt; discovery[u].</small></div>
+            </div>
+          </div>
+        </article>
+
+        <article class="detail-flow" id="flow-lifecycle">
+          <header><span>Network flow</span><h3>Dinic: build, block, repeat</h3></header>
+          <ol class="process-flow">
+            <li><span>01</span><strong>Build residual graph</strong><small>Add forward capacity and a zero-capacity reverse edge.</small></li>
+            <li><span>02</span><strong>BFS level graph</strong><small>Keep only edges that move one level closer to the sink.</small></li>
+            <li><span>03</span><strong>DFS blocking flow</strong><small>Push along level-respecting edges until every route is blocked.</small></li>
+            <li><span>04</span><strong>Update residual capacity</strong><small>Subtract forward flow and add the same amount to the reverse edge.</small></li>
+            <li><span>05</span><strong>Can BFS reach sink?</strong><small>Yes: repeat. No: the accumulated flow is maximum.</small></li>
+          </ol>
+        </article>
+
+        <article class="detail-flow" id="query-flow">
+          <header><span>Specialized queries</span><h3>Static hierarchy, spatial proximity, or dynamic order?</h3></header>
+          <div class="flow-lane">
+            <div class="flow-step root-step"><small>Workload</small><strong>Which operation repeats?</strong></div>
+            <div class="flow-arrow" aria-hidden="true">→</div>
+            <div class="flow-branches three-way">
+              <div><span>Ancestor / tree path</span><strong>LCA binary lifting</strong><small>Precompute every 2ᵏ-th ancestor; lift both nodes from the largest jump down.</small></div>
+              <div><span>Nearest low-dimensional point</span><strong>KD-tree</strong><small>Visit the near branch first; prune the far branch when its plane cannot improve the best.</small></div>
+              <div><span>Ordered set changes</span><strong>Red-black tree</strong><small>Rotations and recoloring preserve black height and prevent consecutive red nodes.</small></div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section template-section" id="templates">
+      <div class="section-heading">
+        <p class="eyebrow">03 · Advanced template library</p>
+        <h2>Study the invariant, then adapt the code</h2>
+        <p>These templates are intentionally separate from the core catalog so the basic practice path stays focused.</p>
+      </div>
+      <div class="toolbar" role="search">
+        <label class="sr-only" for="search">Search advanced templates</label>
+        <div class="search-box">
+          <span aria-hidden="true">⌕</span>
+          <input id="search" type="search" placeholder="Search: max flow, KD-tree, SCC…" autocomplete="off">
+        </div>
+        <div class="filters" id="filters" role="group" aria-label="Filter advanced template topics"></div>
+      </div>
+      <p class="result-count" id="result-count" aria-live="polite"></p>
+      <div class="template-grid" id="template-grid"></div>
+      <div class="empty-state" id="empty-state" hidden>
+        <h3>No advanced template matches yet.</h3>
+        <p>Try “flow”, “path”, “tree”, “component”, or “spatial”.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><b>DSA Atlas</b></div>
+    <p>Advanced algorithms become manageable when the objective and invariant are explicit.</p>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+</body>
+</html>
