@@ -18,9 +18,9 @@
     </a>
     <nav aria-label="Primary navigation">
       <a href="#flow">Solve flow</a>
+      <a href="#decision-map">Decision graph</a>
       <a href="#selector">Selector</a>
       <a href="#templates">Templates</a>
-      <a href="#checklist">Checklist</a>
     </nav>
     <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
       <span aria-hidden="true">◐</span>
@@ -40,7 +40,7 @@
         <ul class="hero-stats" aria-label="Site summary">
           <li><strong id="template-count">0</strong><span>templates</span></li>
           <li><strong>2</strong><span>languages</span></li>
-          <li><strong>1</strong><span>repeatable flow</span></li>
+          <li><strong>1</strong><span>decision graph</span></li>
         </ul>
       </div>
       <section class="hero-panel" aria-label="Problem-solving preview">
@@ -78,9 +78,42 @@ implement_and_verify()</code></pre>
       </ol>
     </section>
 
+    <section class="section decision-section" id="decision-map">
+      <div class="section-heading centered-heading">
+        <p class="eyebrow">02 · Algorithm decision graph</p>
+        <h2>Start with the shape. Follow the constraint.</h2>
+        <p>Select the input shape to reveal the questions that narrow the solution to the right family.</p>
+      </div>
+      <div class="decision-board">
+        <div class="decision-root">
+          <span>Start</span>
+          <strong>What structure carries the problem?</strong>
+          <small>Then identify the operation that must be fast.</small>
+        </div>
+        <div class="decision-line" aria-hidden="true"></div>
+        <div class="decision-branches" role="group" aria-label="Choose a problem shape">
+          <button class="decision-node active" type="button" data-decision="sequence" aria-pressed="true"><span>01</span>Sequence / range</button>
+          <button class="decision-node" type="button" data-decision="graph" aria-pressed="false"><span>02</span>Graph / network</button>
+          <button class="decision-node" type="button" data-decision="state" aria-pressed="false"><span>03</span>State space</button>
+          <button class="decision-node" type="button" data-decision="spatial" aria-pressed="false"><span>04</span>Spatial points</button>
+          <button class="decision-node" type="button" data-decision="ordered" aria-pressed="false"><span>05</span>Dynamic order</button>
+        </div>
+        <div class="decision-result" id="decision-result" aria-live="polite">
+          <div>
+            <span class="decision-result-label">Ask next</span>
+            <p id="decision-question">Is the answer contiguous, sorted, or a repeated range aggregate?</p>
+          </div>
+          <div>
+            <span class="decision-result-label">Candidate algorithms</span>
+            <div class="algorithm-actions" id="decision-algorithms"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <section class="section split" id="selector">
       <div class="section-heading sticky-heading">
-        <p class="eyebrow">02 · Pattern selector</p>
+        <p class="eyebrow">03 · Pattern selector</p>
         <h2>Follow the strongest signal</h2>
         <p>Choose the algorithm from the required fast operation—not from the story wrapped around the problem.</p>
         <div class="note"><b>Database or data structure?</b> LeetCode problems nearly always need an in-memory data structure. Use a persistent database only for explicit SQL, storage, joins, or transaction tasks.</div>
@@ -96,12 +129,17 @@ implement_and_verify()</code></pre>
         <article><span>Dependencies / prerequisites</span><strong>Topological sort</strong><small>Indegree + queue</small></article>
         <article><span>Repeated connectivity merges</span><strong>Union-find</strong><small>Parent + size</small></article>
         <article><span>Overlapping optimal states</span><strong>Dynamic programming</strong><small>Memo · table</small></article>
+        <article><span>Minimum total connection cost</span><strong>Spanning tree</strong><small>Kruskal · Prim · DSU</small></article>
+        <article><span>Capacity through a network</span><strong>Maximum flow</strong><small>Dinic · residual graph</small></article>
+        <article><span>Directed cycles / components</span><strong>SCC</strong><small>Kosaraju · Tarjan</small></article>
+        <article><span>Nearest point in low dimensions</span><strong>KD-tree</strong><small>Axis split · branch pruning</small></article>
+        <article><span>Dynamic predecessor / successor</span><strong>Red-black tree</strong><small>Balanced ordered set</small></article>
       </div>
     </section>
 
     <section class="section complexity">
       <div class="section-heading">
-        <p class="eyebrow">03 · Complexity compass</p>
+        <p class="eyebrow">04 · Complexity compass</p>
         <h2>Let constraints eliminate bad ideas</h2>
       </div>
       <div class="complexity-grid">
@@ -116,7 +154,7 @@ implement_and_verify()</code></pre>
 
     <section class="section template-section" id="templates">
       <div class="section-heading">
-        <p class="eyebrow">04 · Template library</p>
+        <p class="eyebrow">05 · Template library</p>
         <h2>Search. Select. Copy. Adapt.</h2>
         <p>Each template includes its trigger, target complexity, invariant, and paired implementation.</p>
       </div>
@@ -124,7 +162,7 @@ implement_and_verify()</code></pre>
         <label class="sr-only" for="search">Search templates</label>
         <div class="search-box">
           <span aria-hidden="true">⌕</span>
-          <input id="search" type="search" placeholder="Search: graph, window, top-k…" autocomplete="off">
+          <input id="search" type="search" placeholder="Search: max flow, KD-tree, SCC…" autocomplete="off">
         </div>
         <div class="filters" id="filters" role="group" aria-label="Filter template topics"></div>
       </div>
@@ -139,7 +177,7 @@ implement_and_verify()</code></pre>
     <section class="section" id="checklist">
       <div class="checklist-card">
         <div>
-          <p class="eyebrow">05 · Before submit</p>
+          <p class="eyebrow">06 · Before submit</p>
           <h2>Seven checks between “works” and “accepted”</h2>
         </div>
         <ul>

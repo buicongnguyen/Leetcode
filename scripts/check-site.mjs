@@ -9,7 +9,7 @@ const workflow = await readFile(".github/workflows/pages.yml", "utf8");
 
 if (!html.startsWith("<!DOCTYPE html>")) throw new Error("HTML must use the canonical uppercase doctype");
 
-for (const id of ["main", "flow", "selector", "templates", "checklist"]) {
+for (const id of ["main", "flow", "decision-map", "selector", "templates", "checklist"]) {
   if (!html.includes(`id="${id}"`)) throw new Error(`Missing required landmark: ${id}`);
 }
 for (const target of ["styles.css", "app.js", "DSA_Problem_Solving_Handbook_CPP_Python.docx"]) {
@@ -19,7 +19,10 @@ if (!js.includes("const templates = [") || !js.includes("render();")) {
   throw new Error("Template application did not initialize correctly");
 }
 const templateCount = (js.match(/title: "/g) || []).length;
-if (templateCount < 20) throw new Error(`Expected at least 20 templates, found ${templateCount}`);
+if (templateCount < 30) throw new Error(`Expected at least 30 templates, found ${templateCount}`);
+for (const advanced of ["Dinic maximum flow", "Red-black tree insertion", "KD-tree nearest neighbor", "Kruskal minimum spanning tree"]) {
+  if (!js.includes(advanced)) throw new Error(`Missing advanced template: ${advanced}`);
+}
 if (!html.includes('for="search"') || !html.includes('id="search"')) {
   throw new Error("Search control must have an explicit label association");
 }
