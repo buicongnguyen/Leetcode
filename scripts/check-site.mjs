@@ -27,7 +27,7 @@ for (const id of ["choose", "deep-flows", "path-flow", "structure-flow", "flow-l
 for (const target of ["styles.css", "app.js", "index.html"]) {
   if (!advancedHtml.includes(target)) throw new Error(`Advanced page is missing reference to ${target}`);
 }
-for (const id of ["master-loop", "linear-flow", "traversal-flow", "dp-flow", "combinations", "lru", "sources"]) {
+for (const id of ["master-loop", "linear-flow", "traversal-flow", "dp-flow", "state-tree", "backtracking-tree", "combinations", "lru", "sources"]) {
   if (!thinkingHtml.includes(`id="${id}"`)) throw new Error(`Missing thinking-guide landmark: ${id}`);
 }
 for (const target of ["styles.css", "thinking.js", "index.html", "advanced.html"]) {

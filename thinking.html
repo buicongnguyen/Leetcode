@@ -6,7 +6,7 @@
   <meta name="description" content="A practical DSA thinking playbook for choosing stacks, queues, BFS, DFS, dynamic programming, and composite data structures.">
   <meta name="theme-color" content="#07111f">
   <title>Problem-Solving Playbook — DSA Atlas</title>
-  <link rel="stylesheet" href="styles.css?v=20260716">
+  <link rel="stylesheet" href="styles.css?v=20260716b">
   <script src="thinking.js?v=20260716" defer></script>
 </head>
 <body>
@@ -21,6 +21,7 @@
       <a href="#linear-flow">Stack or queue</a>
       <a href="#traversal-flow">BFS or DFS</a>
       <a href="#dp-flow">DP chooser</a>
+      <a href="#backtracking-tree">State trees</a>
       <a href="#combinations">Combine structures</a>
     </nav>
     <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
@@ -40,7 +41,7 @@
           <a class="button secondary" href="advanced.html">Open advanced atlas</a>
         </div>
         <ul class="hero-stats" aria-label="Playbook summary">
-          <li><strong>5</strong><span>decision flows</span></li>
+          <li><strong>7</strong><span>decision flows</span></li>
           <li><strong>9</strong><span>DP families</span></li>
           <li><strong>6</strong><span>structure combinations</span></li>
         </ul>
@@ -138,15 +139,92 @@ test_small_and_hostile_cases()</code></pre>
         <article><span>Transitions form a DAG</span><h3>DAG DP</h3><p>Longest paths in DAGs and dependency scoring. Evaluate in topological order.</p><code>dp[node]</code></article>
         <article><span>Contiguous choice with a split</span><h3>Sequence / partition DP</h3><p>LIS, word break, segmentation, and optimal partitions. Try the last previous choice.</p><code>dp[end]</code></article>
       </div>
+
+      <article class="state-definition">
+        <div class="state-definition-copy">
+          <p class="eyebrow">Define the state before the recurrence</p>
+          <h3>A DP state is the smallest complete description of one reusable subproblem</h3>
+          <p>If two recursive calls have the same state coordinates, their future answer must be identical. Anything that changes future choices belongs in the state; history that no longer matters does not.</p>
+        </div>
+        <ol>
+          <li><span>Meaning</span><strong>Write one sentence</strong><code>dp[i] = ways to reach step i</code></li>
+          <li><span>Choice</span><strong>List the final move</strong><code>came from i−1 or i−2</code></li>
+          <li><span>Transition</span><strong>Combine smaller answers</strong><code>dp[i] = dp[i−1] + dp[i−2]</code></li>
+          <li><span>Base</span><strong>Stop the recurrence</strong><code>dp[0] = 1, dp[1] = 1</code></li>
+          <li><span>Order</span><strong>Respect dependencies</strong><code>left → right</code></li>
+        </ol>
+      </article>
+
+      <div class="state-tree-comparison" id="state-tree">
+        <article>
+          <header><span>Before memoization</span><h3>Recursive calls form a state tree</h3><p>The same state appears in multiple branches and repeats the same work.</p></header>
+          <div class="binary-tree dp-call-tree" role="img" aria-label="Recursive state tree for f of 5 showing repeated f of 3 and f of 2 states">
+            <div class="tree-level level-one"><b>f(5)</b></div>
+            <div class="tree-level level-two"><b>f(4)</b><b class="repeat">f(3)</b></div>
+            <div class="tree-level level-three"><b class="repeat">f(3)</b><b class="repeat">f(2)</b><b class="repeat">f(2)</b><b>f(1)</b></div>
+          </div>
+          <small><i></i> Repeated color = identical state, identical future answer.</small>
+        </article>
+        <div class="collapse-arrow" aria-hidden="true">memoize<br>→</div>
+        <article>
+          <header><span>After memoization</span><h3>The tree collapses into a state DAG</h3><p>Each unique state is computed once; later calls reuse its stored value.</p></header>
+          <div class="state-dag" role="img" aria-label="Unique Fibonacci states f1 through f5 in topological order with each recurrence">
+            <b>f(1)<small>base = 1</small></b><i>→</i>
+            <b>f(2)<small>base = 1</small></b><i>→</i>
+            <b>f(3)<small>f2 + f1 = 2</small></b><i>→</i>
+            <b>f(4)<small>f3 + f2 = 3</small></b><i>→</i>
+            <b>f(5)<small>f4 + f3 = 5</small></b>
+          </div>
+          <small>Time changes from exponential recursion to one computation per state.</small>
+        </article>
+      </div>
+
       <div class="topdown-bottomup">
         <article><span>Choose top-down when</span><strong>The reachable state space is sparse or the recurrence is easier to express recursively.</strong><small>Memoization computes only visited states, but recursion depth matters.</small></article>
         <article><span>Choose bottom-up when</span><strong>The dependency order is clear and most states will be needed.</strong><small>Tabulation avoids recursion overhead and often enables space compression.</small></article>
+      </div>
+
+      <div class="method-chooser">
+        <div class="method-root"><span>Implementation choice</span><strong>Recursion or iteration?</strong></div>
+        <div class="method-options">
+          <article><span>Top-down recursion</span><h3>Use when the state graph is sparse</h3><p>Natural recurrence, uncertain reachability, easy memoization. Check maximum call depth and language stack limits.</p></article>
+          <article><span>Bottom-up iteration</span><h3>Use when dependencies have a clear order</h3><p>Dense state space, predictable loops, no recursion risk, and better opportunity for rolling-array compression.</p></article>
+          <article><span>Recursive backtracking</span><h3>Use when every choice must be undone</h3><p>The call stack naturally remembers the decision path. Keep choose → recurse → undo adjacent.</p></article>
+          <article><span>Explicit-stack iteration</span><h3>Use when depth or execution control matters</h3><p>Store frames yourself when recursion may overflow or when you need pause, resume, or exact traversal ordering.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section decision-guide" id="backtracking-tree">
+      <div class="section-heading centered-heading">
+        <p class="eyebrow">05 · Backtracking decision tree</p>
+        <h2>Every level answers one decision</h2>
+        <p>A backtracking state contains the current decision index and the partial solution. Each edge makes one choice; returning across the edge undoes it.</p>
+      </div>
+      <div class="backtrack-layout">
+        <div class="backtrack-tree" role="img" aria-label="Decision tree generating every subset of A and B with include and skip branches">
+          <div class="backtrack-level bt-root"><b>path = [ ]<small>decide A</small></b></div>
+          <div class="backtrack-labels first-labels" aria-hidden="true"><span>include A</span><span>skip A</span></div>
+          <div class="backtrack-level bt-middle"><b>[A]<small>decide B</small></b><b>[ ]<small>decide B</small></b></div>
+          <div class="backtrack-labels second-labels" aria-hidden="true"><span>take</span><span>skip</span><span>take</span><span>skip</span></div>
+          <div class="backtrack-level bt-leaves"><b>[A, B]<small>emit</small></b><b>[A]<small>emit</small></b><b>[B]<small>emit</small></b><b>[ ]<small>emit</small></b></div>
+        </div>
+        <ol class="backtrack-rules">
+          <li><span>01</span><strong>Choose</strong><p>Add the candidate or modify the board/state.</p></li>
+          <li><span>02</span><strong>Recurse</strong><p>Solve the remaining decisions from the new state.</p></li>
+          <li><span>03</span><strong>Undo</strong><p>Restore exactly what the choice changed before trying its sibling.</p></li>
+          <li><span>04</span><strong>Prune</strong><p>Stop a branch as soon as it cannot lead to a valid or better solution.</p></li>
+        </ol>
+      </div>
+      <div class="backtrack-vs-dp">
+        <article><span>Backtracking</span><strong>Different paths may matter even when they reach similar-looking positions.</strong><p>Enumerate valid solutions, arrangements, or paths. Prune impossible branches.</p></article>
+        <article><span>Dynamic programming</span><strong>Merge paths when the complete future is determined by the same state.</strong><p>Cache one answer per state instead of exploring the repeated subtree again.</p></article>
       </div>
     </section>
 
     <section class="section decision-guide" id="combinations">
       <div class="section-heading">
-        <p class="eyebrow">05 · Combine data structures</p>
+        <p class="eyebrow">06 · Combine data structures</p>
         <h2>One structure rarely optimizes every required operation</h2>
         <p>Write the required operations and target complexity first. Combine structures when each contributes a different fast operation.</p>
         <div class="note"><b>Data structure or database?</b> Problems such as LRU cache combine in-memory data structures. Use a database only when the prompt requires persistence, SQL queries, transactions, or data larger than memory.</div>
@@ -192,7 +270,7 @@ test_small_and_hostile_cases()</code></pre>
 
     <section class="section source-section" id="sources">
       <div class="section-heading">
-        <p class="eyebrow">06 · Research basis</p>
+        <p class="eyebrow">07 · Research basis</p>
         <h2>References used to strengthen this playbook</h2>
         <p>The flows synthesize established teaching material; wording and examples here are original and adapted for quick interview use.</p>
       </div>

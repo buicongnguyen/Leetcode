@@ -11,6 +11,9 @@ A searchable data structures and algorithms reference for LeetCode practice, wit
 - A separate advanced page with 10 graph, balanced-tree, and spatial templates
 - Four detailed selection and execution flowcharts for advanced algorithms
 - A research-backed thinking playbook for stacks, queues, BFS, DFS, graph modeling, and nine DP families
+- DP state-definition guidance, repeated-state trees, and memoization-to-DAG diagrams
+- A backtracking include/skip decision tree with choose, recurse, undo, and prune rules
+- Recursion versus iteration guidance for top-down DP, bottom-up DP, backtracking, and explicit stacks
 - Composite data-structure guidance with an O(1) LRU cache template using a hash map and doubly linked list
 - Advanced topics: MST, Dinic flow, SCC, bridges, Bellman–Ford, Floyd–Warshall, A*, LCA, KD-tree, and red-black tree insertion
 - C++/Python tabs and copy buttons
