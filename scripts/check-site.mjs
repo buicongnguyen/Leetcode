@@ -40,6 +40,9 @@ for (const target of ["styles.css", "thinking.js", "index.html", "advanced.html"
 for (const source of ["crackingthecodinginterview.com", "ocw.mit.edu", "algs4.cs.princeton.edu", "leetcode.com/problems/lru-cache"]) {
   if (!thinkingHtml.includes(source)) throw new Error(`Thinking guide is missing research source: ${source}`);
 }
+for (const composite of ["LFU cache", "Randomized set", "Streaming median", "Time map", "All O(1)", "Number containers", "Min stack", "Snapshot array"]) {
+  if (!thinkingHtml.includes(composite)) throw new Error(`Thinking guide is missing composite design: ${composite}`);
+}
 if (!thinkingJs.includes("theme-toggle") || !thinkingJs.includes("dsa-theme")) {
   throw new Error("Thinking guide theme control did not initialize correctly");
 }
@@ -50,7 +53,7 @@ if (!js.includes("const codeMaps = {") || !js.includes('class="code-map"')) {
   throw new Error("Every template must render a concise code explanation map");
 }
 const templateCount = (js.match(/title: "/g) || []).length;
-if (templateCount < 31) throw new Error(`Expected at least 31 templates, found ${templateCount}`);
+if (templateCount < 35) throw new Error(`Expected at least 35 templates, found ${templateCount}`);
 const codeMapCount = (js.match(/^  "[^"]+": \[$/gm) || []).length;
 if (codeMapCount !== templateCount) {
   throw new Error(`Expected one code map per template: ${codeMapCount} maps for ${templateCount} templates`);
@@ -60,6 +63,9 @@ for (const advanced of ["Dinic maximum flow", "Red-black tree insertion", "KD-tr
 }
 if (!js.includes("LRU cache: hash map + doubly linked list")) {
   throw new Error("Missing composite LRU cache template");
+}
+for (const composite of ["Randomized set: array + hash map", "Streaming median: two heaps", "Time map: hash map + sorted history", "Min stack: value stack + minimum stack"]) {
+  if (!js.includes(composite)) throw new Error(`Missing composite template: ${composite}`);
 }
 if (!html.includes('for="search"') || !html.includes('id="search"')) {
   throw new Error("Search control must have an explicit label association");

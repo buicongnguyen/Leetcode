@@ -6,7 +6,7 @@
   <meta name="description" content="A practical DSA thinking playbook for choosing stacks, queues, BFS, DFS, dynamic programming, and composite data structures.">
   <meta name="theme-color" content="#07111f">
   <title>Problem-Solving Playbook — DSA Atlas</title>
-  <link rel="stylesheet" href="styles.css?v=20260716c">
+  <link rel="stylesheet" href="styles.css?v=20260716d">
   <script src="thinking.js?v=20260716" defer></script>
 </head>
 <body>
@@ -43,7 +43,7 @@
         <ul class="hero-stats" aria-label="Playbook summary">
           <li><strong>7</strong><span>decision flows</span></li>
           <li><strong>9</strong><span>DP families</span></li>
-          <li><strong>6</strong><span>structure combinations</span></li>
+          <li><strong>14</strong><span>structure combinations</span></li>
         </ul>
       </div>
       <section class="hero-panel" aria-label="Model-first interview preview">
@@ -231,19 +231,84 @@ test_small_and_hostile_cases()</code></pre>
         <p>Write the required operations and target complexity first. Combine structures when each contributes a different fast operation.</p>
         <div class="note"><b>Data structure or database?</b> Problems such as LRU cache combine in-memory data structures. Use a database only when the prompt requires persistence, SQL queries, transactions, or data larger than memory.</div>
       </div>
+      <ol class="composition-recipe">
+        <li><span>01</span><strong>List operations</strong><p>Lookup, remove, reorder, minimum, random access, history, or range query.</p></li>
+        <li><span>02</span><strong>Assign one strength</strong><p>Choose a structure for each operation it performs naturally.</p></li>
+        <li><span>03</span><strong>Connect identities</strong><p>Store an index, iterator, node pointer, timestamp, or shared key between structures.</p></li>
+        <li><span>04</span><strong>Write synchronization invariant</strong><p>Every insert, update, and delete must keep all representations consistent.</p></li>
+      </ol>
       <section class="combination-table" aria-label="Data structure combination guide">
         <table>
           <thead><tr><th>Required operations</th><th>Combine</th><th>Why it works</th><th>Typical problems</th></tr></thead>
           <tbody>
             <tr><td>O(1) lookup + move + oldest eviction</td><td>Hash map + doubly linked list</td><td>Map jumps to the node; list changes recency and removes both ends.</td><td>LRU cache</td></tr>
+            <tr><td>O(1) lookup + frequency + LRU tie-break</td><td>Hash maps + frequency buckets + linked lists</td><td>One map finds nodes; another groups nodes by frequency; each bucket preserves recency.</td><td>LFU cache</td></tr>
+            <tr><td>O(1) insert + delete + uniform random</td><td>Dynamic array + value-to-index map</td><td>Array gives random indexing; map locates deletions; swap-with-last avoids shifting.</td><td>Randomized set</td></tr>
+            <tr><td>Online insert + immediate median</td><td>Max-heap + min-heap</td><td>Heap roots expose the two middle candidates while balancing partitions the stream.</td><td>Streaming median</td></tr>
+            <tr><td>Versioned values + latest value before time</td><td>Hash map + sorted history arrays</td><td>Map selects the key history; append preserves order; binary search selects a version.</td><td>Time map</td></tr>
+            <tr><td>Stack operations + current minimum</td><td>Value stack + prefix-minimum stack</td><td>Both stacks move together; the auxiliary top stores the minimum at that depth.</td><td>Min stack</td></tr>
+            <tr><td>O(1) count updates + min/max key</td><td>Key map + doubly linked count buckets</td><td>Keys jump to buckets; adjacent buckets handle ±1 count; ends expose min and max.</td><td>All O(1) structure</td></tr>
+            <tr><td>Replace index + smallest index for value</td><td>Index map + value-to-ordered-set map</td><td>One map removes stale membership; each ordered set exposes its smallest index.</td><td>Number containers</td></tr>
+            <tr><td>Array updates + historical snapshots</td><td>Per-index version lists + binary search</td><td>Store only changed values with snapshot IDs, then locate the requested version.</td><td>Snapshot array</td></tr>
+            <tr><td>Follow graph + newest items from many streams</td><td>Hash sets + per-user lists + max-heap</td><td>Sets track follows; lists preserve posts; heap performs a k-way merge of recent heads.</td><td>Design Twitter</td></tr>
             <tr><td>Count quickly + repeatedly extract top-k</td><td>Hash map + heap</td><td>Map aggregates frequencies; heap maintains only the best candidates.</td><td>Top-k frequent items</td></tr>
-            <tr><td>Lookup by value + preserve insertion order</td><td>Hash map + linked list</td><td>Map locates; list orders and supports stable iteration.</td><td>Ordered dictionary</td></tr>
             <tr><td>Minimum priority + update/delete named item</td><td>Heap + hash map / index map</td><td>Heap selects the minimum; map locates mutable entries.</td><td>Schedulers, indexed priority queue</td></tr>
             <tr><td>Prefix search + payload lookup</td><td>Trie + hash map</td><td>Trie narrows by characters; map stores metadata or counts.</td><td>Autocomplete, word dictionary</td></tr>
             <tr><td>Connectivity + component metadata</td><td>DSU + arrays / hash maps</td><td>DSU finds roots; attached storage tracks size, sums, or labels per root.</td><td>Accounts merge, dynamic components</td></tr>
           </tbody>
         </table>
       </section>
+
+      <div class="composite-catalog">
+        <article>
+          <header><span>Frequency + recency</span><h3>LFU cache</h3></header>
+          <div class="structure-equation"><b>key map</b><i>→</i><b>node</b><i>→</i><b>frequency bucket</b><i>→</i><b>LRU list</b></div>
+          <p><strong>Invariant:</strong> every node belongs to exactly one frequency bucket; <code>minFreq</code> names the first eviction bucket.</p>
+          <a href="https://leetcode.com/problems/lfu-cache/" target="_blank" rel="noreferrer">Official problem →</a>
+        </article>
+        <article>
+          <header><span>Random access + deletion</span><h3>Randomized set</h3></header>
+          <div class="structure-equation"><b>array</b><i>⇄</i><b>value:index map</b><i>+</i><b>swap last</b></div>
+          <p><strong>Invariant:</strong> the map index always points to the value's current array slot.</p>
+          <div class="catalog-links"><a href="index.html?q=Randomized%20set#templates">Template →</a><a href="https://leetcode.com/problems/insert-delete-getrandom-o1/" target="_blank" rel="noreferrer">Problem →</a></div>
+        </article>
+        <article>
+          <header><span>Online order statistic</span><h3>Streaming median</h3></header>
+          <div class="structure-equation"><b>max-heap lower</b><i>| median |</i><b>min-heap upper</b></div>
+          <p><strong>Invariant:</strong> lower ≤ upper and their sizes differ by at most one.</p>
+          <div class="catalog-links"><a href="index.html?q=Streaming%20median#templates">Template →</a><a href="https://leetcode.com/problems/find-median-from-data-stream/" target="_blank" rel="noreferrer">Problem →</a></div>
+        </article>
+        <article>
+          <header><span>Historical lookup</span><h3>Time map</h3></header>
+          <div class="structure-equation"><b>key map</b><i>→</i><b>sorted (time,value) list</b><i>→</i><b>binary search</b></div>
+          <p><strong>Invariant:</strong> each key's versions remain ordered by timestamp.</p>
+          <div class="catalog-links"><a href="index.html?q=Time%20map#templates">Template →</a><a href="https://leetcode.com/problems/time-based-key-value-store/" target="_blank" rel="noreferrer">Problem →</a></div>
+        </article>
+        <article>
+          <header><span>Counts at both extremes</span><h3>All O(1)</h3></header>
+          <div class="structure-equation"><b>key:bucket map</b><i>+</i><b>min ⇄ count buckets ⇄ max</b></div>
+          <p><strong>Invariant:</strong> buckets are count-ordered and every key lives in its matching bucket.</p>
+          <a href="https://leetcode.com/problems/all-oone-data-structure/" target="_blank" rel="noreferrer">Official problem →</a>
+        </article>
+        <article>
+          <header><span>Mutable reverse lookup</span><h3>Number containers</h3></header>
+          <div class="structure-equation"><b>index:number</b><i>+</i><b>number:ordered indices</b></div>
+          <p><strong>Invariant:</strong> both directions agree after every replacement.</p>
+          <a href="https://leetcode.com/problems/design-a-number-container-system/" target="_blank" rel="noreferrer">Official problem →</a>
+        </article>
+        <article>
+          <header><span>Aggregate at every depth</span><h3>Min stack</h3></header>
+          <div class="structure-equation"><b>value stack</b><i>⇄ same depth ⇄</i><b>minimum stack</b></div>
+          <p><strong>Invariant:</strong> each minimum entry summarizes the matching value-stack prefix.</p>
+          <div class="catalog-links"><a href="index.html?q=Min%20stack#templates">Template →</a><a href="https://leetcode.com/problems/min-stack/" target="_blank" rel="noreferrer">Problem →</a></div>
+        </article>
+        <article>
+          <header><span>Sparse version history</span><h3>Snapshot array</h3></header>
+          <div class="structure-equation"><b>index</b><i>→</i><b>(snapshot,value) history</b><i>→</i><b>binary search</b></div>
+          <p><strong>Invariant:</strong> each index stores only ordered changes, not a full copy per snapshot.</p>
+          <a href="https://leetcode.com/problems/snapshot-array/" target="_blank" rel="noreferrer">Official problem →</a>
+        </article>
+      </div>
 
       <article class="lru-explainer" id="lru">
         <div class="lru-copy">

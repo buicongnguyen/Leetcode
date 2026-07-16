@@ -220,6 +220,189 @@ class LRUCache:
             del self.where[lru.key]`
   },
   {
+    title: "Randomized set: array + hash map", category: "Composite Structures", complexity: "O(1) average insert / remove / random",
+    when: "Insertion, deletion, membership, and uniformly random selection must all be constant time.",
+    invariant: "The map stores the exact array index of every live value.",
+    cpp: `class RandomizedSet {
+    vector<int> values;
+    unordered_map<int, int> index;
+    mt19937 rng{random_device{}()};
+public:
+    bool insert(int value) {
+        if (index.count(value)) return false;
+        index[value] = values.size();
+        values.push_back(value);
+        return true;
+    }
+
+    bool remove(int value) {
+        if (!index.count(value)) return false;
+        int i = index[value];
+        int last = values.back();
+        values[i] = last;
+        index[last] = i;
+        values.pop_back();
+        index.erase(value);
+        return true;
+    }
+
+    int getRandom() {
+        uniform_int_distribution<int> pick(0, values.size() - 1);
+        return values[pick(rng)];
+    }
+};`,
+    python: `import random
+
+class RandomizedSet:
+    def __init__(self):
+        self.values = []
+        self.index = {}
+
+    def insert(self, value):
+        if value in self.index:
+            return False
+        self.index[value] = len(self.values)
+        self.values.append(value)
+        return True
+
+    def remove(self, value):
+        if value not in self.index:
+            return False
+        i = self.index[value]
+        last = self.values[-1]
+        self.values[i] = last
+        self.index[last] = i
+        self.values.pop()
+        del self.index[value]
+        return True
+
+    def getRandom(self):
+        return random.choice(self.values)`
+  },
+  {
+    title: "Streaming median: two heaps", category: "Composite Structures", complexity: "O(log n) add · O(1) median",
+    when: "Numbers arrive online and the median must be available after every insertion.",
+    invariant: "Every lower-half value is at most every upper-half value, and heap sizes differ by at most one.",
+    cpp: `class MedianFinder {
+    priority_queue<int> lower;
+    priority_queue<int, vector<int>, greater<int>> upper;
+public:
+    void addNum(int value) {
+        lower.push(value);
+        upper.push(lower.top());
+        lower.pop();
+        if (upper.size() > lower.size()) {
+            lower.push(upper.top());
+            upper.pop();
+        }
+    }
+
+    double findMedian() {
+        if (lower.size() > upper.size()) return lower.top();
+        return (lower.top() + upper.top()) / 2.0;
+    }
+};`,
+    python: `from heapq import heappush, heappop
+
+class MedianFinder:
+    def __init__(self):
+        self.lower = []  # negatives create a max-heap
+        self.upper = []  # normal min-heap
+
+    def addNum(self, value):
+        heappush(self.lower, -value)
+        heappush(self.upper, -heappop(self.lower))
+        if len(self.upper) > len(self.lower):
+            heappush(self.lower, -heappop(self.upper))
+
+    def findMedian(self):
+        if len(self.lower) > len(self.upper):
+            return -self.lower[0]
+        return (-self.lower[0] + self.upper[0]) / 2`
+  },
+  {
+    title: "Time map: hash map + sorted history", category: "Composite Structures", complexity: "O(1) append · O(log n) historical get",
+    when: "Each key has versioned values and queries ask for the latest value at or before a timestamp.",
+    invariant: "Every key's history is stored in strictly increasing timestamp order.",
+    cpp: `class TimeMap {
+    unordered_map<string, vector<pair<int,string>>> history;
+public:
+    void set(string key, string value, int timestamp) {
+        history[key].push_back({timestamp, value});
+    }
+
+    string get(string key, int timestamp) {
+        auto& items = history[key];
+        int lo = 0, hi = items.size();
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (items[mid].first <= timestamp) lo = mid + 1;
+            else hi = mid;
+        }
+        return lo == 0 ? "" : items[lo - 1].second;
+    }
+};`,
+    python: `class TimeMap:
+    def __init__(self):
+        self.history = {}
+
+    def set(self, key, value, timestamp):
+        self.history.setdefault(key, []).append((timestamp, value))
+
+    def get(self, key, timestamp):
+        items = self.history.get(key, [])
+        lo, hi = 0, len(items)
+        while lo < hi:
+            mid = (lo + hi) // 2
+            if items[mid][0] <= timestamp:
+                lo = mid + 1
+            else:
+                hi = mid
+        return "" if lo == 0 else items[lo - 1][1]`
+  },
+  {
+    title: "Min stack: value stack + minimum stack", category: "Composite Structures", complexity: "O(1) push / pop / top / minimum",
+    when: "Normal stack operations and the current minimum must all be constant time.",
+    invariant: "The minimum stack top is the minimum of every value currently in the main stack.",
+    cpp: `class MinStack {
+    vector<int> values;
+    vector<int> minimums;
+public:
+    void push(int value) {
+        values.push_back(value);
+        int current = minimums.empty() ? value : min(value, minimums.back());
+        minimums.push_back(current);
+    }
+
+    void pop() {
+        values.pop_back();
+        minimums.pop_back();
+    }
+
+    int top() { return values.back(); }
+    int getMin() { return minimums.back(); }
+};`,
+    python: `class MinStack:
+    def __init__(self):
+        self.values = []
+        self.minimums = []
+
+    def push(self, value):
+        self.values.append(value)
+        current = value if not self.minimums else min(value, self.minimums[-1])
+        self.minimums.append(current)
+
+    def pop(self):
+        self.values.pop()
+        self.minimums.pop()
+
+    def top(self):
+        return self.values[-1]
+
+    def getMin(self):
+        return self.minimums[-1]`
+  },
+  {
     title: "Heap / top-k", category: "Linear", complexity: "O(n log k) time · O(k) space",
     when: "Repeated minimum/maximum, k best items, or streaming selection.",
     invariant: "The min-heap contains the k largest items seen so far.",
@@ -1065,6 +1248,26 @@ const codeMaps = {
     "The hash map turns a key into its exact linked-list node in average O(1) time.",
     "Moving a touched node to the front records it as most recently used without scanning.",
     "When capacity is exceeded, remove the tail node and its matching map entry together."
+  ],
+  "Randomized set: array + hash map": [
+    "The array gives O(1) indexed random access while the map gives O(1) membership and location.",
+    "Deletion swaps the target with the last array value so no middle shift is required.",
+    "Update the moved value's map index before removing the old last slot and deleted key."
+  ],
+  "Streaming median: two heaps": [
+    "The max-heap stores the smaller half and exposes its largest value.",
+    "The min-heap stores the larger half and exposes its smallest value.",
+    "Rebalance after insertion so the median is one root or the average of both roots."
+  ],
+  "Time map: hash map + sorted history": [
+    "The hash map isolates the ordered version history belonging to one key.",
+    "Strictly increasing timestamps make each set operation a simple append.",
+    "Binary search finds the first timestamp after the query, then returns the previous version."
+  ],
+  "Min stack: value stack + minimum stack": [
+    "Push every value onto the normal stack.",
+    "Push the minimum-so-far at the same depth onto the second stack.",
+    "Pop both stacks together so the auxiliary top always matches the live prefix."
   ],
   "Heap / top-k": [
     "Push each candidate into a min-heap.",
