@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A practical DSA thinking playbook for choosing stacks, queues, BFS, DFS, dynamic programming, and composite data structures.">
+  <meta name="theme-color" content="#07111f">
+  <title>Problem-Solving Playbook — DSA Atlas</title>
+  <link rel="stylesheet" href="styles.css?v=20260716">
+  <script src="thinking.js?v=20260716" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="DSA Atlas basic algorithms">
+      <span class="brand-mark" aria-hidden="true">&lt;/&gt;</span>
+      <span>DSA <b>Atlas</b></span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <a href="index.html">Basic atlas</a>
+      <a href="#linear-flow">Stack or queue</a>
+      <a href="#traversal-flow">BFS or DFS</a>
+      <a href="#dp-flow">DP chooser</a>
+      <a href="#combinations">Combine structures</a>
+    </nav>
+    <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch color theme" title="Switch color theme">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </header>
+
+  <main id="main">
+    <section class="hero thinking-hero" id="top">
+      <div class="hero-copy">
+        <p class="eyebrow">Interview problem-solving playbook</p>
+        <h1>Choose by the operation, <span>not the story.</span></h1>
+        <p class="hero-lead">Translate the prompt into states, transitions, and required fast operations. The algorithm usually becomes visible after those three decisions.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#master-loop">Start the thinking flow</a>
+          <a class="button secondary" href="index.html#templates">Open basic templates</a>
+          <a class="button secondary" href="advanced.html">Open advanced atlas</a>
+        </div>
+        <ul class="hero-stats" aria-label="Playbook summary">
+          <li><strong>5</strong><span>decision flows</span></li>
+          <li><strong>9</strong><span>DP families</span></li>
+          <li><strong>6</strong><span>structure combinations</span></li>
+        </ul>
+      </div>
+      <section class="hero-panel" aria-label="Model-first interview preview">
+        <div class="terminal-bar"><i></i><i></i><i></i><span>interview-loop.md</span></div>
+        <pre><code><span class="muted"># Convert story into mechanics</span>
+state = what_changes()
+transition = one_legal_move()
+bottleneck = repeated_operation()
+
+structure = make_fast(bottleneck)
+algorithm = explore(state, transition)
+
+say_invariant_out_loud()
+test_small_and_hostile_cases()</code></pre>
+      </section>
+    </section>
+
+    <section class="section" id="master-loop">
+      <div class="section-heading">
+        <p class="eyebrow">01 · The interview loop</p>
+        <h2>From unclear prompt to defensible solution</h2>
+        <p>Do not jump from the problem statement directly to code. Produce one concrete artifact at each step.</p>
+      </div>
+      <ol class="interview-loop">
+        <li><span>01</span><strong>Clarify</strong><p>Define input, output, duplicates, mutation, empty cases, and whether an answer always exists.</p><small>Artifact: one precise sentence.</small></li>
+        <li><span>02</span><strong>Example</strong><p>Trace a tiny normal case and one hostile boundary case by hand.</p><small>Artifact: expected state changes.</small></li>
+        <li><span>03</span><strong>Brute force</strong><p>State the obvious complete solution before optimizing it.</p><small>Artifact: baseline complexity.</small></li>
+        <li><span>04</span><strong>Find waste</strong><p>Identify repeated search, recomputation, ordering, or traversal.</p><small>Artifact: the expensive operation.</small></li>
+        <li><span>05</span><strong>Choose structure</strong><p>Select the structure that makes the expensive operation cheap.</p><small>Artifact: operation → structure mapping.</small></li>
+        <li><span>06</span><strong>Prove</strong><p>Name the invariant and why every transition preserves it.</p><small>Artifact: one correctness claim.</small></li>
+        <li><span>07</span><strong>Code and audit</strong><p>Implement helpers, test boundaries, and recompute time and space complexity.</p><small>Artifact: accepted-quality implementation.</small></li>
+      </ol>
+    </section>
+
+    <section class="section decision-guide" id="linear-flow">
+      <div class="section-heading centered-heading">
+        <p class="eyebrow">02 · Stack or queue?</p>
+        <h2>Ask which item must leave next</h2>
+        <p>The removal order—not the syntax of the input—selects the structure.</p>
+      </div>
+      <div class="signal-flow">
+        <div class="signal-root"><span>Repeated operation</span><strong>Which pending item must be processed next?</strong></div>
+        <div class="signal-grid">
+          <article><span>Newest first</span><h3>Stack · LIFO</h3><p>Nesting, undo, expression parsing, next greater/smaller, iterative DFS.</p><small>Invariant: the top is the most recent unresolved item.</small></article>
+          <article><span>Oldest first</span><h3>Queue · FIFO</h3><p>Arrival order, scheduling, level traversal, unweighted shortest steps, BFS.</p><small>Invariant: all earlier-discovered work leaves first.</small></article>
+          <article><span>Best priority first</span><h3>Heap · priority queue</h3><p>Repeated minimum/maximum, top-k, Dijkstra, event simulation.</p><small>Invariant: the root is the best live candidate.</small></article>
+          <article><span>Both ends matter</span><h3>Deque</h3><p>Sliding-window extrema, 0–1 BFS, front/back scheduling.</p><small>Invariant: dominated or expired candidates are removed.</small></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section decision-guide" id="traversal-flow">
+      <div class="section-heading">
+        <p class="eyebrow">03 · BFS, DFS, or graph?</p>
+        <h2>A graph is any collection of states connected by moves</h2>
+        <p>Grids, word transformations, puzzle configurations, dependency systems, and trees can all be modeled as graphs.</p>
+      </div>
+      <div class="traversal-chart">
+        <div class="traversal-start"><span>Model</span><strong>State = node<br>legal move = edge</strong></div>
+        <div class="traversal-question"><span>Goal</span><strong>What must traversal prove?</strong></div>
+        <div class="traversal-answers">
+          <article><span>Fewest unweighted moves</span><h3>BFS</h3><p>Explore by distance layers. Mark when enqueued to prevent duplicate work.</p><a href="index.html#templates">BFS template →</a></article>
+          <article><span>Reachability / components</span><h3>DFS or BFS</h3><p>Either works. Prefer DFS for recursive structure; BFS when layers are useful.</p><a href="index.html#templates">Graph DFS template →</a></article>
+          <article><span>Dependencies / finish order</span><h3>DFS or topological sort</h3><p>Use colors for cycle detection or indegrees when prerequisites become ready.</p><a href="index.html#templates">Topological template →</a></article>
+          <article><span>All paths / reversible choices</span><h3>DFS + backtracking</h3><p>Choose, recurse, undo. Keep only state belonging to the current branch.</p><a href="index.html#templates">Backtracking template →</a></article>
+          <article><span>Weighted shortest path</span><h3>Inspect weights</h3><p>Nonnegative: Dijkstra. Negative: Bellman–Ford. Small all-pairs: Floyd–Warshall.</p><a href="advanced.html#path-flow">Weighted path flow →</a></article>
+          <article><span>Tree aggregation</span><h3>Tree DFS</h3><p>Define exactly what dfs(node) returns, then combine child results.</p><a href="index.html#templates">Tree DFS template →</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section decision-guide" id="dp-flow">
+      <div class="section-heading centered-heading">
+        <p class="eyebrow">04 · Dynamic programming chooser</p>
+        <h2>Choose DP by the coordinates of the state</h2>
+        <p>DP is organized exhaustive search: define a state, guess a transition, reuse repeated subproblems, and evaluate dependencies safely.</p>
+      </div>
+      <div class="dp-gate">
+        <div><span>Gate 1</span><strong>Can the answer be expressed from smaller versions of the same problem?</strong></div>
+        <b aria-hidden="true">→</b>
+        <div><span>Gate 2</span><strong>Will multiple choices reach the same state?</strong></div>
+        <b aria-hidden="true">→</b>
+        <div><span>Then</span><strong>Memoize the state or fill it in dependency order.</strong></div>
+      </div>
+      <div class="dp-family-grid">
+        <article><span>One position / prefix</span><h3>1D DP</h3><p>Climbing stairs, house robber, decoding. State usually ends at index i.</p><code>dp[i]</code></article>
+        <article><span>Two sequences / coordinates</span><h3>2D DP</h3><p>LCS, edit distance, grid paths. State tracks two changing axes.</p><code>dp[i][j]</code></article>
+        <article><span>Choose items under a limit</span><h3>Knapsack DP</h3><p>Capacity, sum, count, or budget. Iterate backward for 0/1 and forward for reusable items.</p><code>dp[capacity]</code></article>
+        <article><span>Split a contiguous range</span><h3>Interval DP</h3><p>Burst balloons, matrix chain, palindrome partitioning. Grow by interval length.</p><code>dp[left][right]</code></article>
+        <article><span>Answer depends on children</span><h3>Tree DP</h3><p>Robber on tree, diameter, subtree choices. DFS returns the states needed by the parent.</p><code>dfs(node, state)</code></article>
+        <article><span>Small set of used choices</span><h3>Bitmask DP</h3><p>Assignments, traveling salesperson, pairing. A mask records which items are consumed.</p><code>dp[mask][last]</code></article>
+        <article><span>Digits under a huge bound</span><h3>Digit DP</h3><p>Count numbers satisfying digit rules without enumerating the entire numeric range.</p><code>dp[pos][tight][state]</code></article>
+        <article><span>Transitions form a DAG</span><h3>DAG DP</h3><p>Longest paths in DAGs and dependency scoring. Evaluate in topological order.</p><code>dp[node]</code></article>
+        <article><span>Contiguous choice with a split</span><h3>Sequence / partition DP</h3><p>LIS, word break, segmentation, and optimal partitions. Try the last previous choice.</p><code>dp[end]</code></article>
+      </div>
+      <div class="topdown-bottomup">
+        <article><span>Choose top-down when</span><strong>The reachable state space is sparse or the recurrence is easier to express recursively.</strong><small>Memoization computes only visited states, but recursion depth matters.</small></article>
+        <article><span>Choose bottom-up when</span><strong>The dependency order is clear and most states will be needed.</strong><small>Tabulation avoids recursion overhead and often enables space compression.</small></article>
+      </div>
+    </section>
+
+    <section class="section decision-guide" id="combinations">
+      <div class="section-heading">
+        <p class="eyebrow">05 · Combine data structures</p>
+        <h2>One structure rarely optimizes every required operation</h2>
+        <p>Write the required operations and target complexity first. Combine structures when each contributes a different fast operation.</p>
+        <div class="note"><b>Data structure or database?</b> Problems such as LRU cache combine in-memory data structures. Use a database only when the prompt requires persistence, SQL queries, transactions, or data larger than memory.</div>
+      </div>
+      <section class="combination-table" aria-label="Data structure combination guide">
+        <table>
+          <thead><tr><th>Required operations</th><th>Combine</th><th>Why it works</th><th>Typical problems</th></tr></thead>
+          <tbody>
+            <tr><td>O(1) lookup + move + oldest eviction</td><td>Hash map + doubly linked list</td><td>Map jumps to the node; list changes recency and removes both ends.</td><td>LRU cache</td></tr>
+            <tr><td>Count quickly + repeatedly extract top-k</td><td>Hash map + heap</td><td>Map aggregates frequencies; heap maintains only the best candidates.</td><td>Top-k frequent items</td></tr>
+            <tr><td>Lookup by value + preserve insertion order</td><td>Hash map + linked list</td><td>Map locates; list orders and supports stable iteration.</td><td>Ordered dictionary</td></tr>
+            <tr><td>Minimum priority + update/delete named item</td><td>Heap + hash map / index map</td><td>Heap selects the minimum; map locates mutable entries.</td><td>Schedulers, indexed priority queue</td></tr>
+            <tr><td>Prefix search + payload lookup</td><td>Trie + hash map</td><td>Trie narrows by characters; map stores metadata or counts.</td><td>Autocomplete, word dictionary</td></tr>
+            <tr><td>Connectivity + component metadata</td><td>DSU + arrays / hash maps</td><td>DSU finds roots; attached storage tracks size, sums, or labels per root.</td><td>Accounts merge, dynamic components</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <article class="lru-explainer" id="lru">
+        <div class="lru-copy">
+          <p class="eyebrow">Case study · LRU cache</p>
+          <h3>Hash map answers “where?”; linked list answers “how recent?”</h3>
+          <p>Neither structure is enough alone. A map cannot identify the oldest key, while a list cannot find an arbitrary key in O(1).</p>
+          <a class="button primary" href="index.html?q=LRU#templates">Open the LRU C++ / Python template</a>
+        </div>
+        <figure class="lru-diagram" aria-label="LRU cache data structure diagram">
+          <div class="map-side"><span>Hash map</span><code>key → node address</code><small>O(1) average lookup</small></div>
+          <div class="map-arrows" aria-hidden="true">↘<br>→<br>↗</div>
+          <div class="list-side">
+            <span>Most recent</span>
+            <div><b>HEAD</b><i>⇄</i><b>A</b><i>⇄</i><b>C</b><i>⇄</i><b>B</b><i>⇄</i><b>TAIL</b></div>
+            <small>Touch: detach node and move after HEAD · Evict: remove before TAIL</small>
+          </div>
+        </figure>
+        <ol class="lru-operations">
+          <li><span>get(key)</span><p>Map miss → −1. Map hit → move node to front and return its value.</p></li>
+          <li><span>put(existing)</span><p>Update value, then move the existing node to the front.</p></li>
+          <li><span>put(new)</span><p>Create node, add at front, and store its address in the map.</p></li>
+          <li><span>over capacity</span><p>Remove the node before the tail and erase the same key from the map.</p></li>
+        </ol>
+      </article>
+    </section>
+
+    <section class="section source-section" id="sources">
+      <div class="section-heading">
+        <p class="eyebrow">06 · Research basis</p>
+        <h2>References used to strengthen this playbook</h2>
+        <p>The flows synthesize established teaching material; wording and examples here are original and adapted for quick interview use.</p>
+      </div>
+      <div class="source-grid">
+        <a href="https://www.crackingthecodinginterview.com/?lang=en" target="_blank" rel="noreferrer"><strong>Cracking the Coding Interview</strong><span>Official overview: deriving solutions, hints, strategies, data structures, and core algorithms.</span></a>
+        <a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/resources/lecture-19-dynamic-programming-i-fibonacci-shortest-paths/" target="_blank" rel="noreferrer"><strong>MIT OpenCourseWare · Dynamic Programming</strong><span>Guessing, memoization, reusable subproblems, and dependency structure.</span></a>
+        <a href="https://algs4.cs.princeton.edu/41graph/" target="_blank" rel="noreferrer"><strong>Princeton Algorithms · Graphs</strong><span>DFS reachability and BFS shortest paths in unweighted graphs.</span></a>
+        <a href="https://algs4.cs.princeton.edu/10fundamentals/" target="_blank" rel="noreferrer"><strong>Princeton Algorithms · Fundamentals</strong><span>Stacks, queues, linked structures, and foundational ADTs.</span></a>
+        <a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noreferrer"><strong>LeetCode 146 · LRU Cache</strong><span>O(1) average get and put requirements; hash table and doubly linked list topic signals.</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><span class="brand-mark" aria-hidden="true">&lt;/&gt;</span><b>DSA Atlas</b></div>
+    <p>Model states and operations first. Algorithms are consequences of the model.</p>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+</body>
+</html>

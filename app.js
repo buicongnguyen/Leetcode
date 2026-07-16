@@ -141,6 +141,85 @@ for right, x in enumerate(a):
     return prev`
   },
   {
+    title: "LRU cache: hash map + doubly linked list", category: "Composite Structures", complexity: "O(1) average get / put",
+    when: "Fast key lookup must be combined with recency updates and eviction.",
+    invariant: "The map points to every live list node; the list runs from most to least recently used.",
+    cpp: `class LRUCache {
+    int capacity;
+    list<pair<int,int>> order; // front = most recent
+    unordered_map<int, list<pair<int,int>>::iterator> where;
+
+    void touch(list<pair<int,int>>::iterator node) {
+        order.splice(order.begin(), order, node);
+    }
+public:
+    LRUCache(int capacity): capacity(capacity) {}
+
+    int get(int key) {
+        if (!where.count(key)) return -1;
+        touch(where[key]);
+        return where[key]->second;
+    }
+
+    void put(int key, int value) {
+        if (where.count(key)) {
+            where[key]->second = value;
+            touch(where[key]);
+            return;
+        }
+        order.push_front({key, value});
+        where[key] = order.begin();
+        if ((int)order.size() > capacity) {
+            int oldKey = order.back().first;
+            where.erase(oldKey);
+            order.pop_back();
+        }
+    }
+};`,
+    python: `class Node:
+    def __init__(self, key=0, value=0):
+        self.key, self.value = key, value
+        self.prev = self.next = None
+
+class LRUCache:
+    def __init__(self, capacity):
+        self.capacity = capacity
+        self.where = {}
+        self.head, self.tail = Node(), Node()
+        self.head.next, self.tail.prev = self.tail, self.head
+
+    def _remove(self, node):
+        node.prev.next, node.next.prev = node.next, node.prev
+
+    def _add_front(self, node):
+        node.next, node.prev = self.head.next, self.head
+        self.head.next.prev = node
+        self.head.next = node
+
+    def _touch(self, node):
+        self._remove(node)
+        self._add_front(node)
+
+    def get(self, key):
+        if key not in self.where:
+            return -1
+        self._touch(self.where[key])
+        return self.where[key].value
+
+    def put(self, key, value):
+        if key in self.where:
+            self.where[key].value = value
+            self._touch(self.where[key])
+            return
+        node = Node(key, value)
+        self.where[key] = node
+        self._add_front(node)
+        if len(self.where) > self.capacity:
+            lru = self.tail.prev
+            self._remove(lru)
+            del self.where[lru.key]`
+  },
+  {
     title: "Heap / top-k", category: "Linear", complexity: "O(n log k) time · O(k) space",
     when: "Repeated minimum/maximum, k best items, or streaming selection.",
     invariant: "The min-heap contains the k largest items seen so far.",
@@ -982,6 +1061,11 @@ const codeMaps = {
     "Save the next node before changing the current link.",
     "Reverse one edge, advance both pointers, and return the new head."
   ],
+  "LRU cache: hash map + doubly linked list": [
+    "The hash map turns a key into its exact linked-list node in average O(1) time.",
+    "Moving a touched node to the front records it as most recently used without scanning.",
+    "When capacity is exceeded, remove the tail node and its matching map entry together."
+  ],
   "Heap / top-k": [
     "Push each candidate into a min-heap.",
     "Remove the smallest item whenever more than k candidates are stored.",
@@ -1114,6 +1198,8 @@ const filters = document.querySelector("#filters");
 const resultCount = document.querySelector("#result-count");
 const emptyState = document.querySelector("#empty-state");
 let activeCategory = "All";
+const initialQuery = new URLSearchParams(window.location.search).get("q");
+if (initialQuery) search.value = initialQuery;
 
 const decisionPaths = {
   sequence: {

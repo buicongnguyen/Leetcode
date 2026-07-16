@@ -1,10 +1,12 @@
 import { readFile, access } from "node:fs/promises";
 
-const required = ["index.html", "advanced.html", "styles.css", "app.js", "DSA_Problem_Solving_Handbook_CPP_Python.docx"];
+const required = ["index.html", "advanced.html", "thinking.html", "thinking.js", "styles.css", "app.js", "DSA_Problem_Solving_Handbook_CPP_Python.docx"];
 await Promise.all(required.map(file => access(file)));
 
 const html = await readFile("index.html", "utf8");
 const advancedHtml = await readFile("advanced.html", "utf8");
+const thinkingHtml = await readFile("thinking.html", "utf8");
+const thinkingJs = await readFile("thinking.js", "utf8");
 const js = await readFile("app.js", "utf8");
 const workflow = await readFile(".github/workflows/pages.yml", "utf8");
 
@@ -25,6 +27,18 @@ for (const id of ["choose", "deep-flows", "path-flow", "structure-flow", "flow-l
 for (const target of ["styles.css", "app.js", "index.html"]) {
   if (!advancedHtml.includes(target)) throw new Error(`Advanced page is missing reference to ${target}`);
 }
+for (const id of ["master-loop", "linear-flow", "traversal-flow", "dp-flow", "combinations", "lru", "sources"]) {
+  if (!thinkingHtml.includes(`id="${id}"`)) throw new Error(`Missing thinking-guide landmark: ${id}`);
+}
+for (const target of ["styles.css", "thinking.js", "index.html", "advanced.html"]) {
+  if (!thinkingHtml.includes(target)) throw new Error(`Thinking guide is missing reference to ${target}`);
+}
+for (const source of ["crackingthecodinginterview.com", "ocw.mit.edu", "algs4.cs.princeton.edu", "leetcode.com/problems/lru-cache"]) {
+  if (!thinkingHtml.includes(source)) throw new Error(`Thinking guide is missing research source: ${source}`);
+}
+if (!thinkingJs.includes("theme-toggle") || !thinkingJs.includes("dsa-theme")) {
+  throw new Error("Thinking guide theme control did not initialize correctly");
+}
 if (!js.includes("const templates = [") || !js.includes("render();")) {
   throw new Error("Template application did not initialize correctly");
 }
@@ -32,13 +46,16 @@ if (!js.includes("const codeMaps = {") || !js.includes('class="code-map"')) {
   throw new Error("Every template must render a concise code explanation map");
 }
 const templateCount = (js.match(/title: "/g) || []).length;
-if (templateCount < 30) throw new Error(`Expected at least 30 templates, found ${templateCount}`);
+if (templateCount < 31) throw new Error(`Expected at least 31 templates, found ${templateCount}`);
 const codeMapCount = (js.match(/^  "[^"]+": \[$/gm) || []).length;
 if (codeMapCount !== templateCount) {
   throw new Error(`Expected one code map per template: ${codeMapCount} maps for ${templateCount} templates`);
 }
 for (const advanced of ["Dinic maximum flow", "Red-black tree insertion", "KD-tree nearest neighbor", "Kruskal minimum spanning tree"]) {
   if (!js.includes(advanced)) throw new Error(`Missing advanced template: ${advanced}`);
+}
+if (!js.includes("LRU cache: hash map + doubly linked list")) {
+  throw new Error("Missing composite LRU cache template");
 }
 if (!html.includes('for="search"') || !html.includes('id="search"')) {
   throw new Error("Search control must have an explicit label association");

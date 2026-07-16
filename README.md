@@ -7,9 +7,11 @@ A searchable data structures and algorithms reference for LeetCode practice, wit
 - Repeatable problem-solving flow
 - Interactive algorithm-selection decision graph
 - Constraint-based complexity guide
-- A focused basic page with 20 core C++/Python templates
+- A focused basic page with 21 core C++/Python templates
 - A separate advanced page with 10 graph, balanced-tree, and spatial templates
 - Four detailed selection and execution flowcharts for advanced algorithms
+- A research-backed thinking playbook for stacks, queues, BFS, DFS, graph modeling, and nine DP families
+- Composite data-structure guidance with an O(1) LRU cache template using a hash map and doubly linked list
 - Advanced topics: MST, Dinic flow, SCC, bridges, Bellman–Ford, Floyd–Warshall, A*, LCA, KD-tree, and red-black tree insertion
 - C++/Python tabs and copy buttons
 - A three-step code map before every template explaining the purpose of each implementation block
