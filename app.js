@@ -439,6 +439,29 @@ for start, end in intervals:
         out[-1][1] = max(out[-1][1], end)`
   },
   {
+    title: "Binary search: exact match", category: "Search & Sort", complexity: "O(log n) time",
+    when: "A sorted sequence and a target value require its exact index or a not-found result.",
+    invariant: "If the target exists, it remains inside the inclusive range [lo, hi].",
+    cpp: `int lo = 0, hi = (int)a.size() - 1;
+while (lo <= hi) {
+    int mid = lo + (hi - lo) / 2;
+    if (a[mid] == target) return mid;
+    if (a[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+}
+return -1;`,
+    python: `lo, hi = 0, len(a) - 1
+while lo <= hi:
+    mid = lo + (hi - lo) // 2
+    if a[mid] == target:
+        return mid
+    if a[mid] < target:
+        lo = mid + 1
+    else:
+        hi = mid - 1
+return -1`
+  },
+  {
     title: "Binary search: first true", category: "Search & Sort", complexity: "O(log n) time",
     when: "A sorted domain or a false…false, true…true predicate.",
     invariant: "The first true answer always remains inside [lo, hi).",
@@ -454,6 +477,28 @@ while lo < hi:
     mid = lo + (hi - lo) // 2
     if ok(mid): hi = mid
     else: lo = mid + 1
+return lo`
+  },
+  {
+    title: "Binary search on answer: minimum feasible", category: "Search & Sort", complexity: "O(log answer range × check)",
+    when: "The answer is numeric and feasibility changes monotonically from impossible to possible.",
+    invariant: "Every value below lo is proven impossible; at least one feasible answer remains in [lo, hi].",
+    cpp: `long long lo = minimumCandidate;
+long long hi = knownFeasibleCandidate;
+while (lo < hi) {
+    long long mid = lo + (hi - lo) / 2;
+    if (feasible(mid)) hi = mid;
+    else lo = mid + 1;
+}
+return lo;`,
+    python: `lo = minimum_candidate
+hi = known_feasible_candidate
+while lo < hi:
+    mid = lo + (hi - lo) // 2
+    if feasible(mid):
+        hi = mid
+    else:
+        lo = mid + 1
 return lo`
   },
   {
@@ -1279,10 +1324,20 @@ const codeMaps = {
     "Start a new output interval when there is a gap.",
     "Otherwise extend the last output interval to cover the overlap."
   ],
+  "Binary search: exact match": [
+    "Keep an inclusive range containing every position where the target could still exist.",
+    "Return immediately when the midpoint equals the target.",
+    "Discard the midpoint and the impossible half by moving lo to mid + 1 or hi to mid − 1."
+  ],
   "Binary search: first true": [
     "Maintain a half-open range that still contains the first valid answer.",
     "Test the midpoint without discarding a possible first true position.",
     "Stop when both bounds meet at the first true index."
+  ],
+  "Binary search on answer: minimum feasible": [
+    "Choose a numeric lower bound and a proven feasible upper bound.",
+    "Use a monotonic feasible(mid) check to decide which half contains the minimum answer.",
+    "Keep a feasible midpoint by assigning hi = mid; discard an impossible midpoint with lo = mid + 1."
   ],
   "Backtracking": [
     "Record the solution represented by the current choice path.",
@@ -1407,7 +1462,7 @@ if (initialQuery) search.value = initialQuery;
 const decisionPaths = {
   sequence: {
     question: "Is the answer contiguous, sorted, or a repeated range aggregate?",
-    algorithms: ["Sliding window", "Two pointers", "Prefix sum", "Binary search: first true", "Monotonic stack"]
+    algorithms: ["Sliding window", "Two pointers", "Prefix sum", "Binary search: exact match", "Binary search: first true", "Binary search on answer: minimum feasible"]
   },
   graph: {
     question: "Is the goal traversal, minimum steps, a nonnegative shortest path, dependency order, or connectivity?",

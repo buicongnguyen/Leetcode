@@ -197,6 +197,33 @@ h3 { font-size: 1.05rem; }
 .signal-grid p, .traversal-answers p, .dp-family-grid p { margin: 0; color: var(--muted); font-size: .84rem; }
 .signal-grid small { display: block; margin-top: 1rem; padding-top: .75rem; border-top: 1px solid var(--line); color: var(--green); }
 
+.binary-choice-flow { position: relative; padding-top: 5.5rem; }
+.binary-choice-root { position: absolute; top: 0; left: 50%; width: min(370px, 92%); padding: .9rem; display: grid; text-align: center; border: 1px solid color-mix(in srgb, var(--blue) 48%, var(--line)); border-radius: .75rem; background: var(--surface); transform: translateX(-50%); }
+.binary-choice-root::after { content: ""; position: absolute; left: 50%; bottom: -1.8rem; width: 1px; height: 1.8rem; background: var(--line); }
+.binary-choice-root span, .binary-family-grid article > span { color: var(--amber); font: 800 .68rem ui-monospace, monospace; letter-spacing: .09em; text-transform: uppercase; }
+.binary-family-grid { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .75rem; }
+.binary-family-grid::before { content: ""; position: absolute; top: -1rem; left: 16.66%; right: 16.66%; height: 1px; background: var(--line); }
+.binary-family-grid article { position: relative; min-width: 0; padding: 1.15rem; display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: .85rem; background: var(--surface); }
+.binary-family-grid article::before { content: ""; position: absolute; top: -1rem; left: 50%; width: 1px; height: 1rem; background: var(--line); }
+.binary-family-grid h3 { margin: .45rem 0; font-size: 1.25rem; }
+.binary-family-grid p { margin: 0; color: var(--muted); font-size: .82rem; }
+.binary-example, .predicate-strip { margin: 1rem 0; display: grid; gap: .3rem; }
+.binary-example { grid-template-columns: repeat(5, 1fr); }
+.predicate-strip { grid-template-columns: repeat(6, 1fr); }
+.binary-example i, .predicate-strip i { padding: .5rem .25rem; border: 1px solid var(--line); border-radius: .35rem; background: var(--surface-2); color: var(--muted); text-align: center; font: 700 .72rem ui-monospace, monospace; font-style: normal; }
+.binary-example i.selected, .predicate-strip i.selected { border-color: var(--blue); background: color-mix(in srgb, var(--blue) 18%, var(--surface-2)); color: var(--text); }
+.binary-example i.boundary { border-left: 3px solid var(--amber); }
+.binary-family-grid dl { margin: 0 0 .8rem; display: grid; grid-template-columns: auto 1fr; gap: .25rem .65rem; font-size: .75rem; }
+.binary-family-grid dt { color: var(--violet); font-weight: 750; }
+.binary-family-grid dd { margin: 0; color: var(--muted); }
+.binary-family-grid article > small { min-height: 56px; color: var(--green); font-size: .72rem; }
+.binary-family-grid article > a { margin-top: auto; padding-top: .8rem; color: var(--blue-2); text-decoration: none; font-size: .76rem; font-weight: 750; }
+.binary-rules { margin-top: .75rem; display: grid; grid-template-columns: repeat(4, 1fr); gap: .65rem; }
+.binary-rules article { padding: .9rem; border-top: 2px solid var(--violet); background: var(--surface-2); }
+.binary-rules span { color: var(--amber); font: 750 .68rem ui-monospace, monospace; }
+.binary-rules strong { display: block; margin: .35rem 0; }
+.binary-rules p { margin: 0; color: var(--muted); font-size: .76rem; }
+
 .traversal-chart { display: grid; grid-template-columns: .55fr 36px .75fr 36px 2.4fr; align-items: center; gap: .65rem; }
 .traversal-start, .traversal-question { min-height: 130px; padding: 1rem; display: grid; align-content: center; text-align: center; border: 1px solid color-mix(in srgb, var(--blue) 45%, var(--line)); border-radius: .75rem; background: var(--surface); }
 .traversal-arrow { color: var(--blue); text-align: center; font-size: 1.4rem; }
@@ -422,6 +449,9 @@ footer a { justify-self: end; color: var(--blue-2); text-decoration: none; }
   .interview-loop li:not(:last-child)::after { display: none; }
   .signal-grid { grid-template-columns: repeat(2, 1fr); }
   .signal-flow::before, .signal-grid article::before { display: none; }
+  .binary-family-grid { grid-template-columns: 1fr; }
+  .binary-family-grid::before, .binary-family-grid article::before { display: none; }
+  .binary-rules { grid-template-columns: repeat(2, 1fr); }
   .traversal-chart { grid-template-columns: 1fr; }
   .traversal-arrow { transform: rotate(90deg); }
   .dp-family-grid { grid-template-columns: repeat(2, 1fr); }
@@ -450,6 +480,7 @@ footer a { justify-self: end; color: var(--blue-2); text-decoration: none; }
   .choice-flow, .flow-branches { grid-template-columns: 1fr; }
   .detail-flow header { display: grid; gap: .35rem; }
   .interview-loop, .signal-grid, .traversal-answers, .dp-family-grid, .topdown-bottomup, .lru-operations, .source-grid { grid-template-columns: 1fr; }
+  .binary-rules { grid-template-columns: 1fr; }
   .state-definition ol, .method-options, .backtrack-rules, .backtrack-vs-dp { grid-template-columns: 1fr; }
   .composition-recipe, .composite-catalog { grid-template-columns: 1fr; }
   .signal-flow { padding-top: 7rem; }

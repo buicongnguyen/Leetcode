@@ -6,7 +6,7 @@
   <meta name="description" content="A practical DSA thinking playbook for choosing stacks, queues, BFS, DFS, dynamic programming, and composite data structures.">
   <meta name="theme-color" content="#07111f">
   <title>Problem-Solving Playbook — DSA Atlas</title>
-  <link rel="stylesheet" href="styles.css?v=20260716d">
+  <link rel="stylesheet" href="styles.css?v=20260716e">
   <script src="thinking.js?v=20260716" defer></script>
 </head>
 <body>
@@ -19,6 +19,7 @@
     <nav aria-label="Primary navigation">
       <a href="index.html">Basic atlas</a>
       <a href="#linear-flow">Stack or queue</a>
+      <a href="#binary-search-flow">Binary search</a>
       <a href="#traversal-flow">BFS or DFS</a>
       <a href="#dp-flow">DP chooser</a>
       <a href="#backtracking-tree">State trees</a>
@@ -41,7 +42,7 @@
           <a class="button secondary" href="advanced.html">Open advanced atlas</a>
         </div>
         <ul class="hero-stats" aria-label="Playbook summary">
-          <li><strong>7</strong><span>decision flows</span></li>
+          <li><strong>8</strong><span>decision flows</span></li>
           <li><strong>9</strong><span>DP families</span></li>
           <li><strong>14</strong><span>structure combinations</span></li>
         </ul>
@@ -95,9 +96,55 @@ test_small_and_hostile_cases()</code></pre>
       </div>
     </section>
 
+    <section class="section decision-guide" id="binary-search-flow">
+      <div class="section-heading centered-heading">
+        <p class="eyebrow">03 · Three binary-search families</p>
+        <h2>First decide what the final position means</h2>
+        <p>All three repeatedly discard half of a monotonic search space, but their return value and boundary invariant are different.</p>
+      </div>
+      <div class="binary-choice-flow">
+        <div class="binary-choice-root"><span>Question</span><strong>What should the search return?</strong></div>
+        <div class="binary-family-grid">
+          <article>
+            <span>Type 1 · Exact lookup</span>
+            <h3>Find this target</h3>
+            <p>Use when values are sorted and any exact matching index is acceptable.</p>
+            <div class="binary-example" role="img" aria-label="Exact binary search example"><i>1</i><i>3</i><i>5</i><i class="selected">7</i><i>9</i></div>
+            <dl><dt>Return</dt><dd>Index or −1</dd><dt>Range</dt><dd>Inclusive <code>[lo, hi]</code></dd><dt>Loop</dt><dd><code>while lo &lt;= hi</code></dd></dl>
+            <small>Move past mid after a mismatch: <code>lo = mid + 1</code> or <code>hi = mid − 1</code>.</small>
+            <a href="index.html?q=Binary%20search%3A%20exact%20match#templates">Open template →</a>
+          </article>
+          <article>
+            <span>Type 2 · Boundary search</span>
+            <h3>Find the first valid position</h3>
+            <p>Use for insertion points, duplicates, first/last occurrence, lower bound, or upper bound.</p>
+            <div class="binary-example boundary-example" role="img" aria-label="Boundary binary search example"><i>1</i><i class="selected">2</i><i>2</i><i>2</i><i class="boundary">5</i></div>
+            <dl><dt>Return</dt><dd>First true index</dd><dt>Range</dt><dd>Half-open <code>[lo, hi)</code></dd><dt>Loop</dt><dd><code>while lo &lt; hi</code></dd></dl>
+            <small><code>a[i] &gt;= target</code> gives lower bound; <code>a[i] &gt; target</code> gives upper bound. Last occurrence is upper bound − 1.</small>
+            <a href="index.html?q=Binary%20search%3A%20first%20true#templates">Open template →</a>
+          </article>
+          <article>
+            <span>Type 3 · Search on answer</span>
+            <h3>Find the minimum feasible value</h3>
+            <p>Use when answers are numeric and a check changes monotonically from impossible to possible.</p>
+            <div class="predicate-strip" role="img" aria-label="Binary search on answer false false false then true true"><i>F</i><i>F</i><i>F</i><i class="selected">T</i><i>T</i><i>T</i></div>
+            <dl><dt>Return</dt><dd>Smallest feasible value</dd><dt>Range</dt><dd>Candidate answer values</dd><dt>Check</dt><dd><code>feasible(mid)</code></dd></dl>
+            <small>Examples: minimum capacity, maximum minimum distance, earliest completion time, or smallest speed. For a maximum feasible answer, search the last true position.</small>
+            <a href="index.html?q=Binary%20search%20on%20answer#templates">Open template →</a>
+          </article>
+        </div>
+      </div>
+      <div class="binary-rules">
+        <article><span>01</span><strong>Prove monotonicity</strong><p>After some boundary, every later candidate must stay true—or every later candidate must stay false.</p></article>
+        <article><span>02</span><strong>Name the invariant</strong><p>State exactly which part of the range may still contain the answer.</p></article>
+        <article><span>03</span><strong>Match updates to the range</strong><p>Inclusive ranges discard mid; first-true ranges keep a valid mid with <code>hi = mid</code>.</p></article>
+        <article><span>04</span><strong>Test two elements</strong><p>Dry-run empty, one-element, two-element, all-equal, absent, and boundary answers.</p></article>
+      </div>
+    </section>
+
     <section class="section decision-guide" id="traversal-flow">
       <div class="section-heading">
-        <p class="eyebrow">03 · BFS, DFS, or graph?</p>
+        <p class="eyebrow">04 · BFS, DFS, or graph?</p>
         <h2>A graph is any collection of states connected by moves</h2>
         <p>Grids, word transformations, puzzle configurations, dependency systems, and trees can all be modeled as graphs.</p>
       </div>
@@ -119,7 +166,7 @@ test_small_and_hostile_cases()</code></pre>
 
     <section class="section decision-guide" id="dp-flow">
       <div class="section-heading centered-heading">
-        <p class="eyebrow">04 · Dynamic programming chooser</p>
+        <p class="eyebrow">05 · Dynamic programming chooser</p>
         <h2>Choose DP by the coordinates of the state</h2>
         <p>DP is organized exhaustive search: define a state, guess a transition, reuse repeated subproblems, and evaluate dependencies safely.</p>
       </div>
@@ -199,7 +246,7 @@ test_small_and_hostile_cases()</code></pre>
 
     <section class="section decision-guide" id="backtracking-tree">
       <div class="section-heading centered-heading">
-        <p class="eyebrow">05 · Backtracking decision tree</p>
+        <p class="eyebrow">06 · Backtracking decision tree</p>
         <h2>Every level answers one decision</h2>
         <p>A backtracking state contains the current decision index and the partial solution. Each edge makes one choice; returning across the edge undoes it.</p>
       </div>
@@ -226,7 +273,7 @@ test_small_and_hostile_cases()</code></pre>
 
     <section class="section decision-guide" id="combinations">
       <div class="section-heading">
-        <p class="eyebrow">06 · Combine data structures</p>
+        <p class="eyebrow">07 · Combine data structures</p>
         <h2>One structure rarely optimizes every required operation</h2>
         <p>Write the required operations and target complexity first. Combine structures when each contributes a different fast operation.</p>
         <div class="note"><b>Data structure or database?</b> Problems such as LRU cache combine in-memory data structures. Use a database only when the prompt requires persistence, SQL queries, transactions, or data larger than memory.</div>
@@ -337,7 +384,7 @@ test_small_and_hostile_cases()</code></pre>
 
     <section class="section source-section" id="sources">
       <div class="section-heading">
-        <p class="eyebrow">07 · Research basis</p>
+        <p class="eyebrow">08 · Research basis</p>
         <h2>References used to strengthen this playbook</h2>
         <p>The flows synthesize established teaching material; wording and examples here are original and adapted for quick interview use.</p>
       </div>

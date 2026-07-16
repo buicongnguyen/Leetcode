@@ -27,12 +27,16 @@ for (const id of ["choose", "deep-flows", "path-flow", "structure-flow", "flow-l
 for (const target of ["styles.css", "app.js", "index.html"]) {
   if (!advancedHtml.includes(target)) throw new Error(`Advanced page is missing reference to ${target}`);
 }
-for (const id of ["master-loop", "linear-flow", "traversal-flow", "dp-flow", "state-tree", "backtracking-tree", "combinations", "lru", "sources"]) {
+for (const id of ["master-loop", "linear-flow", "binary-search-flow", "traversal-flow", "dp-flow", "state-tree", "backtracking-tree", "combinations", "lru", "sources"]) {
   if (!thinkingHtml.includes(`id="${id}"`)) throw new Error(`Missing thinking-guide landmark: ${id}`);
 }
 const traversalArrowCount = (thinkingHtml.match(/class="traversal-arrow"/g) || []).length;
 if (traversalArrowCount !== 2) {
   throw new Error(`Traversal flow requires two connector arrows, found ${traversalArrowCount}`);
+}
+const binaryFamilyCount = (thinkingHtml.match(/Type [123] ·/g) || []).length;
+if (binaryFamilyCount !== 3) {
+  throw new Error(`Binary-search guide requires exactly three families, found ${binaryFamilyCount}`);
 }
 for (const target of ["styles.css", "thinking.js", "index.html", "advanced.html"]) {
   if (!thinkingHtml.includes(target)) throw new Error(`Thinking guide is missing reference to ${target}`);
@@ -53,7 +57,7 @@ if (!js.includes("const codeMaps = {") || !js.includes('class="code-map"')) {
   throw new Error("Every template must render a concise code explanation map");
 }
 const templateCount = (js.match(/title: "/g) || []).length;
-if (templateCount < 35) throw new Error(`Expected at least 35 templates, found ${templateCount}`);
+if (templateCount < 37) throw new Error(`Expected at least 37 templates, found ${templateCount}`);
 const codeMapCount = (js.match(/^  "[^"]+": \[$/gm) || []).length;
 if (codeMapCount !== templateCount) {
   throw new Error(`Expected one code map per template: ${codeMapCount} maps for ${templateCount} templates`);
@@ -66,6 +70,9 @@ if (!js.includes("LRU cache: hash map + doubly linked list")) {
 }
 for (const composite of ["Randomized set: array + hash map", "Streaming median: two heaps", "Time map: hash map + sorted history", "Min stack: value stack + minimum stack"]) {
   if (!js.includes(composite)) throw new Error(`Missing composite template: ${composite}`);
+}
+for (const binarySearch of ["Binary search: exact match", "Binary search: first true", "Binary search on answer: minimum feasible"]) {
+  if (!js.includes(binarySearch)) throw new Error(`Missing binary-search template: ${binarySearch}`);
 }
 if (!html.includes('for="search"') || !html.includes('id="search"')) {
   throw new Error("Search control must have an explicit label association");
