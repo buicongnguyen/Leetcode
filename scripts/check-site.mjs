@@ -30,6 +30,10 @@ for (const target of ["styles.css", "app.js", "index.html"]) {
 for (const id of ["master-loop", "linear-flow", "traversal-flow", "dp-flow", "state-tree", "backtracking-tree", "combinations", "lru", "sources"]) {
   if (!thinkingHtml.includes(`id="${id}"`)) throw new Error(`Missing thinking-guide landmark: ${id}`);
 }
+const traversalArrowCount = (thinkingHtml.match(/class="traversal-arrow"/g) || []).length;
+if (traversalArrowCount !== 2) {
+  throw new Error(`Traversal flow requires two connector arrows, found ${traversalArrowCount}`);
+}
 for (const target of ["styles.css", "thinking.js", "index.html", "advanced.html"]) {
   if (!thinkingHtml.includes(target)) throw new Error(`Thinking guide is missing reference to ${target}`);
 }

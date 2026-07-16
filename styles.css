@@ -199,7 +199,7 @@ h3 { font-size: 1.05rem; }
 
 .traversal-chart { display: grid; grid-template-columns: .55fr 36px .75fr 36px 2.4fr; align-items: center; gap: .65rem; }
 .traversal-start, .traversal-question { min-height: 130px; padding: 1rem; display: grid; align-content: center; text-align: center; border: 1px solid color-mix(in srgb, var(--blue) 45%, var(--line)); border-radius: .75rem; background: var(--surface); }
-.traversal-chart > div:nth-child(2), .traversal-chart > div:nth-child(4) { color: var(--blue); text-align: center; font-size: 1.4rem; }
+.traversal-arrow { color: var(--blue); text-align: center; font-size: 1.4rem; }
 .traversal-answers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; }
 .traversal-answers article { min-height: 190px; padding: 1rem; display: flex; flex-direction: column; border-left: 2px solid var(--blue); background: var(--surface); }
 .traversal-answers article a { margin-top: auto; padding-top: .75rem; color: var(--blue-2); text-decoration: none; font-size: .75rem; font-weight: 750; }
@@ -406,7 +406,7 @@ footer a { justify-self: end; color: var(--blue-2); text-decoration: none; }
   .signal-grid { grid-template-columns: repeat(2, 1fr); }
   .signal-flow::before, .signal-grid article::before { display: none; }
   .traversal-chart { grid-template-columns: 1fr; }
-  .traversal-chart > div:nth-child(2), .traversal-chart > div:nth-child(4) { transform: rotate(90deg); }
+  .traversal-arrow { transform: rotate(90deg); }
   .dp-family-grid { grid-template-columns: repeat(2, 1fr); }
   .state-definition { grid-template-columns: 1fr; }
   .state-tree-comparison { grid-template-columns: 1fr; }

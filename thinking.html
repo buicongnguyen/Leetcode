@@ -6,7 +6,7 @@
   <meta name="description" content="A practical DSA thinking playbook for choosing stacks, queues, BFS, DFS, dynamic programming, and composite data structures.">
   <meta name="theme-color" content="#07111f">
   <title>Problem-Solving Playbook — DSA Atlas</title>
-  <link rel="stylesheet" href="styles.css?v=20260716b">
+  <link rel="stylesheet" href="styles.css?v=20260716c">
   <script src="thinking.js?v=20260716" defer></script>
 </head>
 <body>
@@ -103,7 +103,9 @@ test_small_and_hostile_cases()</code></pre>
       </div>
       <div class="traversal-chart">
         <div class="traversal-start"><span>Model</span><strong>State = node<br>legal move = edge</strong></div>
+        <div class="traversal-arrow" aria-hidden="true">→</div>
         <div class="traversal-question"><span>Goal</span><strong>What must traversal prove?</strong></div>
+        <div class="traversal-arrow" aria-hidden="true">→</div>
         <div class="traversal-answers">
           <article><span>Fewest unweighted moves</span><h3>BFS</h3><p>Explore by distance layers. Mark when enqueued to prevent duplicate work.</p><a href="index.html#templates">BFS template →</a></article>
           <article><span>Reachability / components</span><h3>DFS or BFS</h3><p>Either works. Prefer DFS for recursive structure; BFS when layers are useful.</p><a href="index.html#templates">Graph DFS template →</a></article>
