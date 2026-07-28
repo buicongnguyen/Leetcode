@@ -7,8 +7,8 @@ __pycache__/
 /site/
 /public/book/
 
-# C++ and general build output
-/build/
+# C++ build output (the source-level build/ directory contains a Sites plugin)
+/build/cpp/
 /cmake-build-*/
 
 # Node / vinext
