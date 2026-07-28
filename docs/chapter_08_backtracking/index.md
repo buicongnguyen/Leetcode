@@ -19,6 +19,25 @@ flowchart TD
   E -->|no| F["Return"]
 ```
 
+The call cycle above is the mechanism. The explored search space is a tree. For
+the choices `[1, 2]`, every level decides whether to take the next value:
+
+```mermaid
+flowchart TD
+  accTitle: Backtracking decision tree for the subsets of one and two
+  accDescr: Starting with an empty path, the first level takes or skips one and the second level takes or skips two, producing the four leaves one-two, one, two, and empty. Returning from a child undoes that branch's last choice before exploring its sibling.
+  A["start: path = []"]
+  A -->|"take 1"| B["path = [1]"]
+  A -->|"skip 1"| C["path = []"]
+  B -->|"take 2"| D["emit [1, 2]"]
+  B -->|"skip 2"| E["emit [1]"]
+  C -->|"take 2"| F["emit [2]"]
+  C -->|"skip 2"| G["emit []"]
+```
+
+Siblings must begin from the same parent state. That is why the return from a
+child and the undo operation belong together.
+
 ## Core invariant
 
 `path` contains exactly the choices made on the current root-to-node branch.

@@ -16,6 +16,25 @@ Advanced graph selection starts with the result that must be proved.
 | critical undirected links | connectivity after removal | bridge DFS |
 | repeated ancestor queries | static rooted tree | binary lifting |
 
+```mermaid
+flowchart TD
+  accTitle: Choosing an advanced graph algorithm by the result to prove
+  accDescr: Choose minimum spanning tree algorithms to connect all vertices cheaply, max flow to maximize movement through capacities, Bellman-Ford or Floyd-Warshall for specialized shortest paths, strongly connected components for mutual reachability, bridge search for critical links, and binary lifting for repeated ancestor queries.
+  A{"What must the answer prove?"}
+  A -->|"cheapest connection<br/>of all vertices"| B{"How are edges consumed?"}
+  B -->|"sorted edge list"| C["Kruskal + DSU"]
+  B -->|"grow from a frontier"| D["Prim + heap"]
+  A -->|"maximum amount through<br/>capacity-limited edges"| E["Max flow<br/>Dinic / Edmonds–Karp"]
+  A -->|"shortest paths with<br/>negative edges"| F["Bellman–Ford"]
+  A -->|"all-pairs paths<br/>with small V"| G["Floyd–Warshall"]
+  A -->|"mutual reachability<br/>groups"| H["Strongly connected<br/>components"]
+  A -->|"links whose removal<br/>disconnects the graph"| I["Bridges / articulation points"]
+  A -->|"many ancestor or<br/>path queries on a tree"| J["LCA / binary lifting"]
+```
+
+This selection begins with the output contract. Edge direction, weights,
+capacities, graph size, and number of queries then remove invalid candidates.
+
 ## Minimum spanning tree
 
 Kruskal sorts edges by weight and accepts an edge only when it joins different

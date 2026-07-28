@@ -69,6 +69,31 @@ data structure.
 | monotone decision | binary search |
 | overlapping subproblems | dynamic programming |
 
+The first candidate should come from the expensive operation, not from a
+memorized problem title:
+
+```mermaid
+flowchart TD
+  accTitle: From repeated work to a first algorithm candidate
+  accDescr: Identify the repeated expensive operation. Use hashing for repeated lookup, a heap for repeated best-candidate removal, a stack or queue when pending order matters, a window or prefix sum for contiguous ranges, binary search for a monotone boundary, dynamic programming for repeated states, and graph algorithms for transitions between states.
+  A{"What work repeats?"}
+  A -->|"membership, count,<br/>or complement lookup"| B["Hash map / set"]
+  A -->|"remove the next<br/>best candidate"| C["Heap"]
+  A -->|"process pending<br/>items by order"| D{"Which item leaves next?"}
+  D -->|"newest"| E["Stack"]
+  D -->|"oldest"| F["Queue"]
+  D -->|"either end"| G["Deque"]
+  A -->|"scan a contiguous<br/>range again"| H{"Can a boundary move<br/>without moving back?"}
+  H -->|yes| I["Sliding window"]
+  H -->|no| J["Prefix sum / offline query"]
+  A -->|"test an ordered,<br/>monotone decision"| K["Binary search"]
+  A -->|"solve the same state<br/>from many histories"| L["Dynamic programming"]
+  A -->|"follow legal transitions<br/>between states"| M["Graph traversal / path algorithm"]
+```
+
+This map chooses a starting family. Constraints and a written invariant still
+decide whether that candidate is valid.
+
 ### 6. Write the invariant
 
 An invariant is a testable statement, not a slogan. Prefer “every index before

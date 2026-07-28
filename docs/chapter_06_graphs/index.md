@@ -13,14 +13,22 @@ game positions all qualify.
 ```mermaid
 flowchart TD
   accTitle: Choosing a graph traversal or shortest-path algorithm
-  accDescr: Use DFS or BFS for reachability, BFS for equal edge costs, zero-one BFS for costs zero and one, Dijkstra for nonnegative costs, and Bellman-Ford when negative costs are allowed.
-  A["Need reachability or traversal?"] -->|yes| B["DFS or BFS"]
-  A -->|shortest path| C{"Edge costs"}
+  accDescr: First choose the required result. For traversal, use BFS when levels or minimum edge count matter and DFS when any complete reachability exploration is enough. For shortest paths, choose BFS, zero-one BFS, Dijkstra, or Bellman-Ford from the edge costs. Use topological sort for dependency order.
+  A{"What result is required?"}
+  A -->|"reachability / traversal"| B{"Do levels or minimum<br/>edge count matter?"}
+  B -->|yes| H["BFS<br/>queue: oldest first"]
+  B -->|no| I["DFS or BFS<br/>stack vs queue order"]
+  A -->|"shortest path"| C{"Edge costs"}
   C -->|"all equal"| D["BFS"]
   C -->|"0 or 1"| E["0–1 BFS"]
   C -->|"nonnegative"| F["Dijkstra"]
   C -->|"negative allowed"| G["Bellman–Ford"]
+  A -->|"dependency order"| J["Topological sort"]
 ```
+
+DFS and BFS visit the same reachable vertices. Their order is the distinction:
+DFS commits down one branch using a call stack or explicit stack; BFS expands
+one distance layer at a time using a queue.
 
 ## BFS distances
 

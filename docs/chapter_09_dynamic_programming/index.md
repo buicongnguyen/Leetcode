@@ -7,6 +7,24 @@ description: Define states, transitions, base cases, and evaluation order for dy
 Dynamic programming is exhaustive search over a state graph with repeated
 states evaluated once.
 
+Two different histories may reach the same future. If the state description
+contains everything that future decisions need, those histories can merge:
+
+```mermaid
+flowchart TD
+  accTitle: Two histories merge into one dynamic-programming state
+  accDescr: From grid position zero-zero, moving right then down and moving down then right both reach position one-one. Because the remaining problem is identical at one-one, dynamic programming evaluates that state once and reuses its answer.
+  A["state (0, 0)"]
+  A -->|"right"| B["state (0, 1)"]
+  A -->|"down"| C["state (1, 0)"]
+  B -->|"down"| D["state (1, 1)"]
+  C -->|"right"| D
+  D --> E["solve remaining suffix once"]
+```
+
+If two merged histories would have different legal moves or future value, the
+state is missing a variable and must be refined.
+
 ## The five-part definition
 
 Before code, write:
@@ -25,6 +43,29 @@ Before code, write:
 | visits reachable states | usually fills full state space |
 | recursion overhead | easy space compression |
 | good for sparse states | predictable memory access |
+
+```mermaid
+flowchart TD
+  accTitle: Choosing memoization, tabulation, and safe space compression
+  accDescr: Prefer memoization for a natural recurrence with sparse reachable states when recursion depth is safe. Prefer tabulation for dense states, deep dependency chains, or a clear evaluation order. Compress memory only after proving that each state reads a limited set of earlier layers and choosing the safe update direction.
+  A{"Are reachable states<br/>sparse or irregular?"}
+  A -->|yes| B{"Is recursion depth<br/>provably safe?"}
+  B -->|yes| C["Top-down memoization"]
+  B -->|no| D["Iterative evaluation<br/>with an explicit order"]
+  A -->|no| E{"Is dependency order<br/>easy to state?"}
+  E -->|yes| F["Bottom-up tabulation"]
+  E -->|no| G["Model dependencies as a DAG,<br/>then derive an order"]
+  C --> H{"Need less memory?"}
+  D --> H
+  F --> H
+  G --> H
+  H -->|"depends on limited<br/>earlier layers"| I["Compress only after<br/>proving update direction"]
+  H -->|"dependencies are broad"| J["Keep the full table"]
+```
+
+Memoization and tabulation evaluate the same recurrence. The choice changes
+which states are visited, how evaluation order is enforced, and whether call
+stack depth is part of the risk.
 
 ## 0/1 knapsack
 

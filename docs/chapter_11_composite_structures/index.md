@@ -27,6 +27,29 @@ the map.
 **Cross-structure invariant:** every live map entry points to exactly one live
 list node, and every real list node has exactly one map entry.
 
+```mermaid
+flowchart LR
+  accTitle: How the two structures inside an LRU cache stay synchronized
+  accDescr: A hash map points keys A, B, and C directly to their linked-list nodes. The doubly linked list orders those same nodes from most recently used to least recently used. A get moves its node to the front; eviction removes the tail node and its matching map entry.
+  subgraph M["Hash map: key → node"]
+    KA["key A"] -.-> NA
+    KB["key B"] -.-> NB
+    KC["key C"] -.-> NC
+  end
+  subgraph L["Doubly linked list: recency order"]
+    H["MRU"] <--> NA["node A"]
+    NA <--> NC["node C"]
+    NC <--> NB["node B"]
+    NB <--> T["LRU"]
+  end
+  GET["get(C)"] -->|"detach + move to front"| NC
+  EVICT["capacity exceeded"] -->|"remove tail + erase key B"| NB
+```
+
+The map answers “where is this key?” The list answers “which key is newest or
+oldest?” Every operation that inserts, moves, or removes a node must preserve
+both answers.
+
 ## Randomized set
 
 The array provides constant-time random indexing. The map stores each value's
