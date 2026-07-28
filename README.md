@@ -1,32 +1,61 @@
 # DSA Atlas
 
-A searchable data structures and algorithms reference for LeetCode practice, with paired C++17 and Python 3 templates.
+DSA Atlas is a chapter-based problem-solving handbook for LeetCode practice.
+It pairs concise explanations with tested C++17 and Python 3 implementations.
 
-## Features
+[Read the book](https://buicongnguyen.github.io/Leetcode/) ·
+[Browse the code](codes/) ·
+[See the reorganization plan](REORGANIZATION_PLAN.md) ·
+[Read the review](CODE_REVIEW.md)
 
-- Repeatable problem-solving flow
-- Interactive algorithm-selection decision graph
-- Constraint-based complexity guide
-- A focused basic page with 27 core C++/Python templates
-- A separate advanced page with 10 graph, balanced-tree, and spatial templates
-- Four detailed selection and execution flowcharts for advanced algorithms
-- A research-backed thinking playbook for stacks, queues, BFS, DFS, graph modeling, and nine DP families
-- DP state-definition guidance, repeated-state trees, and memoization-to-DAG diagrams
-- A backtracking include/skip decision tree with choose, recurse, undo, and prune rules
-- Recursion versus iteration guidance for top-down DP, bottom-up DP, backtracking, and explicit stacks
-- Three binary-search families: exact lookup, boundary search, and monotonic answer-space search
-- Composite data-structure guidance with an O(1) LRU cache template using a hash map and doubly linked list
-- Composite templates for randomized sets, streaming medians, time maps, and minimum stacks
-- Advanced topics: MST, Dinic flow, SCC, bridges, Bellman–Ford, Floyd–Warshall, A*, LCA, KD-tree, and red-black tree insertion
-- C++/Python tabs and copy buttons
-- A three-step code map before every template explaining the purpose of each implementation block
-- Responsive dark/light interface
-- Downloadable Word handbook
+## Repository map
 
-## Local preview
+```text
+.
+├── docs/                 # Book source, one directory per chapter
+├── codes/
+│   ├── cpp/              # Reusable C++17 headers and executable tests
+│   └── python/           # Importable Python package
+├── tests/                # Python behavior and regression tests
+├── scripts/              # Book and repository validation
+├── .github/workflows/    # CI and GitHub Pages
+├── app/                  # Sites landing page
+└── mkdocs.yml            # Book navigation and theme
+```
 
-Serve the repository root with any static HTTP server, then open `index.html` through that server.
+This follows the useful separation in
+[HelloAlgo](https://github.com/krahets/hello-algo): book chapters live apart
+from language implementations, navigation is declared centrally, and CI checks
+code instead of treating snippets as decoration. The writing and code here are
+original and focused on interview problem solving.
 
-## Deployment
+## Local development
 
-Pushes to `main` validate the static files and deploy the repository to GitHub Pages with the workflow in `.github/workflows/pages.yml`.
+Prerequisites: Python 3.11+, Node.js 22+, and a C++17 compiler.
+
+```bash
+python -m pip install -r requirements.txt
+python -m mkdocs serve
+```
+
+Open the local address printed by MkDocs. To run all checks:
+
+```bash
+python -m unittest discover -s tests/python -v
+python scripts/check_book.py
+cmake -S codes/cpp -B build/cpp
+cmake --build build/cpp
+ctest --test-dir build/cpp --output-on-failure
+python -m mkdocs build --strict
+```
+
+## Contributing
+
+Add explanations under the relevant `docs/chapter_*` directory and place
+executable implementations under `codes/`. Every algorithm change should add
+or update a behavior test. See
+[the contribution guide](docs/appendix/contributing.md).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

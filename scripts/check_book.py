@@ -1,0 +1,134 @@
+"""Validate book topology, local links, snippets, and deployment isolation."""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+from urllib.parse import unquote
+
+import yaml
+
+ROOT = Path(__file__).resolve().parents[1]
+DOCS = ROOT / "docs"
+
+
+class ConfigurationLoader(yaml.SafeLoader):
+    """Safe loader that preserves MkDocs' named Python extension hook as text."""
+
+
+ConfigurationLoader.add_multi_constructor(
+    "tag:yaml.org,2002:python/name:",
+    lambda _loader, suffix, _node: suffix,
+)
+
+
+def nav_pages(value: object) -> list[str]:
+    if isinstance(value, str):
+        return [value]
+    if isinstance(value, list):
+        pages: list[str] = []
+        for item in value:
+            pages.extend(nav_pages(item))
+        return pages
+    if isinstance(value, dict):
+        pages = []
+        for item in value.values():
+            pages.extend(nav_pages(item))
+        return pages
+    return []
+
+
+def markdown_target(source: Path, raw_target: str) -> Path | None:
+    target = unquote(raw_target.split("#", 1)[0])
+    if not target or target.startswith(("http://", "https://", "mailto:")):
+        return None
+    if target.startswith("/"):
+        return None
+    resolved = (source.parent / target).resolve()
+    if target.endswith("/"):
+        resolved /= "index.md"
+    if resolved.suffix == "":
+        markdown = resolved.with_suffix(".md")
+        if markdown.exists():
+            resolved = markdown
+    return resolved
+
+
+def main() -> None:
+    configuration = yaml.load(
+        (ROOT / "mkdocs.yml").read_text(encoding="utf-8"),
+        Loader=ConfigurationLoader,
+    )
+    declared = {DOCS / page for page in nav_pages(configuration["nav"])}
+    markdown_files = set(DOCS.rglob("*.md"))
+
+    missing = sorted(path for path in declared if not path.is_file())
+    if missing:
+        raise SystemExit(f"Navigation references missing pages: {missing}")
+
+    omitted = sorted(markdown_files - declared)
+    if omitted:
+        raise SystemExit(f"Markdown pages omitted from navigation: {omitted}")
+
+    link_pattern = re.compile(r"(?<!!)\[[^\]]+\]\(([^)\s]+)(?:\s+[^)]*)?\)")
+    snippet_pattern = re.compile(r'--8<-- "([^"]+?)(?::([^"]+))?"')
+
+    for page in sorted(markdown_files):
+        content = page.read_text(encoding="utf-8")
+        if not content.startswith("---\n") or "\ndescription:" not in content.split("---", 2)[1]:
+            raise SystemExit(f"{page.relative_to(ROOT)} needs description front matter")
+        headings = re.findall(r"^# (.+)$", content, flags=re.MULTILINE)
+        if len(headings) != 1:
+            raise SystemExit(f"{page.relative_to(ROOT)} must contain exactly one h1")
+
+        for raw_target in link_pattern.findall(content):
+            target = markdown_target(page, raw_target)
+            if target is not None and not target.exists():
+                raise SystemExit(
+                    f"Broken local link in {page.relative_to(ROOT)}: {raw_target}"
+                )
+
+        for snippet_path, marker in snippet_pattern.findall(content):
+            source = ROOT / snippet_path
+            if not source.is_file():
+                raise SystemExit(
+                    f"Missing snippet in {page.relative_to(ROOT)}: {snippet_path}"
+                )
+            if marker:
+                snippet_source = source.read_text(encoding="utf-8")
+                start = f"[start:{marker}]"
+                end = f"[end:{marker}]"
+                if start not in snippet_source or end not in snippet_source:
+                    raise SystemExit(
+                        f"Missing snippet marker {marker!r} in {snippet_path}"
+                    )
+
+    for required in (
+        ROOT / "codes/python/dsa_atlas",
+        ROOT / "codes/cpp/include/dsa_atlas",
+        ROOT / "tests/python",
+        ROOT / "codes/cpp/tests",
+        ROOT / "CODE_REVIEW.md",
+        ROOT / "REORGANIZATION_PLAN.md",
+    ):
+        if not required.exists():
+            raise SystemExit(f"Required project surface is missing: {required}")
+
+    pages_workflow = (ROOT / ".github/workflows/pages.yml").read_text(encoding="utf-8")
+    if re.search(r"path:\s*\.\s*$", pages_workflow, flags=re.MULTILINE):
+        raise SystemExit("Pages must upload generated output, not the repository root")
+    if "path: site" not in pages_workflow:
+        raise SystemExit("Pages workflow must upload the generated site directory")
+
+    legacy = [name for name in ("index.html", "app.js", "thinking.html") if (ROOT / name).exists()]
+    if legacy:
+        raise SystemExit(f"Legacy flat-site files remain after migration: {legacy}")
+
+    print(
+        f"Book validation passed: {len(markdown_files)} pages, "
+        f"{sum(1 for _ in (ROOT / 'codes').rglob('*') if _.is_file())} code files."
+    )
+
+
+if __name__ == "__main__":
+    main()
