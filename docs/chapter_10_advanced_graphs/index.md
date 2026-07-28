@@ -21,6 +21,20 @@ Advanced graph selection starts with the result that must be proved.
 Kruskal sorts edges by weight and accepts an edge only when it joins different
 components.
 
+```mermaid
+flowchart TD
+  accTitle: Kruskal minimum-spanning-tree decision loop
+  accDescr: Sort edges by increasing weight, inspect the next edge, skip it when both endpoints are already connected, otherwise unite the components and accept it, and stop after n minus one accepted edges.
+  A["Sort edges by increasing weight"] --> B["Take next edge (u, v, weight)"]
+  B --> C{"find(u) = find(v)?"}
+  C -->|yes| D["Skip: it would create a cycle"]
+  C -->|no| E["Union components<br/>and accept edge"]
+  D --> F{"Accepted n - 1 edges?"}
+  E --> F
+  F -->|no| B
+  F -->|yes| G["Minimum spanning tree complete"]
+```
+
 **Invariant:** accepted edges form a forest that can still be extended to a
 minimum spanning tree.
 

@@ -43,6 +43,16 @@ The order of these updates matters when the removed value is already last.
 
 Keep the lower half in a max-heap and the upper half in a min-heap.
 
+```mermaid
+flowchart LR
+  accTitle: Two-heap representation of a streaming median
+  accDescr: A max-heap owns the lower half and exposes its largest value, a min-heap owns the upper half and exposes its smallest value, and balancing keeps the lower heap the same size or one element larger.
+  A["Lower half<br/>max-heap"] -->|"largest lower value"| M{"Median"}
+  B["Upper half<br/>min-heap"] -->|"smallest upper value"| M
+  A <-->|"rebalance until sizes differ by at most one"| B
+  M --> C["odd count: lower top<br/>even count: average both tops"]
+```
+
 **Invariants:**
 
 - every lower value is at most every upper value;

@@ -95,6 +95,22 @@
   line-height: 1.65;
 }
 
+.md-typeset .mermaid {
+  margin: 1.5rem 0 2rem;
+  padding: 1.1rem;
+  overflow-x: auto;
+  border: 1px solid var(--dsa-line);
+  border-radius: .75rem;
+  background: color-mix(in srgb, var(--dsa-panel) 88%, transparent);
+  text-align: center;
+}
+
+.md-typeset .mermaid svg {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+}
+
 .md-sidebar--primary .md-sidebar__scrollwrap {
   scrollbar-color: color-mix(in srgb, var(--dsa-blue) 28%, transparent) transparent;
   scrollbar-width: thin;

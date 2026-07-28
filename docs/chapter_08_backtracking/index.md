@@ -9,6 +9,8 @@ call owns a precise prefix of choices.
 
 ```mermaid
 flowchart TD
+  accTitle: The choose, recurse, and undo backtracking cycle
+  accDescr: From the current path, choose a candidate, recurse, undo that choice, and either try another candidate or return.
   A["Current path"] --> B["Choose candidate"]
   B --> C["Recurse"]
   C --> D["Undo choice"]

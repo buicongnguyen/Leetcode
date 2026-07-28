@@ -21,6 +21,23 @@ values. Indices are needed to expire old entries.
 **Invariant:** indices are live, ordered by position, and their values decrease
 from front to back.
 
+```mermaid
+flowchart TD
+  accTitle: Updating a monotonic deque
+  accDescr: For each new index, remove expired indices from the front, remove dominated values from the back, append the new index, and emit the front when the window is complete.
+  A["Receive new index i"] --> B{"Front is outside<br/>the window?"}
+  B -->|yes| C["Pop front"]
+  C --> B
+  B -->|no| D{"Back value ≤<br/>values[i]?"}
+  D -->|yes| E["Pop back"]
+  E --> D
+  D -->|no| F["Append i"]
+  F --> G{"Window complete?"}
+  G -->|yes| H["Emit value at front"]
+  G -->|no| I["Advance"]
+  H --> I
+```
+
 === "Python"
 
     ```python

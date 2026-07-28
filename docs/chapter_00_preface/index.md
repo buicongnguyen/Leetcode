@@ -8,6 +8,16 @@ DSA skill grows through a short feedback loop: predict, implement, test, and
 explain. Reading a solution can create familiarity without creating recall.
 This book therefore separates each topic into four artifacts:
 
+```mermaid
+flowchart LR
+  accTitle: The DSA study feedback loop
+  accDescr: Predict an algorithm, implement it, test it, explain why it works, and use that explanation to make the next prediction stronger.
+  A["Predict"] --> B["Implement"]
+  B --> C["Test"]
+  C --> D["Explain"]
+  D -->|"refine the mental model"| A
+```
+
 1. **Signal** — what wording or input shape suggests the pattern.
 2. **Invariant** — what remains true during execution.
 3. **Implementation** — a compact C++17 and Python 3 reference.

@@ -12,6 +12,8 @@ game positions all qualify.
 
 ```mermaid
 flowchart TD
+  accTitle: Choosing a graph traversal or shortest-path algorithm
+  accDescr: Use DFS or BFS for reachability, BFS for equal edge costs, zero-one BFS for costs zero and one, Dijkstra for nonnegative costs, and Bellman-Ford when negative costs are allowed.
   A["Need reachability or traversal?"] -->|yes| B["DFS or BFS"]
   A -->|shortest path| C{"Edge costs"}
   C -->|"all equal"| D["BFS"]

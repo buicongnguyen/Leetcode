@@ -72,6 +72,7 @@ def main() -> None:
 
     link_pattern = re.compile(r"(?<!!)\[[^\]]+\]\(([^)\s]+)(?:\s+[^)]*)?\)")
     snippet_pattern = re.compile(r'--8<-- "([^"]+?)(?::([^"]+))?"')
+    mermaid_pattern = re.compile(r"```mermaid\s*\n(.*?)```", flags=re.DOTALL)
 
     for page in sorted(markdown_files):
         content = page.read_text(encoding="utf-8")
@@ -102,6 +103,15 @@ def main() -> None:
                     raise SystemExit(
                         f"Missing snippet marker {marker!r} in {snippet_path}"
                     )
+
+        for diagram_number, diagram in enumerate(
+            mermaid_pattern.findall(content), start=1
+        ):
+            if "accTitle:" not in diagram or "accDescr:" not in diagram:
+                raise SystemExit(
+                    f"Mermaid diagram {diagram_number} in "
+                    f"{page.relative_to(ROOT)} needs accTitle and accDescr"
+                )
 
     for required in (
         ROOT / "codes/python/dsa_atlas",

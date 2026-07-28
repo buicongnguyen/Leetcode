@@ -11,6 +11,8 @@ operations, and constraints before naming an algorithm.
 
 ```mermaid
 flowchart LR
+  accTitle: The eight-step problem-solving loop
+  accDescr: Restate the problem, bound the affordable work, model the state, find repeated waste, select a pattern, write its invariant, implement it, then test and audit the result.
   A["Restate"] --> B["Bound"]
   B --> C["Model"]
   C --> D["Find waste"]

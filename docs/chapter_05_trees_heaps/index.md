@@ -11,6 +11,18 @@ contract.
 dfs(node) returns the height of the complete subtree rooted at node.
 ```
 
+```mermaid
+flowchart TD
+  accTitle: Recursive dependencies for tree height
+  accDescr: Height of a node depends on the independently computed heights of its left and right subtrees, followed by one plus their maximum; an empty subtree returns zero.
+  R["height(node)"] --> L["height(node.left)"]
+  R --> Q["height(node.right)"]
+  L --> B["empty → 0<br/>node → recurse"]
+  Q --> C["empty → 0<br/>node → recurse"]
+  B --> M["return 1 + max(left, right)"]
+  C --> M
+```
+
 From that contract:
 
 1. the empty subtree returns zero;

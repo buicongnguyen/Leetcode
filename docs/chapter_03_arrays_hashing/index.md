@@ -36,6 +36,14 @@ Let `prefix[j]` be the sum before position `j`. A subarray ending at the current
 position sums to `target` when an earlier prefix equals
 `current_prefix - target`.
 
+```mermaid
+flowchart LR
+  accTitle: Prefix-sum lookup identity
+  accDescr: The sum of the subarray from left to right is the current prefix minus an earlier prefix, so the algorithm looks for current prefix minus target.
+  A["Earlier prefix<br/>prefix[left]"] -->|"subarray [left, right) adds target"| B["Current prefix<br/>prefix[right]"]
+  B -. "look up prefix[right] - target" .-> A
+```
+
 **Invariant:** `seen` counts prefix sums from positions strictly before the
 current endpoint.
 

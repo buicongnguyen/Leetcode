@@ -37,6 +37,16 @@ processed so far.
 layer. Ascending order would permit the current item multiple times and solve
 unbounded knapsack instead.
 
+```mermaid
+flowchart LR
+  accTitle: Zero-one knapsack state dependency
+  accDescr: The new value at capacity c is the better of skipping the item from old dp at c or taking the item from old dp at c minus its weight; updating capacities from high to low preserves both old values.
+  A["old dp[c]"] -->|"skip item"| C["new dp[c]"]
+  B["old dp[c - weight]"] -->|"+ item value"| C
+  C --> D["write capacities<br/>from high to low"]
+  D --> E["dp[c - weight] is still<br/>from the previous item layer"]
+```
+
 === "Python"
 
     ```python
