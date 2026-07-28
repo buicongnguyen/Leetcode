@@ -1,6 +1,7 @@
 # Logic and code review
 
-Review scope: the pre-reorganization `main` branch at `74bf53a`.
+Review scope: the pre-reorganization `main` branch at `74bf53a`, followed by a
+second pass over the extracted libraries and CI at `c0cd647`.
 
 ## Summary
 
@@ -68,6 +69,41 @@ not parse links or verify generated output.
 **Resolution:** `scripts/check_book.py` validates declared navigation, chapter
 front matter, local links, code trees, and workflow isolation.
 
+### High — C++ Release tests could pass without checking behavior
+
+The executable used the standard `assert` macro while CI configured a Release
+build. Toolchains commonly define `NDEBUG` for Release, compiling every
+assertion out and leaving a test that only printed success.
+
+**Resolution:** the C++ suite now uses an always-on expectation helper and
+returns failure when any expectation is false.
+
+### High — Graph inputs could trigger undefined behavior in C++
+
+Invalid sources and edge endpoints indexed vectors without validation. Python
+also accepted negative indices, making invalid graph identifiers silently refer
+to vertices at the end of a list.
+
+**Resolution:** graph entry points and disjoint sets validate sizes, sources,
+and endpoints consistently in both languages; regression tests cover invalid
+inputs.
+
+### Medium — Dijkstra validated only reachable negative edges
+
+A negative edge in a disconnected component went unnoticed, even though the
+function contract requires a nonnegative graph. C++ distance addition could
+also overflow for extreme weights.
+
+**Resolution:** both implementations validate all edges before traversal, and
+the C++ implementation guards distance addition.
+
+### Medium — Binary-search boundary accepted a negative domain
+
+`first_true(-1, predicate)` silently returned `0`, which is outside its declared
+domain contract.
+
+**Resolution:** both implementations reject negative sizes.
+
 ## Remaining follow-up
 
 - Add randomized parity tests that run identical fixtures against C++ and
@@ -75,3 +111,5 @@ front matter, local links, code trees, and workflow isolation.
 - Add complete tested implementations for Dinic, SCC, LCA, and A* before
   presenting them as copy-ready library code.
 - Add a structured problem catalog instead of embedding problem lists in prose.
+- Replace recursive bridge search before positioning it as safe for graphs deep
+  enough to exceed the Python or native call stack.

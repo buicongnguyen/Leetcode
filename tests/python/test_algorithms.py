@@ -52,11 +52,17 @@ class SearchTests(unittest.TestCase):
         self.assertEqual(lower_bound(values, 3), 1)
         self.assertEqual(lower_bound(values, 9), len(values))
         self.assertEqual(first_true(0, lambda _: True), 0)
+        with self.assertRaises(ValueError):
+            first_true(-1, lambda _: True)
 
 
 class GraphTests(unittest.TestCase):
     def test_bfs_distances_include_unreachable(self) -> None:
         self.assertEqual(bfs_distances([[1], [0, 2], [1], []], 0), [0, 1, 2, -1])
+        with self.assertRaises(ValueError):
+            bfs_distances([[1]], 0)
+        with self.assertRaises(ValueError):
+            bfs_distances([[]], -1)
 
     def test_dijkstra_and_negative_guard(self) -> None:
         graph = [[(1, 5), (2, 1)], [(3, 1)], [(1, 1), (3, 9)], []]
@@ -65,6 +71,8 @@ class GraphTests(unittest.TestCase):
         self.assertTrue(math.isinf(disconnected[1]))
         with self.assertRaises(ValueError):
             dijkstra([[(1, -1)], []], 0)
+        with self.assertRaises(ValueError):
+            dijkstra([[], [(0, -1)]], 0)
 
     def test_topological_order_rejects_cycles(self) -> None:
         order = topological_order([[1, 2], [3], [3], []])
@@ -74,10 +82,14 @@ class GraphTests(unittest.TestCase):
         self.assertLess(position[1], position[3])
         with self.assertRaises(ValueError):
             topological_order([[1], [0]])
+        with self.assertRaises(ValueError):
+            topological_order([[2], []])
 
     def test_bridges_handle_disconnected_and_parallel_edges(self) -> None:
         self.assertEqual(find_bridges(5, [(0, 1), (1, 2), (2, 0), (3, 4)]), [(3, 4)])
         self.assertEqual(find_bridges(2, [(0, 1), (0, 1)]), [])
+        with self.assertRaises(ValueError):
+            find_bridges(2, [(0, 2)])
 
 
 class StateTests(unittest.TestCase):
@@ -97,6 +109,8 @@ class StateTests(unittest.TestCase):
         self.assertFalse(groups.union(0, 1))
         groups.union(2, 3)
         self.assertNotEqual(groups.find(0), groups.find(2))
+        with self.assertRaises(ValueError):
+            groups.find(-1)
 
     def test_streaming_median_extremes_and_empty(self) -> None:
         finder = MedianFinder()
