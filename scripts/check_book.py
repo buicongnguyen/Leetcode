@@ -109,6 +109,7 @@ def main() -> None:
         ROOT / "tests/python",
         ROOT / "codes/cpp/tests",
         ROOT / "BOOK_READER_REVIEW.md",
+        ROOT / "CODE_SAMPLE_REVIEW.md",
         ROOT / "CODE_REVIEW.md",
         ROOT / "REORGANIZATION_PLAN.md",
     ):
@@ -126,6 +127,20 @@ def main() -> None:
     for selector in (".reader-rail", ".reader-bookmark", ".reader-toc", ".reader-progress"):
         if selector not in reader_css or selector not in reader_js:
             raise SystemExit(f"Reader interface is missing required component: {selector}")
+
+    for chapter_number in range(1, 12):
+        matches = sorted(DOCS.glob(f"chapter_{chapter_number:02d}_*/index.md"))
+        if len(matches) != 1:
+            raise SystemExit(
+                f"Expected one directory for Chapter {chapter_number}, found {matches}"
+            )
+        content = matches[0].read_text(encoding="utf-8")
+        has_python = "```python" in content
+        has_cpp = "```cpp" in content
+        if not has_python or not has_cpp:
+            raise SystemExit(
+                f"{matches[0].relative_to(ROOT)} needs visible Python and C++ samples"
+            )
 
     legacy = [name for name in ("index.html", "app.js", "thinking.html") if (ROOT / name).exists()]
     if legacy:

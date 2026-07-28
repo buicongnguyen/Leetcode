@@ -3,13 +3,21 @@
 from .arrays import count_subarrays_sum, max_sliding_window, two_sum
 from .backtracking import unique_subsets
 from .dp import knapsack_01
-from .graph import bfs_distances, dijkstra, find_bridges, topological_order
+from .graph import (
+    bfs_distances,
+    dijkstra,
+    find_bridges,
+    minimum_spanning_tree_weight,
+    topological_order,
+)
 from .search import binary_search, first_true, lower_bound
 from .structures import DisjointSet, MedianFinder
+from .trees import TreeNode, tree_height
 
 __all__ = [
     "DisjointSet",
     "MedianFinder",
+    "TreeNode",
     "bfs_distances",
     "binary_search",
     "count_subarrays_sum",
@@ -19,7 +27,9 @@ __all__ = [
     "knapsack_01",
     "lower_bound",
     "max_sliding_window",
+    "minimum_spanning_tree_weight",
     "topological_order",
     "two_sum",
+    "tree_height",
     "unique_subsets",
 ]

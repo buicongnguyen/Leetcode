@@ -22,7 +22,10 @@ from dsa_atlas import (  # noqa: E402
     knapsack_01,
     lower_bound,
     max_sliding_window,
+    minimum_spanning_tree_weight,
     topological_order,
+    TreeNode,
+    tree_height,
     two_sum,
     unique_subsets,
 )
@@ -91,8 +94,20 @@ class GraphTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             find_bridges(2, [(0, 2)])
 
+    def test_kruskal_builds_a_tree_and_rejects_disconnection(self) -> None:
+        edges = [(0, 1, 4), (0, 2, 1), (2, 1, 2), (1, 3, 1), (2, 3, 5)]
+        self.assertEqual(minimum_spanning_tree_weight(4, edges), 4)
+        self.assertEqual(minimum_spanning_tree_weight(0, []), 0)
+        with self.assertRaises(ValueError):
+            minimum_spanning_tree_weight(3, [(0, 1, 1)])
+
 
 class StateTests(unittest.TestCase):
+    def test_tree_height_follows_the_recursive_contract(self) -> None:
+        root = TreeNode(1, TreeNode(2, TreeNode(4)), TreeNode(3))
+        self.assertEqual(tree_height(root), 3)
+        self.assertEqual(tree_height(None), 0)
+
     def test_unique_subsets_sorts_before_duplicate_skip(self) -> None:
         result = unique_subsets([2, 1, 2])
         self.assertEqual(len(result), 6)

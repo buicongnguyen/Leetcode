@@ -91,6 +91,32 @@ Trace:
 
 Finally recompute time and auxiliary space from the code actually written.
 
+## Worked example: from waste to invariant
+
+For Two Sum, brute force scans the remaining suffix for the needed complement
+at every index. The repeated operation is membership lookup, so a hash map owns
+that operation.
+
+**Invariant:** before processing index `i`, the map contains one earlier index
+for every value seen in `values[:i]`. Checking before inserting prevents an
+element from matching itself.
+
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/arrays.py:two-sum"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:two-sum"
+    ```
+
+Trace `[3, 3]` with target `6`: the first `3` is stored, then the second finds
+its complement at index `0`. This simultaneously tests duplicates and the
+distinct-index rule.
+
 !!! tip "Interview narration"
 
     State the brute force, name its repeated waste, explain which operation the

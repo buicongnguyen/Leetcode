@@ -24,6 +24,23 @@ inline void validate_vertex(int vertex, std::size_t vertex_count,
   }
 }
 
+// --8<-- [start:tree-height]
+struct TreeNode {
+  int value;
+  TreeNode* left = nullptr;
+  TreeNode* right = nullptr;
+};
+
+inline int tree_height(const TreeNode* root) {
+  if (root == nullptr) {
+    return 0;
+  }
+  const int left_height = tree_height(root->left);
+  const int right_height = tree_height(root->right);
+  return 1 + std::max(left_height, right_height);
+}
+// --8<-- [end:tree-height]
+
 // --8<-- [start:two-sum]
 inline std::optional<std::pair<int, int>> two_sum(
     const std::vector<int>& values, int target) {
@@ -194,6 +211,7 @@ inline std::vector<long long> dijkstra(
 }
 // --8<-- [end:dijkstra]
 
+// --8<-- [start:topological-order]
 inline std::vector<int> topological_order(
     const std::vector<std::vector<int>>& graph) {
   for (const auto& neighbors : graph) {
@@ -229,7 +247,9 @@ inline std::vector<int> topological_order(
   }
   return order;
 }
+// --8<-- [end:topological-order]
 
+// --8<-- [start:bridges]
 inline std::vector<std::pair<int, int>> find_bridges(
     int vertex_count, const std::vector<std::pair<int, int>>& edges) {
   if (vertex_count < 0) {
@@ -273,6 +293,7 @@ inline std::vector<std::pair<int, int>> find_bridges(
   std::sort(bridges.begin(), bridges.end());
   return bridges;
 }
+// --8<-- [end:bridges]
 
 // --8<-- [start:subsets]
 inline std::vector<std::vector<int>> unique_subsets(
@@ -316,6 +337,7 @@ inline long long knapsack_01(
 }
 // --8<-- [end:knapsack]
 
+// --8<-- [start:disjoint-set]
 class DisjointSet {
  public:
   explicit DisjointSet(int size)
@@ -361,6 +383,52 @@ class DisjointSet {
   std::vector<int> parent_;
   std::vector<int> component_size_;
 };
+// --8<-- [end:disjoint-set]
+
+// --8<-- [start:kruskal]
+inline long long minimum_spanning_tree_weight(
+    int vertex_count,
+    const std::vector<std::tuple<int, int, long long>>& edges) {
+  if (vertex_count < 0) {
+    throw std::invalid_argument("vertex_count must be nonnegative");
+  }
+  for (const auto [left, right, weight] : edges) {
+    static_cast<void>(weight);
+    if (left < 0 || right < 0 || left >= vertex_count ||
+        right >= vertex_count) {
+      throw std::invalid_argument("edge endpoint must be a valid vertex");
+    }
+  }
+
+  auto ordered = edges;
+  std::sort(ordered.begin(), ordered.end(),
+            [](const auto& left, const auto& right) {
+              return std::get<2>(left) < std::get<2>(right);
+            });
+
+  DisjointSet groups(vertex_count);
+  long long total = 0;
+  int accepted = 0;
+  for (const auto [left, right, weight] : ordered) {
+    if (groups.unite(left, right)) {
+      if ((weight > 0 &&
+           total > std::numeric_limits<long long>::max() - weight) ||
+          (weight < 0 &&
+           total < std::numeric_limits<long long>::min() - weight)) {
+        throw std::overflow_error("minimum spanning-tree weight overflow");
+      }
+      total += weight;
+      ++accepted;
+    }
+  }
+
+  const int required = std::max(0, vertex_count - 1);
+  if (accepted != required) {
+    throw std::invalid_argument("undirected graph is disconnected");
+  }
+  return total;
+}
+// --8<-- [end:kruskal]
 
 // --8<-- [start:median]
 class MedianFinder {

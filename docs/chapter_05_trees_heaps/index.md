@@ -17,6 +17,22 @@ From that contract:
 2. recursively obtain left and right heights;
 3. return one plus their maximum.
 
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/trees.py:tree-height"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:tree-height"
+    ```
+
+The base case and return statement are direct translations of the contract.
+For a chain of three nodes the calls return `1`, then `2`, then `3`; for an
+empty root they return `0`.
+
 ## Traversal order follows dependency
 
 | Need | Order |
