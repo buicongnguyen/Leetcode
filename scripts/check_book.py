@@ -108,6 +108,7 @@ def main() -> None:
         ROOT / "codes/cpp/include/dsa_atlas",
         ROOT / "tests/python",
         ROOT / "codes/cpp/tests",
+        ROOT / "BOOK_READER_REVIEW.md",
         ROOT / "CODE_REVIEW.md",
         ROOT / "REORGANIZATION_PLAN.md",
     ):
@@ -119,6 +120,12 @@ def main() -> None:
         raise SystemExit("Pages must upload generated output, not the repository root")
     if "path: site" not in pages_workflow:
         raise SystemExit("Pages workflow must upload the generated site directory")
+
+    reader_css = (DOCS / "stylesheets/extra.css").read_text(encoding="utf-8")
+    reader_js = (DOCS / "javascripts/extra.js").read_text(encoding="utf-8")
+    for selector in (".reader-rail", ".reader-bookmark", ".reader-toc", ".reader-progress"):
+        if selector not in reader_css or selector not in reader_js:
+            raise SystemExit(f"Reader interface is missing required component: {selector}")
 
     legacy = [name for name in ("index.html", "app.js", "thinking.html") if (ROOT / name).exists()]
     if legacy:

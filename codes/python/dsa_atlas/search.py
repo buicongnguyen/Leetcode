@@ -25,6 +25,8 @@ def binary_search(values: Sequence[T], target: T) -> int:
 # --8<-- [start:first-true]
 def first_true(size: int, predicate: Callable[[int], bool]) -> int:
     """Return the first true index in ``[0, size)``, or ``size``."""
+    if size < 0:
+        raise ValueError("size must be nonnegative")
     low, high = 0, size
     while low < high:
         middle = low + (high - low) // 2

@@ -6,7 +6,8 @@ It pairs concise explanations with tested C++17 and Python 3 implementations.
 [Read the book](https://buicongnguyen.github.io/Leetcode/) ·
 [Browse the code](codes/) ·
 [See the reorganization plan](REORGANIZATION_PLAN.md) ·
-[Read the review](CODE_REVIEW.md)
+[Read the code review](CODE_REVIEW.md) ·
+[Read the reader redesign review](BOOK_READER_REVIEW.md)
 
 ## Repository map
 
@@ -28,6 +29,10 @@ This follows the useful separation in
 from language implementations, navigation is declared centrally, and CI checks
 code instead of treating snippets as decoration. The writing and code here are
 original and focused on interview problem solving.
+
+The published book uses a persistent chapter rail, an inline page outline,
+device-local reading bookmarks, and scroll progress. The same generated book is
+served by GitHub Pages and by the Sites companion under `/book/`.
 
 ## Local development
 

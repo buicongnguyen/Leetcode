@@ -6,9 +6,22 @@ from heapq import heappop, heappush
 from math import inf
 
 
+def _validate_vertex(vertex: int, vertex_count: int, name: str) -> None:
+    if not 0 <= vertex < vertex_count:
+        raise ValueError(f"{name} must be a valid vertex")
+
+
+def _validate_unweighted_graph(graph: Sequence[Sequence[int]]) -> None:
+    for neighbors in graph:
+        for neighbor in neighbors:
+            _validate_vertex(neighbor, len(graph), "neighbor")
+
+
 # --8<-- [start:bfs]
 def bfs_distances(graph: Sequence[Sequence[int]], source: int) -> list[int]:
     """Return unweighted distances from ``source``; unreachable is ``-1``."""
+    _validate_vertex(source, len(graph), "source")
+    _validate_unweighted_graph(graph)
     distance = [-1] * len(graph)
     distance[source] = 0
     queue = deque([source])
@@ -27,6 +40,13 @@ def dijkstra(
     graph: Sequence[Sequence[tuple[int, int]]], source: int
 ) -> list[float | int]:
     """Return shortest distances for a graph with nonnegative weights."""
+    _validate_vertex(source, len(graph), "source")
+    for edges in graph:
+        for neighbor, weight in edges:
+            _validate_vertex(neighbor, len(graph), "neighbor")
+            if weight < 0:
+                raise ValueError("Dijkstra requires nonnegative weights")
+
     distance: list[float | int] = [inf] * len(graph)
     distance[source] = 0
     frontier: list[tuple[int, int]] = [(0, source)]
@@ -36,8 +56,6 @@ def dijkstra(
         if current != distance[node]:
             continue
         for neighbor, weight in graph[node]:
-            if weight < 0:
-                raise ValueError("Dijkstra requires nonnegative weights")
             candidate = current + weight
             if candidate < distance[neighbor]:
                 distance[neighbor] = candidate
@@ -48,6 +66,7 @@ def dijkstra(
 
 def topological_order(graph: Sequence[Sequence[int]]) -> list[int]:
     """Return a topological order or raise when the directed graph is cyclic."""
+    _validate_unweighted_graph(graph)
     indegree = [0] * len(graph)
     for neighbors in graph:
         for neighbor in neighbors:
@@ -70,8 +89,12 @@ def topological_order(graph: Sequence[Sequence[int]]) -> list[int]:
 
 def find_bridges(vertex_count: int, edges: Sequence[tuple[int, int]]) -> list[tuple[int, int]]:
     """Return bridge edges in an undirected multigraph."""
+    if vertex_count < 0:
+        raise ValueError("vertex_count must be nonnegative")
     graph: list[list[tuple[int, int]]] = [[] for _ in range(vertex_count)]
     for edge_id, (left, right) in enumerate(edges):
+        _validate_vertex(left, vertex_count, "edge endpoint")
+        _validate_vertex(right, vertex_count, "edge endpoint")
         graph[left].append((right, edge_id))
         graph[right].append((left, edge_id))
 

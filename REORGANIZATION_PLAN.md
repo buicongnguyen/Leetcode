@@ -61,6 +61,14 @@ or visual identity.
 - Produce PDF/EPUB releases from the Markdown source after the web edition
   stabilizes.
 
+### Phase 5 — Make the book feel like a book
+
+- Group chapters into visible learning phases without changing stable URLs.
+- Keep chapter navigation fixed and independently scrollable on desktop.
+- Move the per-page outline into the reading canvas.
+- Add device-local bookmarks and reading progress as progressive enhancements.
+- Preserve the built-in mobile chapter drawer and accessible navigation.
+
 ## Definition of done
 
 - Every navigation entry resolves.

@@ -9,12 +9,20 @@
 #include <optional>
 #include <queue>
 #include <stdexcept>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 namespace dsa_atlas {
+
+inline void validate_vertex(int vertex, std::size_t vertex_count,
+                            const char* name) {
+  if (vertex < 0 || static_cast<std::size_t>(vertex) >= vertex_count) {
+    throw std::invalid_argument(std::string(name) + " must be a valid vertex");
+  }
+}
 
 // --8<-- [start:two-sum]
 inline std::optional<std::pair<int, int>> two_sum(
@@ -99,6 +107,9 @@ inline int binary_search_index(
 // --8<-- [start:first-true]
 template <class Predicate>
 int first_true(int size, Predicate predicate) {
+  if (size < 0) {
+    throw std::invalid_argument("size must be nonnegative");
+  }
   int low = 0;
   int high = size;
   while (low < high) {
@@ -116,6 +127,12 @@ int first_true(int size, Predicate predicate) {
 // --8<-- [start:bfs]
 inline std::vector<int> bfs_distances(
     const std::vector<std::vector<int>>& graph, int source) {
+  validate_vertex(source, graph.size(), "source");
+  for (const auto& neighbors : graph) {
+    for (const int neighbor : neighbors) {
+      validate_vertex(neighbor, graph.size(), "neighbor");
+    }
+  }
   std::vector<int> distance(graph.size(), -1);
   std::queue<int> frontier;
   distance[source] = 0;
@@ -140,7 +157,16 @@ using WeightedGraph =
 // --8<-- [start:dijkstra]
 inline std::vector<long long> dijkstra(
     const WeightedGraph& graph, int source) {
-  constexpr long long infinity = std::numeric_limits<long long>::max() / 4;
+  validate_vertex(source, graph.size(), "source");
+  for (const auto& edges : graph) {
+    for (const auto [neighbor, weight] : edges) {
+      validate_vertex(neighbor, graph.size(), "neighbor");
+      if (weight < 0) {
+        throw std::invalid_argument("Dijkstra requires nonnegative weights");
+      }
+    }
+  }
+  constexpr long long infinity = std::numeric_limits<long long>::max();
   using State = std::pair<long long, int>;
   std::priority_queue<State, std::vector<State>, std::greater<State>> frontier;
   std::vector<long long> distance(graph.size(), infinity);
@@ -154,8 +180,8 @@ inline std::vector<long long> dijkstra(
       continue;
     }
     for (const auto [neighbor, weight] : graph[node]) {
-      if (weight < 0) {
-        throw std::invalid_argument("Dijkstra requires nonnegative weights");
+      if (current > infinity - weight) {
+        continue;
       }
       const long long candidate = current + weight;
       if (candidate < distance[neighbor]) {
@@ -170,6 +196,11 @@ inline std::vector<long long> dijkstra(
 
 inline std::vector<int> topological_order(
     const std::vector<std::vector<int>>& graph) {
+  for (const auto& neighbors : graph) {
+    for (const int neighbor : neighbors) {
+      validate_vertex(neighbor, graph.size(), "neighbor");
+    }
+  }
   std::vector<int> indegree(graph.size(), 0);
   for (const auto& neighbors : graph) {
     for (const int neighbor : neighbors) {
@@ -201,9 +232,15 @@ inline std::vector<int> topological_order(
 
 inline std::vector<std::pair<int, int>> find_bridges(
     int vertex_count, const std::vector<std::pair<int, int>>& edges) {
-  std::vector<std::vector<std::pair<int, int>>> graph(vertex_count);
+  if (vertex_count < 0) {
+    throw std::invalid_argument("vertex_count must be nonnegative");
+  }
+  std::vector<std::vector<std::pair<int, int>>> graph(
+      static_cast<std::size_t>(vertex_count));
   for (int id = 0; id < static_cast<int>(edges.size()); ++id) {
     const auto [left, right] = edges[id];
+    validate_vertex(left, graph.size(), "edge endpoint");
+    validate_vertex(right, graph.size(), "edge endpoint");
     graph[left].push_back({right, id});
     graph[right].push_back({left, id});
   }
@@ -282,13 +319,16 @@ inline long long knapsack_01(
 class DisjointSet {
  public:
   explicit DisjointSet(int size)
-      : parent_(size), component_size_(size, 1) {
+      : parent_(checked_size(size)), component_size_(checked_size(size), 1) {
     for (int index = 0; index < size; ++index) {
       parent_[index] = index;
     }
   }
 
   int find(int item) {
+    if (item < 0 || static_cast<std::size_t>(item) >= parent_.size()) {
+      throw std::invalid_argument("item must be a valid set element");
+    }
     while (parent_[item] != item) {
       parent_[item] = parent_[parent_[item]];
       item = parent_[item];
@@ -311,6 +351,13 @@ class DisjointSet {
   }
 
  private:
+  static std::size_t checked_size(int size) {
+    if (size < 0) {
+      throw std::invalid_argument("size must be nonnegative");
+    }
+    return static_cast<std::size_t>(size);
+  }
+
   std::vector<int> parent_;
   std::vector<int> component_size_;
 };

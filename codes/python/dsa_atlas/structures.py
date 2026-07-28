@@ -7,10 +7,14 @@ class DisjointSet:
     """Union-by-size disjoint set with path compression."""
 
     def __init__(self, size: int) -> None:
+        if size < 0:
+            raise ValueError("size must be nonnegative")
         self.parent = list(range(size))
         self.component_size = [1] * size
 
     def find(self, item: int) -> int:
+        if not 0 <= item < len(self.parent):
+            raise ValueError("item must be a valid set element")
         while self.parent[item] != item:
             self.parent[item] = self.parent[self.parent[item]]
             item = self.parent[item]
