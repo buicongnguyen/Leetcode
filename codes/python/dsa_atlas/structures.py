@@ -3,6 +3,7 @@
 from heapq import heappop, heappush
 
 
+# --8<-- [start:disjoint-set]
 class DisjointSet:
     """Union-by-size disjoint set with path compression."""
 
@@ -29,6 +30,7 @@ class DisjointSet:
         self.parent[right_root] = left_root
         self.component_size[left_root] += self.component_size[right_root]
         return True
+# --8<-- [end:disjoint-set]
 
 
 # --8<-- [start:median]

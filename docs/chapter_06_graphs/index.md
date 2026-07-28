@@ -68,6 +68,18 @@ Kahn's algorithm repeatedly removes zero-indegree vertices. If fewer than `n`
 vertices are removed, the graph contains a directed cycle; returning the
 partial list as a valid order is a correctness bug.
 
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/graph.py:topological-order"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:topological-order"
+    ```
+
 ## Bridge edges
 
 An undirected edge is a bridge when its child subtree cannot reach the parent
@@ -76,3 +88,15 @@ skipping every edge to the parent vertex incorrectly reports a bridge.
 
 The tested library implementation tracks the exact parent edge and includes a
 parallel-edge regression case.
+
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/graph.py:bridges"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bridges"
+    ```

@@ -28,6 +28,23 @@ The disjoint-set structure makes cycle checks nearly constant amortized time.
 After processing, exactly `n - 1` accepted edges are required for a connected
 graph.
 
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/structures.py:disjoint-set"
+    --8<-- "codes/python/dsa_atlas/graph.py:kruskal"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:disjoint-set"
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:kruskal"
+    ```
+
+The implementations validate every endpoint, accept negative edge weights, and
+reject a disconnected graph instead of silently returning a forest.
+
 ## Negative edges
 
 Dijkstra is invalid when a later negative edge can improve a finalized

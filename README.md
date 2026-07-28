@@ -7,7 +7,8 @@ It pairs concise explanations with tested C++17 and Python 3 implementations.
 [Browse the code](codes/) ·
 [See the reorganization plan](REORGANIZATION_PLAN.md) ·
 [Read the code review](CODE_REVIEW.md) ·
-[Read the reader redesign review](BOOK_READER_REVIEW.md)
+[Read the reader redesign review](BOOK_READER_REVIEW.md) ·
+[Read the code-sample review](CODE_SAMPLE_REVIEW.md)
 
 ## Repository map
 

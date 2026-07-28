@@ -87,10 +87,31 @@ int main() {
         [] { static_cast<void>(find_bridges(2, {{0, 2}})); },
         "bridge search must reject invalid endpoints");
 
+    expect(minimum_spanning_tree_weight(
+               4, {{0, 1, 4}, {0, 2, 1}, {2, 1, 2}, {1, 3, 1}, {2, 3, 5}}) ==
+               4,
+           "Kruskal must return the minimum spanning-tree weight");
+    expect(minimum_spanning_tree_weight(0, {}) == 0,
+           "the empty graph must have zero spanning-tree weight");
+    expect_throws<std::invalid_argument>(
+        [] {
+          static_cast<void>(
+              minimum_spanning_tree_weight(3, {{0, 1, 1}}));
+        },
+        "Kruskal must reject a disconnected graph");
+
     const auto subsets = unique_subsets({2, 1, 2});
     expect(subsets.size() == 6, "unique subsets must skip duplicates");
     expect(knapsack_01(4, {{2, 3}, {2, 3}, {3, 5}}) == 6,
            "0-1 knapsack must use each item once");
+
+    TreeNode fourth{4};
+    TreeNode second{2, &fourth};
+    TreeNode third{3};
+    TreeNode root{1, &second, &third};
+    expect(tree_height(&root) == 3,
+           "tree height must follow the recursive subtree contract");
+    expect(tree_height(nullptr) == 0, "an empty tree must have height zero");
 
     DisjointSet groups(4);
     expect(groups.unite(0, 1), "disjoint set must merge separate groups");
