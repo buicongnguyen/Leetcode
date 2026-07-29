@@ -8,6 +8,29 @@ Arrays preserve order and give constant-time indexing. Hash tables trade order
 for expected constant-time lookup. Many sequence problems become linear when a
 repeated scan is replaced by remembered state.
 
+## Thinking flow · Choose the sequence technique
+
+```mermaid
+flowchart TD
+  accTitle: Choosing an array, hashing, prefix, pointer, or window technique
+  accDescr: Choose hashing for repeated membership or frequency lookup, prefix state when a range can be derived from two prefixes, two pointers when sorted order proves a candidate can be discarded, and a sliding window when range validity changes monotonically as boundaries move. Use a monotonic deque when every fixed window needs an extreme.
+  A{"What must be answered<br/>repeatedly?"}
+  A -->|"membership, count,<br/>or complement"| B["Hash map / set"]
+  A -->|"aggregate over a<br/>contiguous range"| C{"Can range value come from<br/>two prefix states?"}
+  C -->|yes| D["Prefix sum / prefix count"]
+  C -->|no| E{"Can a boundary move only<br/>forward as validity changes?"}
+  E -->|yes| F["Sliding window"]
+  E -->|no| G["Change the model;<br/>window is not proved"]
+  A -->|"pair or interval relation<br/>in ordered data"| H{"Does one comparison safely<br/>discard one side?"}
+  H -->|yes| I["Sort if allowed + two pointers"]
+  H -->|no| J["Hashing, binary search,<br/>or another model"]
+  A -->|"maximum/minimum of<br/>every fixed window"| K["Monotonic deque"]
+```
+
+The branch is valid only when its proof condition holds. “Subarray” does not
+automatically imply sliding window, and “pair” does not automatically imply two
+pointers.
+
 ## Complement lookup
 
 For two-sum-style problems, scan once. Before storing the current value, ask

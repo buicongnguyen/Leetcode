@@ -7,6 +7,32 @@ description: Build state-space searches with choose, recurse, undo, and prune.
 Backtracking explores a decision tree while storing only the current path. Each
 call owns a precise prefix of choices.
 
+## Thinking flow · Backtracking or another model?
+
+```mermaid
+flowchart TD
+  accTitle: Recognizing backtracking and choosing its decision shape
+  accDescr: Use backtracking when the task must enumerate or construct choices and a branch can be undone. Use dynamic programming when different histories share the same future state, and BFS when the goal is the fewest legal moves. Within backtracking, choose take-skip for subsets, a start index for combinations, used markers for permutations, and one variable per level for constraint assignment.
+  A{"What must the search return?"}
+  A -->|"fewest legal transitions"| B["BFS / shortest path"]
+  A -->|"best or count, with<br/>repeated future states"| C["Dynamic programming"]
+  A -->|"one or all valid<br/>constructions"| D{"Can choices form a tree<br/>and be undone?"}
+  D -->|no| E["Change the state model"]
+  D -->|yes| F{"What does one level decide?"}
+  F -->|"take or skip next item"| G["Subset tree"]
+  F -->|"choose next from suffix"| H["Combination<br/>start index"]
+  F -->|"choose any unused item"| I["Permutation<br/>used markers"]
+  F -->|"assign next variable"| J["Constraint search<br/>validity checks"]
+  G --> K["Add only proved pruning"]
+  H --> K
+  I --> K
+  J --> K
+```
+
+The deciding distinction from DP is state reuse. Backtracking keeps separate
+histories because their paths or assignments matter; DP merges histories only
+when their remaining futures are identical.
+
 ```mermaid
 flowchart TD
   accTitle: The choose, recurse, and undo backtracking cycle

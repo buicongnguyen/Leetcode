@@ -13,6 +13,28 @@ Choose a linear structure by asking which pending item must leave next.
 | best priority first | heap | repeated min/max, top-k, Dijkstra |
 | either end | deque | window extrema, 0–1 BFS |
 
+## Thinking flow · Which item must leave next?
+
+```mermaid
+flowchart TD
+  accTitle: Choosing a stack, queue, deque, heap, or sliding window
+  accDescr: For pending work, choose a stack when the newest item resolves first, a queue when the oldest or shallowest resolves first, a heap when priority decides, and a deque when either end is needed. For a contiguous active range, use a sliding window for monotone validity and a monotonic deque for repeated window extrema.
+  A{"Are these pending items<br/>or a contiguous range?"}
+  A -->|"pending items"| B{"What determines<br/>the next removal?"}
+  B -->|"newest / most nested"| C["Stack"]
+  B -->|"oldest / shallowest layer"| D["Queue"]
+  B -->|"best numeric priority"| E["Heap"]
+  B -->|"front or back"| F["Deque"]
+  A -->|"contiguous range"| G{"What query drives<br/>boundary movement?"}
+  G -->|"validity becomes monotone"| H["Sliding window"]
+  G -->|"extreme in every<br/>fixed window"| I["Monotonic deque"]
+  G -->|"arbitrary range queries"| J["Prefix or indexed tree;<br/>not a plain window"]
+```
+
+The structure is chosen by the removal contract. DFS and BFS, for example, may
+visit the same states; stack versus queue changes which pending state is
+expanded next.
+
 ## Monotonic deque
 
 For the maximum of every fixed-size window, the deque stores indices, not

@@ -7,6 +7,27 @@ description: Recursive tree contracts, traversal order, binary-search trees, and
 A tree problem becomes easier when the recursive function has a one-sentence
 contract.
 
+## Thinking flow · What information must move?
+
+```mermaid
+flowchart TD
+  accTitle: Choosing a tree traversal, recursive state, or heap
+  accDescr: Use preorder when parent state must reach children, postorder when children must be combined into a parent answer, inorder for sorted binary-search-tree order, and level-order BFS for minimum edge depth or layer processing. Use a heap instead of a tree traversal when the problem is a changing candidate set whose next minimum or maximum is repeatedly requested.
+  A{"Is the input a hierarchy<br/>or a changing candidate set?"}
+  A -->|"tree / hierarchy"| B{"Where does required<br/>information come from?"}
+  B -->|"parent before children"| C["Preorder DFS<br/>carry path state down"]
+  B -->|"children before parent"| D["Postorder DFS<br/>return subtree summary"]
+  B -->|"sorted BST order"| E["Inorder traversal<br/>plus BST bounds"]
+  B -->|"level / minimum edge depth"| F["Level-order BFS"]
+  A -->|"changing candidates"| G{"Need the next minimum<br/>or maximum repeatedly?"}
+  G -->|yes| H["Heap / priority queue"]
+  G -->|no| I["Sort once or use<br/>a direct scan"]
+```
+
+Choose the dependency direction before choosing recursive or iterative syntax.
+Both mechanisms can implement preorder or postorder; the contract determines
+which order is correct.
+
 ```text
 dfs(node) returns the height of the complete subtree rooted at node.
 ```

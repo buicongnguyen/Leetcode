@@ -7,6 +7,31 @@ description: Derive time and space budgets from constraints and account for hidd
 Complexity is a design constraint. It tells you which solution families are
 still possible before implementation begins.
 
+## Thinking flow · Audit a proposed solution
+
+```mermaid
+flowchart TD
+  accTitle: Deriving time and space complexity from the work performed
+  accDescr: Begin with the largest input and output, identify the repeated expensive action, then decide whether loops are independent, pointers move only forward, memoized states repeat, or output itself dominates. Compute the total, compare it with the constraint budget, and audit auxiliary memory and numeric range.
+  A["Read maximum input<br/>and required output"] --> B["Name the dominant<br/>operation"]
+  B --> C{"How is work repeated?"}
+  C -->|"independent nested choices"| D["Multiply ranges<br/>n × m × k"]
+  C -->|"each item enters/leaves<br/>a structure once"| E["Aggregate events<br/>amortized O(n)"]
+  C -->|"memoized state graph"| F["reachable states ×<br/>transitions per state"]
+  C -->|"emit many answers"| G["include output size<br/>as a lower bound"]
+  D --> H{"Fits the constraint budget?"}
+  E --> H
+  F --> H
+  G --> H
+  H -->|no| I["Find repeated work,<br/>monotone discard, or compression"]
+  H -->|yes| J["Audit containers,<br/>stack, copies, and integer range"]
+  I --> B
+```
+
+This flow prevents two common mistakes: multiplying loops that are actually
+amortized, and reporting only the table-fill loop while ignoring the number of
+states or transitions.
+
 ## Count the dominant operation
 
 Ignore syntax and count how often the expensive action executes.

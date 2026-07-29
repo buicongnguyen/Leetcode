@@ -24,11 +24,17 @@ flowchart TD
   C -->|"nonnegative"| F["Dijkstra"]
   C -->|"negative allowed"| G["Bellman–Ford"]
   A -->|"dependency order"| J["Topological sort"]
+  A -->|"global connection, capacity,<br/>components, or critical links"| K["Chapter 10<br/>advanced graph chooser"]
 ```
 
 DFS and BFS visit the same reachable vertices. Their order is the distinction:
 DFS commits down one branch using a call stack or explicit stack; BFS expands
 one distance layer at a time using a queue.
+
+Use the [Advanced Graphs chooser](../chapter_10_advanced_graphs/index.md) when
+the requested result is a minimum spanning tree, maximum flow, strongly
+connected components, all-pairs paths, bridges/articulation points, or repeated
+ancestor query rather than ordinary traversal.
 
 ## BFS distances
 
