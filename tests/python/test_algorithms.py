@@ -12,7 +12,11 @@ sys.path.insert(0, str(PYTHON_CODES))
 
 from dsa_atlas import (  # noqa: E402
     DisjointSet,
+    LRUCache,
     MedianFinder,
+    MinStack,
+    RandomizedSet,
+    TimeMap,
     bfs_distances,
     binary_search,
     count_subarrays_sum,
@@ -136,6 +140,48 @@ class StateTests(unittest.TestCase):
         self.assertEqual(finder.median(), 2_147_483_647.0)
         finder.add(-2_147_483_648)
         self.assertEqual(finder.median(), 2_147_483_647.0)
+
+    def test_lru_cache_synchronizes_lookup_and_recency(self) -> None:
+        cache = LRUCache(2)
+        cache.put(1, 10)
+        cache.put(2, 20)
+        self.assertEqual(cache.get(1), 10)
+        cache.put(3, 30)
+        self.assertEqual(cache.get(2), -1)
+        self.assertEqual(cache.get(3), 30)
+        empty = LRUCache(0)
+        empty.put(1, 1)
+        self.assertEqual(empty.get(1), -1)
+
+    def test_randomized_set_repairs_swapped_index(self) -> None:
+        values = RandomizedSet(seed=7)
+        self.assertTrue(values.insert(10))
+        self.assertTrue(values.insert(20))
+        self.assertTrue(values.insert(30))
+        self.assertTrue(values.remove(20))
+        self.assertFalse(values.remove(20))
+        self.assertIn(values.get_random(), {10, 30})
+
+    def test_time_map_binary_searches_each_key_history(self) -> None:
+        values = TimeMap()
+        values.set("mode", "draft", 2)
+        values.set("mode", "published", 5)
+        self.assertEqual(values.get("mode", 1), "")
+        self.assertEqual(values.get("mode", 4), "draft")
+        self.assertEqual(values.get("mode", 5), "published")
+        self.assertEqual(values.get("missing", 9), "")
+        with self.assertRaises(ValueError):
+            values.set("mode", "invalid", 5)
+
+    def test_min_stack_restores_previous_minimum(self) -> None:
+        values = MinStack()
+        values.push(3)
+        values.push(1)
+        values.push(2)
+        self.assertEqual(values.get_min(), 1)
+        self.assertEqual(values.pop(), 2)
+        self.assertEqual(values.pop(), 1)
+        self.assertEqual(values.get_min(), 3)
 
 
 if __name__ == "__main__":

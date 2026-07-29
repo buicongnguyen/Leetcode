@@ -93,8 +93,27 @@ nav:
       - "Chapter 8 · Backtracking": chapter_08_backtracking/index.md
       - "Chapter 9 · Dynamic programming": chapter_09_dynamic_programming/index.md
   - Advanced:
-      - "Chapter 10 · Advanced graphs": chapter_10_advanced_graphs/index.md
-      - "Chapter 11 · Composite structures": chapter_11_composite_structures/index.md
+      - "Chapter 10 · Advanced graphs":
+          - Overview and chooser: chapter_10_advanced_graphs/index.md
+          - Minimum spanning trees: chapter_10_advanced_graphs/minimum_spanning_trees.md
+          - Network flow: chapter_10_advanced_graphs/network_flow.md
+          - Bellman–Ford: chapter_10_advanced_graphs/bellman_ford.md
+          - Floyd–Warshall: chapter_10_advanced_graphs/floyd_warshall.md
+          - Strongly connected components: chapter_10_advanced_graphs/strongly_connected_components.md
+          - Bridges and articulation points: chapter_10_advanced_graphs/bridges_articulation_points.md
+          - LCA and binary lifting: chapter_10_advanced_graphs/lca_binary_lifting.md
+      - "Chapter 11 · Composite structures":
+          - Overview and design method: chapter_11_composite_structures/index.md
+          - LRU cache: chapter_11_composite_structures/lru_cache.md
+          - LFU cache: chapter_11_composite_structures/lfu_cache.md
+          - Randomized set: chapter_11_composite_structures/randomized_set.md
+          - Streaming median: chapter_11_composite_structures/streaming_median.md
+          - Time-based key-value store: chapter_11_composite_structures/time_map.md
+          - Min stack: chapter_11_composite_structures/min_stack.md
+          - Design Twitter: chapter_11_composite_structures/design_twitter.md
+          - All O(1) data structure: chapter_11_composite_structures/all_one.md
+          - Number containers: chapter_11_composite_structures/number_containers.md
+          - Snapshot array: chapter_11_composite_structures/snapshot_array.md
   - Appendix:
       - Quick reference: appendix/quick_reference.md
       - Contributing: appendix/contributing.md

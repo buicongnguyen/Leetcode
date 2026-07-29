@@ -8,13 +8,13 @@ Advanced graph selection starts with the result that must be proved.
 
 | Objective | Key condition | Candidate |
 | --- | --- | --- |
-| connect all vertices cheaply | undirected weighted graph | Kruskal / Prim MST |
-| move maximum amount | capacities | max flow |
-| shortest paths with negative edges | reachable negative cycles matter | Bellman–Ford |
-| all-pairs paths, small `V` | dense or repeated queries | Floyd–Warshall |
-| mutual reachability groups | directed graph | SCC |
-| critical undirected links | connectivity after removal | bridge DFS |
-| repeated ancestor queries | static rooted tree | binary lifting |
+| connect all vertices cheaply | undirected weighted graph | [Kruskal / Prim MST](minimum_spanning_trees.md) |
+| move maximum amount | capacities | [max flow](network_flow.md) |
+| shortest paths with negative edges | reachable negative cycles matter | [Bellman–Ford](bellman_ford.md) |
+| all-pairs paths, small `V` | dense or repeated queries | [Floyd–Warshall](floyd_warshall.md) |
+| mutual reachability groups | directed graph | [SCC](strongly_connected_components.md) |
+| critical undirected links | connectivity after removal | [bridge / articulation DFS](bridges_articulation_points.md) |
+| repeated ancestor queries | static rooted tree | [LCA with binary lifting](lca_binary_lifting.md) |
 
 ```mermaid
 flowchart TD
@@ -35,7 +35,27 @@ flowchart TD
 This selection begins with the output contract. Edge direction, weights,
 capacities, graph size, and number of queries then remove invalid candidates.
 
-## Minimum spanning tree
+## Detailed guides
+
+Each guide separates recognition, proof, template, complexity, and failure
+cases:
+
+- [Minimum spanning trees](minimum_spanning_trees.md): cut property, Kruskal
+  versus Prim, and disconnected inputs.
+- [Network flow](network_flow.md): residual edges, augmenting paths, min-cut,
+  and matching reductions.
+- [Bellman–Ford](bellman_ford.md): negative edges and reachable negative-cycle
+  detection.
+- [Floyd–Warshall](floyd_warshall.md): the intermediate-vertex DP state for
+  all-pairs paths.
+- [Strongly connected components](strongly_connected_components.md):
+  Kosaraju and the condensation DAG.
+- [Bridges and articulation points](bridges_articulation_points.md): discovery
+  times, low links, parallel edges, and root handling.
+- [LCA and binary lifting](lca_binary_lifting.md): preprocessing a static tree
+  for repeated ancestor queries.
+
+## Tested example: minimum spanning tree
 
 Kruskal sorts edges by weight and accepts an edge only when it joins different
 components.
@@ -76,29 +96,19 @@ graph.
     ```
 
 The implementations validate every endpoint, accept negative edge weights, and
-reject a disconnected graph instead of silently returning a forest.
-
-## Negative edges
-
-Dijkstra is invalid when a later negative edge can improve a finalized
-distance. Bellman–Ford relaxes every edge `V - 1` times; a further reachable
-relaxation proves a negative cycle reachable from the source.
-
-Guard unreachable vertices before adding a weight to an infinity sentinel.
-
-## Bridges
-
-During DFS:
-
-- `tin[u]` is the discovery time of `u`;
-- `low[u]` is the earliest discovery reachable from `u`'s subtree without the
-  exact parent edge;
-- tree edge `(u, v)` is a bridge when `low[v] > tin[u]`.
-
-The core library includes a tested edge-ID implementation. Other advanced
-algorithms remain explanatory until complete executable tests are added.
+reject a disconnected graph instead of silently returning a forest. The
+[complete MST guide](minimum_spanning_trees.md) explains when Prim is the
+better representation.
 
 !!! warning "Copy-ready policy"
 
     Pseudocode is labeled as explanation. Only implementations under `codes/`
     are promised to compile or import in the current release.
+
+## Primary references
+
+The selection table and complexity checks are cross-checked against Princeton's
+[Algorithms and Data Structures Cheatsheet](https://algs4.cs.princeton.edu/cheatsheet/),
+[minimum-spanning-tree chapter](https://algs4.cs.princeton.edu/43mst/),
+[shortest-path chapter](https://algs4.cs.princeton.edu/44sp/), and
+[directed-graph chapter](https://algs4.cs.princeton.edu/42digraph/).

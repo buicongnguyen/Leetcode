@@ -32,8 +32,13 @@ code instead of treating snippets as decoration. The writing and code here are
 original and focused on interview problem solving.
 
 The published book uses a persistent chapter rail, an inline page outline,
-device-local reading bookmarks, and scroll progress. The same generated book is
-served by GitHub Pages and by the Sites companion under `/book/`.
+device-local reading bookmarks, and scroll progress. GitHub Pages is the
+canonical public website; any workspace-restricted Sites build is only an
+internal companion preview.
+Advanced Graphs now has separate guides for MST, flow, negative and all-pairs
+shortest paths, SCC, connectivity failures, and LCA. Composite Structures has
+problem-oriented guides for ten multi-structure designs, with tested paired
+templates for LRU, Randomized Set, Streaming Median, TimeMap, and Min Stack.
 
 ## Local development
 

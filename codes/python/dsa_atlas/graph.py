@@ -25,12 +25,14 @@ def bfs_distances(graph: Sequence[Sequence[int]], source: int) -> list[int]:
     _validate_vertex(source, len(graph), "source")
     _validate_unweighted_graph(graph)
     distance = [-1] * len(graph)
+    # Mark on enqueue so each vertex enters the queue once.
     distance[source] = 0
     queue = deque([source])
     while queue:
         node = queue.popleft()
         for neighbor in graph[node]:
             if distance[neighbor] == -1:
+                # Queue order guarantees this first distance is shortest.
                 distance[neighbor] = distance[node] + 1
                 queue.append(neighbor)
     return distance
@@ -55,11 +57,13 @@ def dijkstra(
 
     while frontier:
         current, node = heappop(frontier)
+        # Ignore heap entries superseded by a shorter route.
         if current != distance[node]:
             continue
         for neighbor, weight in graph[node]:
             candidate = current + weight
             if candidate < distance[neighbor]:
+                # Relax the edge and schedule the improved state.
                 distance[neighbor] = candidate
                 heappush(frontier, (candidate, neighbor))
     return distance
@@ -75,6 +79,7 @@ def topological_order(graph: Sequence[Sequence[int]]) -> list[int]:
         for neighbor in neighbors:
             indegree[neighbor] += 1
 
+    # Only vertices with no unmet prerequisite are ready.
     queue = deque(index for index, degree in enumerate(indegree) if degree == 0)
     order: list[int] = []
     while queue:
@@ -83,6 +88,7 @@ def topological_order(graph: Sequence[Sequence[int]]) -> list[int]:
         for neighbor in graph[node]:
             indegree[neighbor] -= 1
             if indegree[neighbor] == 0:
+                # Its final prerequisite has just been removed.
                 queue.append(neighbor)
 
     if len(order) != len(graph):
@@ -100,6 +106,7 @@ def find_bridges(vertex_count: int, edges: Sequence[tuple[int, int]]) -> list[tu
     for edge_id, (left, right) in enumerate(edges):
         _validate_vertex(left, vertex_count, "edge endpoint")
         _validate_vertex(right, vertex_count, "edge endpoint")
+        # Edge IDs distinguish parallel edges from the exact parent edge.
         graph[left].append((right, edge_id))
         graph[right].append((left, edge_id))
 
@@ -116,11 +123,13 @@ def find_bridges(vertex_count: int, edges: Sequence[tuple[int, int]]) -> list[tu
             if edge_id == parent_edge:
                 continue
             if entered[neighbor] >= 0:
+                # A back edge may connect this subtree to an ancestor.
                 low[node] = min(low[node], entered[neighbor])
                 continue
             search(neighbor, edge_id)
             low[node] = min(low[node], low[neighbor])
             if low[neighbor] > entered[node]:
+                # The child subtree has no route around this tree edge.
                 bridges.append((min(node, neighbor), max(node, neighbor)))
 
     for vertex in range(vertex_count):
@@ -144,6 +153,7 @@ def minimum_spanning_tree_weight(
     groups = DisjointSet(vertex_count)
     total = 0
     accepted = 0
+    # The cheapest safe edge is justified by the MST cut property.
     for left, right, weight in sorted(edges, key=lambda edge: edge[2]):
         if groups.union(left, right):
             total += weight

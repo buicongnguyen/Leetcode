@@ -12,87 +12,79 @@ define how their representations stay synchronized.
 
 | Design | Structure A | Structure B | Result |
 | --- | --- | --- | --- |
-| LRU cache | hash map | doubly linked list | `O(1)` lookup and recency update |
-| randomized set | hash map | dynamic array | `O(1)` expected delete and random |
-| streaming median | max-heap | min-heap | `O(log n)` add, `O(1)` median |
-| time map | hash map | sorted history | key lookup plus binary search |
-| min stack | value stack | minimum stack | `O(1)` minimum |
+| [LRU cache](lru_cache.md) | hash map | doubly linked list | `O(1)` lookup and recency update |
+| [LFU cache](lfu_cache.md) | key map | frequency buckets + recency lists | `O(1)` average access and eviction |
+| [randomized set](randomized_set.md) | hash map | dynamic array | `O(1)` expected delete and random |
+| [streaming median](streaming_median.md) | max-heap | min-heap | `O(log n)` add, `O(1)` median |
+| [time map](time_map.md) | hash map | sorted history | key lookup plus binary search |
+| [min stack](min_stack.md) | value | prefix minimum | `O(1)` minimum |
+| [Design Twitter](design_twitter.md) | follow graph | per-user feeds + heap merge | recent top-`k` news feed |
+| [All O(1)](all_one.md) | key map | ordered count buckets | `O(1)` increment, decrement, min, max |
+| [number containers](number_containers.md) | index map | per-number ordered indices | update plus smallest-index query |
+| [snapshot array](snapshot_array.md) | array | per-index sorted histories | sparse versions + binary search |
 
-## LRU cache
+## The design method
 
-The map owns `key → node`. The linked list owns recency order. A lookup moves
-its node to the front; eviction removes the tail and deletes the same key from
-the map.
+For every composite problem:
 
-**Cross-structure invariant:** every live map entry points to exactly one live
-list node, and every real list node has exactly one map entry.
+1. list the required operations and target complexity;
+2. assign one structure to own each expensive operation;
+3. write the cross-structure invariant;
+4. specify the exact update order for every mutation;
+5. test the boundary where two structures change together.
 
-```mermaid
-flowchart LR
-  accTitle: How the two structures inside an LRU cache stay synchronized
-  accDescr: A hash map points keys A, B, and C directly to their linked-list nodes. The doubly linked list orders those same nodes from most recently used to least recently used. A get moves its node to the front; eviction removes the tail node and its matching map entry.
-  subgraph M["Hash map: key → node"]
-    KA["key A"] -.-> NA
-    KB["key B"] -.-> NB
-    KC["key C"] -.-> NC
-  end
-  subgraph L["Doubly linked list: recency order"]
-    H["MRU"] <--> NA["node A"]
-    NA <--> NC["node C"]
-    NC <--> NB["node B"]
-    NB <--> T["LRU"]
-  end
-  GET["get(C)"] -->|"detach + move to front"| NC
-  EVICT["capacity exceeded"] -->|"remove tail + erase key B"| NB
-```
+The invariant is the most important step. “Use a map and a list” is not yet a
+design; “every map entry points to exactly one live list node, and every real
+list node has one map entry” is testable.
 
-The map answers “where is this key?” The list answers “which key is newest or
-oldest?” Every operation that inserts, moves, or removes a node must preserve
-both answers.
+## Choose by the missing operation
 
-## Randomized set
+| Existing structure | Missing operation | Add |
+| --- | --- | --- |
+| array gives random indexing | `O(1)` deletion by value | value-to-index hash map |
+| hash map gives direct lookup | recency or frequency order | linked bucket list |
+| one heap gives one extreme | middle of a stream | opposite heap |
+| current value only | historical query | append-only version history |
+| ordinary stack | aggregate after pop | prefix aggregate beside each value |
+| adjacency sets | global newest `k` items | heap-based `k`-way merge |
 
-The array provides constant-time random indexing. The map stores each value's
-array index. To delete from the middle:
+## Detailed problem guides
 
-1. move the last array value into the removed slot;
-2. update that value's stored index;
-3. pop the array tail;
-4. erase the removed value from the map.
+The first five guides include tested C++17 and Python implementations:
 
-The order of these updates matters when the removed value is already last.
+- [LRU cache](lru_cache.md)
+- [Randomized set](randomized_set.md)
+- [Streaming median](streaming_median.md)
+- [Time-based key-value store](time_map.md)
+- [Min stack](min_stack.md)
 
-## Streaming median
+The remaining guides focus on the ownership model and mutation order for more
+complex interview designs:
 
-Keep the lower half in a max-heap and the upper half in a min-heap.
+- [LFU cache](lfu_cache.md)
+- [Design Twitter](design_twitter.md)
+- [All O(1) data structure](all_one.md)
+- [Number containers](number_containers.md)
+- [Snapshot array](snapshot_array.md)
 
-```mermaid
-flowchart LR
-  accTitle: Two-heap representation of a streaming median
-  accDescr: A max-heap owns the lower half and exposes its largest value, a min-heap owns the upper half and exposes its smallest value, and balancing keeps the lower heap the same size or one element larger.
-  A["Lower half<br/>max-heap"] -->|"largest lower value"| M{"Median"}
-  B["Upper half<br/>min-heap"] -->|"smallest upper value"| M
-  A <-->|"rebalance until sizes differ by at most one"| B
-  M --> C["odd count: lower top<br/>even count: average both tops"]
-```
+Composite structures most often fail at synchronization boundaries. Test
+overwriting, deleting the last array element, moving between buckets, removing
+an empty bucket, zero/one capacity, duplicate extremes, and queries before the
+first stored version.
 
-**Invariants:**
+## Tested anchor example
 
-- every lower value is at most every upper value;
-- the lower heap has either the same number of elements or one more.
+LRU cache is the clearest example of two structures owning different
+operations while representing the same live entries:
 
 === "Python"
 
     ```python
-    --8<-- "codes/python/dsa_atlas/structures.py:median"
+    --8<-- "codes/python/dsa_atlas/structures.py:lru-cache"
     ```
 
 === "C++17"
 
     ```cpp
-    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:median"
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:lru-cache"
     ```
-
-Composite structures fail at synchronization boundaries. Tests should target
-updates that touch both structures: overwriting, removing the last element,
-evicting at zero/one capacity, and balancing around duplicate extremes.

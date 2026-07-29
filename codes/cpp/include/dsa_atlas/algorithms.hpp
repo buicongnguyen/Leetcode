@@ -5,9 +5,12 @@
 #include <cstddef>
 #include <deque>
 #include <functional>
+#include <iterator>
+#include <list>
 #include <limits>
 #include <optional>
 #include <queue>
+#include <random>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -32,9 +35,11 @@ struct TreeNode {
 };
 
 inline int tree_height(const TreeNode* root) {
+  // An empty subtree contributes no nodes.
   if (root == nullptr) {
     return 0;
   }
+  // Solve both child contracts before combining their answers.
   const int left_height = tree_height(root->left);
   const int right_height = tree_height(root->right);
   return 1 + std::max(left_height, right_height);
@@ -49,9 +54,11 @@ inline std::optional<std::pair<int, int>> two_sum(
     const long long complement =
         static_cast<long long>(target) - static_cast<long long>(values[index]);
     const auto found = position.find(complement);
+    // Search before insertion so an element cannot match itself.
     if (found != position.end()) {
       return std::pair<int, int>{found->second, index};
     }
+    // Remember this index for complements that appear later.
     position[static_cast<long long>(values[index])] = index;
   }
   return std::nullopt;
@@ -61,15 +68,18 @@ inline std::optional<std::pair<int, int>> two_sum(
 // --8<-- [start:prefix-sum]
 inline long long count_subarrays_sum(
     const std::vector<int>& values, long long target) {
+  // The empty prefix lets ranges beginning at index zero be counted.
   std::unordered_map<long long, int> seen{{0, 1}};
   long long prefix = 0;
   long long answer = 0;
   for (const int value : values) {
     prefix += value;
+    // earlier_prefix = current_prefix - target
     const auto found = seen.find(prefix - target);
     if (found != seen.end()) {
       answer += found->second;
     }
+    // Store only after querying so this prefix is not treated as earlier.
     ++seen[prefix];
   }
   return answer;
@@ -85,15 +95,18 @@ inline std::vector<int> max_sliding_window(
   std::deque<int> candidates;
   std::vector<int> answer;
   for (int right = 0; right < static_cast<int>(values.size()); ++right) {
+    // Expire indices that have left the current window.
     while (!candidates.empty() && candidates.front() <= right - window) {
       candidates.pop_front();
     }
+    // Remove dominated values that can never become a future maximum.
     while (!candidates.empty() &&
            values[candidates.back()] <= values[right]) {
       candidates.pop_back();
     }
     candidates.push_back(right);
     if (right + 1 >= window) {
+      // The front is the largest live candidate.
       answer.push_back(values[candidates.front()]);
     }
   }
@@ -104,6 +117,7 @@ inline std::vector<int> max_sliding_window(
 // --8<-- [start:binary-search]
 inline int binary_search_index(
     const std::vector<int>& values, int target) {
+  // Invariant: a present target remains inside inclusive [low, high].
   int low = 0;
   int high = static_cast<int>(values.size()) - 1;
   while (low <= high) {
@@ -112,8 +126,10 @@ inline int binary_search_index(
       return middle;
     }
     if (values[middle] < target) {
+      // middle and everything left of it are too small.
       low = middle + 1;
     } else {
+      // middle and everything right of it are too large.
       high = middle - 1;
     }
   }
@@ -127,13 +143,16 @@ int first_true(int size, Predicate predicate) {
   if (size < 0) {
     throw std::invalid_argument("size must be nonnegative");
   }
+  // [low, high) contains the first true position or sentinel size.
   int low = 0;
   int high = size;
   while (low < high) {
     const int middle = low + (high - low) / 2;
     if (predicate(middle)) {
+      // middle may be the answer, so keep it.
       high = middle;
     } else {
+      // middle is false; discard the false prefix through middle.
       low = middle + 1;
     }
   }
@@ -152,6 +171,7 @@ inline std::vector<int> bfs_distances(
   }
   std::vector<int> distance(graph.size(), -1);
   std::queue<int> frontier;
+  // Mark on enqueue so every vertex enters the queue once.
   distance[source] = 0;
   frontier.push(source);
   while (!frontier.empty()) {
@@ -159,6 +179,7 @@ inline std::vector<int> bfs_distances(
     frontier.pop();
     for (const int neighbor : graph[node]) {
       if (distance[neighbor] == -1) {
+        // Queue order makes this first distance the shortest.
         distance[neighbor] = distance[node] + 1;
         frontier.push(neighbor);
       }
@@ -193,6 +214,7 @@ inline std::vector<long long> dijkstra(
   while (!frontier.empty()) {
     const auto [current, node] = frontier.top();
     frontier.pop();
+    // Ignore heap entries superseded by a shorter route.
     if (current != distance[node]) {
       continue;
     }
@@ -202,6 +224,7 @@ inline std::vector<long long> dijkstra(
       }
       const long long candidate = current + weight;
       if (candidate < distance[neighbor]) {
+        // Relax the edge and schedule the improved state.
         distance[neighbor] = candidate;
         frontier.push({candidate, neighbor});
       }
@@ -228,6 +251,7 @@ inline std::vector<int> topological_order(
   std::queue<int> ready;
   for (int node = 0; node < static_cast<int>(graph.size()); ++node) {
     if (indegree[node] == 0) {
+      // Only vertices with no unmet prerequisite are ready.
       ready.push(node);
     }
   }
@@ -238,6 +262,7 @@ inline std::vector<int> topological_order(
     order.push_back(node);
     for (const int neighbor : graph[node]) {
       if (--indegree[neighbor] == 0) {
+        // Its final prerequisite has just been removed.
         ready.push(neighbor);
       }
     }
@@ -261,6 +286,7 @@ inline std::vector<std::pair<int, int>> find_bridges(
     const auto [left, right] = edges[id];
     validate_vertex(left, graph.size(), "edge endpoint");
     validate_vertex(right, graph.size(), "edge endpoint");
+    // Edge IDs distinguish parallel edges from the exact parent edge.
     graph[left].push_back({right, id});
     graph[right].push_back({left, id});
   }
@@ -275,12 +301,14 @@ inline std::vector<std::pair<int, int>> find_bridges(
         continue;
       }
       if (entered[neighbor] >= 0) {
+        // A back edge may connect this subtree to an ancestor.
         low[node] = std::min(low[node], entered[neighbor]);
         continue;
       }
       search(neighbor, edge_id);
       low[node] = std::min(low[node], low[neighbor]);
       if (low[neighbor] > entered[node]) {
+        // The child subtree has no route around this tree edge.
         bridges.push_back(std::minmax(node, neighbor));
       }
     }
@@ -298,15 +326,18 @@ inline std::vector<std::pair<int, int>> find_bridges(
 // --8<-- [start:subsets]
 inline std::vector<std::vector<int>> unique_subsets(
     std::vector<int> values) {
+  // Sorting places equal sibling choices next to one another.
   std::sort(values.begin(), values.end());
   std::vector<std::vector<int>> answer;
   std::vector<int> path;
   std::function<void(int)> search = [&](int start) {
+    // Every current path is one valid subset.
     answer.push_back(path);
     for (int index = start; index < static_cast<int>(values.size()); ++index) {
       if (index > start && values[index] == values[index - 1]) {
         continue;
       }
+      // Choose, recurse, then undo before trying the next sibling.
       path.push_back(values[index]);
       search(index + 1);
       path.pop_back();
@@ -328,6 +359,7 @@ inline long long knapsack_01(
     if (weight <= 0) {
       throw std::invalid_argument("item weights must be positive");
     }
+    // Descend so the source state still belongs to the prior item layer.
     for (int current = capacity; current >= weight; --current) {
       best[current] =
           std::max(best[current], best[current - weight] + value);
@@ -352,6 +384,7 @@ class DisjointSet {
       throw std::invalid_argument("item must be a valid set element");
     }
     while (parent_[item] != item) {
+      // Point to the grandparent to shorten future find paths.
       parent_[item] = parent_[parent_[item]];
       item = parent_[item];
     }
@@ -364,6 +397,7 @@ class DisjointSet {
     if (left == right) {
       return false;
     }
+    // Attach the smaller tree below the larger tree.
     if (component_size_[left] < component_size_[right]) {
       std::swap(left, right);
     }
@@ -384,6 +418,105 @@ class DisjointSet {
   std::vector<int> component_size_;
 };
 // --8<-- [end:disjoint-set]
+
+// --8<-- [start:lru-cache]
+class LRUCache {
+ public:
+  explicit LRUCache(int capacity) : capacity_(capacity) {
+    if (capacity < 0) {
+      throw std::invalid_argument("capacity must be nonnegative");
+    }
+  }
+
+  int get(int key) {
+    const auto found = nodes_.find(key);
+    if (found == nodes_.end()) {
+      return -1;
+    }
+    // A successful read makes this entry most recent.
+    touch(found->second);
+    return found->second->second;
+  }
+
+  void put(int key, int value) {
+    const auto found = nodes_.find(key);
+    if (found != nodes_.end()) {
+      found->second->second = value;
+      touch(found->second);
+      return;
+    }
+
+    // The list front is most recent; the back is the eviction target.
+    recency_.push_front({key, value});
+    nodes_[key] = recency_.begin();
+    if (nodes_.size() > static_cast<std::size_t>(capacity_)) {
+      const int oldest_key = recency_.back().first;
+      recency_.pop_back();
+      nodes_.erase(oldest_key);
+    }
+  }
+
+ private:
+  using Entry = std::pair<int, int>;
+  using Iterator = std::list<Entry>::iterator;
+
+  void touch(Iterator entry) {
+    // splice moves the existing node without invalidating its iterator.
+    recency_.splice(recency_.begin(), recency_, entry);
+  }
+
+  int capacity_;
+  std::list<Entry> recency_;
+  std::unordered_map<int, Iterator> nodes_;
+};
+// --8<-- [end:lru-cache]
+
+// --8<-- [start:randomized-set]
+class RandomizedSet {
+ public:
+  explicit RandomizedSet(unsigned seed = std::random_device{}())
+      : random_(seed) {}
+
+  bool insert(int value) {
+    if (position_.count(value) != 0) {
+      return false;
+    }
+    position_[value] = values_.size();
+    values_.push_back(value);
+    return true;
+  }
+
+  bool remove(int value) {
+    const auto found = position_.find(value);
+    if (found == position_.end()) {
+      return false;
+    }
+    const std::size_t index = found->second;
+    const int last = values_.back();
+    // Fill the removed slot with the last value before shrinking.
+    values_[index] = last;
+    position_[last] = index;
+    values_.pop_back();
+    position_.erase(found);
+    return true;
+  }
+
+  int get_random() {
+    if (values_.empty()) {
+      throw std::logic_error("cannot choose from an empty set");
+    }
+    // Dense array indices make every live value equally reachable.
+    std::uniform_int_distribution<std::size_t> choose(
+        0, values_.size() - 1);
+    return values_[choose(random_)];
+  }
+
+ private:
+  std::vector<int> values_;
+  std::unordered_map<int, std::size_t> position_;
+  std::mt19937 random_;
+};
+// --8<-- [end:randomized-set]
 
 // --8<-- [start:kruskal]
 inline long long minimum_spanning_tree_weight(
@@ -409,6 +542,7 @@ inline long long minimum_spanning_tree_weight(
   DisjointSet groups(vertex_count);
   long long total = 0;
   int accepted = 0;
+  // The cheapest safe edge is justified by the MST cut property.
   for (const auto [left, right, weight] : ordered) {
     if (groups.unite(left, right)) {
       if ((weight > 0 &&
@@ -434,10 +568,12 @@ inline long long minimum_spanning_tree_weight(
 class MedianFinder {
  public:
   void add(int value) {
+    // Route through lower so every lower value stays <= every upper value.
     lower_.push(value);
     upper_.push(lower_.top());
     lower_.pop();
     if (upper_.size() > lower_.size()) {
+      // Keep lower the same size as upper or one element larger.
       lower_.push(upper_.top());
       upper_.pop();
     }
@@ -460,5 +596,75 @@ class MedianFinder {
   std::priority_queue<int, std::vector<int>, std::greater<int>> upper_;
 };
 // --8<-- [end:median]
+
+// --8<-- [start:time-map]
+class TimeMap {
+ public:
+  void set(const std::string& key, std::string value, int timestamp) {
+    auto& entries = history_[key];
+    if (!entries.empty() && timestamp <= entries.back().first) {
+      throw std::invalid_argument(
+          "timestamps for one key must strictly increase");
+    }
+    // Increasing timestamps keep the history sorted without extra work.
+    entries.push_back({timestamp, std::move(value)});
+  }
+
+  std::string get(const std::string& key, int timestamp) const {
+    const auto found = history_.find(key);
+    if (found == history_.end()) {
+      return "";
+    }
+    const auto& entries = found->second;
+    // upper_bound(timestamp) - 1 is the newest value not after the query.
+    const auto after = std::upper_bound(
+        entries.begin(), entries.end(), timestamp,
+        [](int query, const auto& entry) { return query < entry.first; });
+    return after == entries.begin() ? "" : std::prev(after)->second;
+  }
+
+ private:
+  std::unordered_map<std::string, std::vector<std::pair<int, std::string>>>
+      history_;
+};
+// --8<-- [end:time-map]
+
+// --8<-- [start:min-stack]
+class MinStack {
+ public:
+  void push(int value) {
+    const int current_minimum =
+        entries_.empty() ? value : std::min(value, entries_.back().second);
+    // The saved prefix minimum restores automatically after a pop.
+    entries_.push_back({value, current_minimum});
+  }
+
+  int pop() {
+    require_entry("pop from empty MinStack");
+    const int value = entries_.back().first;
+    entries_.pop_back();
+    return value;
+  }
+
+  int top() const {
+    require_entry("top from empty MinStack");
+    return entries_.back().first;
+  }
+
+  int get_min() const {
+    require_entry("minimum of empty MinStack");
+    return entries_.back().second;
+  }
+
+ private:
+  void require_entry(const char* message) const {
+    if (entries_.empty()) {
+      throw std::logic_error(message);
+    }
+  }
+
+  std::vector<std::pair<int, int>> entries_;
+};
+// --8<-- [end:min-stack]
 
 }  // namespace dsa_atlas

@@ -59,15 +59,21 @@ data structure.
 
 ### 5. Select a pattern
 
-| Repeated need | Structure or pattern |
-| --- | --- |
-| membership / complement | hash map or set |
-| next best candidate | heap |
-| oldest pending state | queue |
-| newest unresolved state | stack |
-| contiguous validity | sliding window |
-| monotone decision | binary search |
-| overlapping subproblems | dynamic programming |
+The earlier table was directionally correct, but a signal alone is not enough.
+Each pattern also has a condition that makes its discard or reuse step valid:
+
+| Repeated need | First candidate | Valid when | Do not use it blindly when |
+| --- | --- | --- | --- |
+| membership, count, complement | hash map / set | order is not needed for the lookup | worst-case hashing or sorted iteration is part of the contract |
+| next best live candidate | heap | candidates arrive, expire, or change dynamically | the data is static and sorting once is simpler |
+| oldest pending state | queue | work must be processed in arrival or distance-layer order | priority, not age, decides what leaves next |
+| newest unresolved state | stack | nested or last-in-first-out work must be resolved first | the earliest pending item owns the next answer |
+| contiguous valid range | sliding window | moving a boundary changes validity monotonically | negative values or global constraints can make a boundary move backward |
+| range aggregate or count | prefix sum | a range can be derived from two prefix states | updates occur between queries; consider a Fenwick or segment tree |
+| ordered monotone decision | binary search | candidates are ordered and the predicate changes once | feasibility can switch back and forth |
+| repeated complete state | dynamic programming | the state captures every future-relevant fact and dependencies terminate | histories with the same state variables can have different futures |
+| cheapest transition sequence | BFS / shortest path | the problem is states plus legal moves | the structure is only a sequence with a simpler invariant |
+| repeated connectivity merge | disjoint set | edges are added or processed offline and splits are not required | deletions or path details must be answered |
 
 The first candidate should come from the expensive operation, not from a
 memorized problem title:
@@ -93,6 +99,26 @@ flowchart TD
 
 This map chooses a starting family. Constraints and a written invariant still
 decide whether that candidate is valid.
+
+#### The four selection gates
+
+Before committing to the candidate, pass all four gates:
+
+1. **Model:** name the sequence, state graph, tree, interval, or component.
+2. **Operation:** name the repeated expensive action the structure makes cheap.
+3. **Proof condition:** state the monotonicity, ordering, or state-reuse fact
+   that permits discarding work.
+4. **Budget:** verify that the number of states or operations fits the input
+   bound.
+
+For example, “subarray” does not automatically mean sliding window. With
+nonnegative values, increasing the right boundary can only increase a sum, so
+the left boundary can move forward monotonically. With negative values that
+proof disappears; prefix sums, hashing, or another model may be required.
+
+Likewise, “minimum” does not automatically mean heap. A heap is useful when the
+candidate set changes and the next minimum must be requested repeatedly. For a
+static collection, one minimum scan or one sort may be the clearer solution.
 
 ### 6. Write the invariant
 

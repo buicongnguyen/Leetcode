@@ -15,7 +15,12 @@ useful for decision flows, but it does not count as a copy-ready sample.
 | Chapter 5 | Tree-height prose only | Added tested `TreeNode` and `tree_height` implementations in both languages. |
 | Chapter 6 | Topological sort and bridges were described but hidden in source | Exposed both tested implementations as paired samples. |
 | Chapter 10 | Advanced algorithms were explanation-only | Added a tested Kruskal minimum-spanning-tree implementation in both languages. |
-| Chapters 2–4, 7–9, 11 | At least one paired or equivalent example | Retained existing tested examples and verified coverage automatically. |
+| Chapter 11 | Only the streaming-median combination was tested | Added tested LRU cache, Randomized Set, TimeMap, and Min Stack implementations in both languages. |
+| Chapters 2–4 and 7–9 | At least one paired or equivalent example | Retained existing tested examples and verified coverage automatically. |
+
+Advanced Graphs and Composite Structures now use subpages. Pages with
+explanation-only blueprints say so explicitly; only snippets sourced from
+`codes/` are presented as tested templates.
 
 ## Quality rules
 
@@ -23,4 +28,6 @@ useful for decision flows, but it does not count as a copy-ready sample.
 - Included snippets must resolve to real source markers.
 - Algorithm behavior is tested outside the generated documentation.
 - Advanced material is labeled explanatory until its implementation has tests.
+- Template comments explain invariants, ownership changes, or discard logic
+  instead of restating the next line of syntax.
 - New chapter changes fail validation when either language sample is absent.

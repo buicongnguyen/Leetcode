@@ -131,6 +131,46 @@ int main() {
     expect(medians.median() == static_cast<double>(INT_MAX),
            "median averaging must avoid overflow");
 
+    LRUCache cache(2);
+    cache.put(1, 10);
+    cache.put(2, 20);
+    expect(cache.get(1) == 10, "LRU get must return and refresh a value");
+    cache.put(3, 30);
+    expect(cache.get(2) == -1, "LRU must evict the least-recent key");
+    LRUCache empty_cache(0);
+    empty_cache.put(1, 1);
+    expect(empty_cache.get(1) == -1, "zero-capacity LRU must retain nothing");
+
+    RandomizedSet random_values(7);
+    expect(random_values.insert(10), "randomized set must insert a new value");
+    expect(random_values.insert(20), "randomized set must insert another value");
+    expect(random_values.insert(30), "randomized set must insert a third value");
+    expect(random_values.remove(20), "randomized set must remove a live value");
+    expect(!random_values.remove(20), "randomized set must reject a missing value");
+    const int random_value = random_values.get_random();
+    expect(random_value == 10 || random_value == 30,
+           "randomized set must return a live value");
+
+    TimeMap history;
+    history.set("mode", "draft", 2);
+    history.set("mode", "published", 5);
+    expect(history.get("mode", 1).empty(),
+           "time map must reject history after the query");
+    expect(history.get("mode", 4) == "draft",
+           "time map must return the latest value before the query");
+    expect(history.get("mode", 5) == "published",
+           "time map must include an exact timestamp");
+
+    MinStack minimums;
+    minimums.push(3);
+    minimums.push(1);
+    minimums.push(2);
+    expect(minimums.get_min() == 1, "min stack must expose the prefix minimum");
+    expect(minimums.pop() == 2, "min stack must pop the latest value");
+    expect(minimums.pop() == 1, "min stack must pop the previous value");
+    expect(minimums.get_min() == 3,
+           "min stack must restore the previous prefix minimum");
+
     std::cout << "All C++ algorithm tests passed.\n";
     return 0;
   } catch (const std::exception& error) {

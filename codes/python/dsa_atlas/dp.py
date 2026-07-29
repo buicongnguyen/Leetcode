@@ -13,6 +13,7 @@ def knapsack_01(capacity: int, items: Iterable[tuple[int, int]]) -> int:
     for weight, value in items:
         if weight <= 0:
             raise ValueError("item weights must be positive")
+        # Descend so best[current - weight] still belongs to the prior item layer.
         for current in range(capacity, weight - 1, -1):
             best[current] = max(best[current], best[current - weight] + value)
     return best[capacity]

@@ -11,12 +11,23 @@ from .graph import (
     topological_order,
 )
 from .search import binary_search, first_true, lower_bound
-from .structures import DisjointSet, MedianFinder
+from .structures import (
+    DisjointSet,
+    LRUCache,
+    MedianFinder,
+    MinStack,
+    RandomizedSet,
+    TimeMap,
+)
 from .trees import TreeNode, tree_height
 
 __all__ = [
     "DisjointSet",
+    "LRUCache",
     "MedianFinder",
+    "MinStack",
+    "RandomizedSet",
+    "TimeMap",
     "TreeNode",
     "bfs_distances",
     "binary_search",
