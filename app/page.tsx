@@ -17,6 +17,9 @@ export default function Home() {
         </Link>
         <div>
           <a href="/book/">Read the book</a>
+          <a href="https://buicongnguyen.github.io/SystemDesign/">
+            System Design
+          </a>
           <a href="https://github.com/buicongnguyen/Leetcode">GitHub</a>
         </div>
       </nav>
@@ -38,6 +41,9 @@ export default function Home() {
             </a>
             <a href="https://github.com/buicongnguyen/Leetcode/tree/main/codes">
               Browse tested code
+            </a>
+            <a href="https://buicongnguyen.github.io/SystemDesign/">
+              Explore System Design
             </a>
           </div>
         </div>
