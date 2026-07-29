@@ -1,92 +1,150 @@
 ---
-description: Define states, transitions, base cases, and evaluation order for dynamic programming.
+description: Recognize dynamic programming, choose a state shape, and route to detailed 1D, 2D, 3D, and higher-dimensional patterns.
 ---
 
 # Chapter 9 · Dynamic programming
 
-Dynamic programming is exhaustive search over a state graph with repeated
-states evaluated once.
+Dynamic programming is **exhaustive search over a state graph, with each
+repeated state solved once**. The hard part is not filling a table. It is
+deciding which histories have the same future and may safely share one answer.
 
-Two different histories may reach the same future. If the state description
-contains everything that future decisions need, those histories can merge:
+## The DP recognition test
+
+Ask these questions before writing `dp`:
+
+1. **Choices:** can the solution be described as a sequence of decisions?
+2. **Repeated future:** can different decision histories reach the same
+   remaining problem?
+3. **Complete state:** can a small tuple capture everything that changes future
+   legal moves or value?
+4. **Progress:** does every transition move toward a base case?
+
+If the first two answers are yes, memoized search is a strong first model. If
+each state has only one incoming history, memoization may add no value. If
+transitions can cycle without a decreasing resource, model a graph algorithm
+instead of forcing DP.
 
 ```mermaid
 flowchart TD
-  accTitle: Two histories merge into one dynamic-programming state
-  accDescr: From grid position zero-zero, moving right then down and moving down then right both reach position one-one. Because the remaining problem is identical at one-one, dynamic programming evaluates that state once and reuses its answer.
-  A["state (0, 0)"]
-  A -->|"right"| B["state (0, 1)"]
-  A -->|"down"| C["state (1, 0)"]
-  B -->|"down"| D["state (1, 1)"]
-  C -->|"right"| D
-  D --> E["solve remaining suffix once"]
+  accTitle: Dynamic-programming pattern and dimension chooser
+  accDescr: Start from the decisions and repeated subproblems. Use one-dimensional DP for one changing prefix or amount, two-dimensional DP for two prefixes, grid coordinates, or intervals, three-dimensional DP when a third independent constraint such as a second robot or transaction state changes the future, and sparse tuple memoization for higher-dimensional state. Then identify a specialized family such as knapsack, tree, interval, subset, or digit DP.
+  A{"Can choices lead to the<br/>same remaining problem?"}
+  A -->|no| B["Backtracking, greedy,<br/>or direct traversal"]
+  A -->|yes| C["Write the smallest complete<br/>state tuple"]
+  C --> D{"How many independent facts<br/>change the future?"}
+  D -->|"one: i, amount, node"| E["1D / linear-state DP"]
+  D -->|"two: i,j or left,right"| F["2D DP"]
+  D -->|"three: row,c1,c2<br/>or day,k,holding"| G["3D DP"]
+  D -->|"four or more"| H["Sparse tuple / bitmask DP<br/>and state reduction"]
+  E --> I{"Special structure?"}
+  F --> I
+  G --> I
+  H --> I
+  I -->|"capacity + item choice"| J["Knapsack family"]
+  I -->|"subtree / interval / subset"| K["Structured DP"]
+  I -->|"numeric bound digit by digit"| L["Digit DP"]
+  I -->|"ordinary sequence or grid"| M["Use dimensional guide"]
 ```
 
-If two merged histories would have different legal moves or future value, the
-state is missing a variable and must be refined.
+## Dimension is about state, not input
 
-## The five-part definition
+A matrix problem is not automatically 2D DP, and an array problem is not
+automatically 1D DP.
 
-Before code, write:
+| State contract | Dimension | Typical pattern |
+| --- | ---: | --- |
+| `dp[i]` = answer for the first `i` values | 1D | take/skip, stairs, LIS |
+| `dp[amount]` = best way to make `amount` | 1D | coin change |
+| `dp[i][j]` = answer for two prefixes | 2D | LCS, edit distance |
+| `dp[left][right]` = answer inside an interval | 2D | interval DP |
+| `dp[row][c1][c2]` = two agents after `row` | 3D | Cherry Pickup II |
+| `dp[day][used][holding]` = trading state | 3D | bounded stock trades |
+| `(pos, tight, started, mask)` | 4D tuple | digit DP |
+| `(node, parent_taken)` | logical 2D | tree DP |
 
-1. **State:** exactly what `dp[...]` means.
-2. **Transition:** which smaller states produce it.
-3. **Base case:** the smallest solved states.
-4. **Order:** why dependencies are ready when read.
-5. **Answer:** which state or aggregate to return.
+Count only **independent** facts. In a two-robot grid, both robots are on the
+same row after the same number of moves, so `(row, c1, c2)` is sufficient;
+storing both row coordinates would be redundant.
+
+## The solve-before-code workflow
+
+```mermaid
+flowchart LR
+  accTitle: From brute force to a correct dynamic program
+  accDescr: Draw the decision tree, name the recursive contract, merge nodes with identical future information into states, write transitions and base cases, choose a dependency order, compute state and transition complexity, and only then compress memory or reconstruct a solution.
+  A["Draw decisions"] --> B["Name recursive contract"]
+  B --> C["Merge equivalent futures"]
+  C --> D["Write recurrence"]
+  D --> E["Base + impossible states"]
+  E --> F["Choose evaluation order"]
+  F --> G["Count states × work/state"]
+  G --> H["Optimize / reconstruct"]
+```
+
+For each problem, write this sentence:
+
+> `solve(state)` returns ___ for exactly ___, assuming ___.
+
+Then complete the five-part definition:
+
+1. **State** — the exact meaning of every coordinate.
+2. **Transition** — each legal decision and the next state it creates.
+3. **Base** — solved terminal states and impossible states.
+4. **Order** — why dependencies are ready before a state reads them.
+5. **Answer** — the precise state or aggregate the problem requests.
+
+The [state-design workshop](state_design.md) applies this method step by step.
+
+## Pattern router
+
+| Problem signal | First model | Detailed guide |
+| --- | --- | --- |
+| choose or skip along one sequence | `dp[i]` or two rolling values | [1D DP](one_dimensional.md) |
+| transform/compare two strings | `dp[i][j]` over prefixes | [2D DP](two_dimensional.md) |
+| move through a grid | `dp[row][column]` | [2D DP](two_dimensional.md) |
+| two synchronized agents | `dp[step][position1][position2]` | [3D DP](three_dimensional.md) |
+| bounded actions plus mode | `dp[time][budget][mode]` | [3D DP](three_dimensional.md) |
+| use each item once or repeatedly | capacity DP + deliberate loop direction | [Knapsack families](knapsack_families.md) |
+| choose the final split inside a range | `dp[left][right]` | [Structured DP](structured_dp.md) |
+| result from child subtrees | return a small state vector per node | [Structured DP](structured_dp.md) |
+| `n` is around 15–22 and chosen set matters | `dp[mask]` or `dp[mask][last]` | [Higher-dimensional DP](higher_dimensional.md) |
+| count values up to a huge numeric bound | digit position + bound flags + property | [Higher-dimensional DP](higher_dimensional.md) |
+| need the actual choices, not only the score | parent/choice pointers | [Optimization and reconstruction](optimization_reconstruction.md) |
 
 ## Memoization or tabulation?
 
 | Top-down memoization | Bottom-up tabulation |
 | --- | --- |
-| natural from recurrence | explicit evaluation order |
-| visits reachable states | usually fills full state space |
-| recursion overhead | easy space compression |
-| good for sparse states | predictable memory access |
+| mirrors the decision recurrence | makes dependency order explicit |
+| visits only reachable states | usually fills the declared state space |
+| handles irregular tuple states naturally | has predictable memory access |
+| risks call-stack depth | supports rolling-array compression easily |
 
-```mermaid
-flowchart TD
-  accTitle: Choosing memoization, tabulation, and safe space compression
-  accDescr: Prefer memoization for a natural recurrence with sparse reachable states when recursion depth is safe. Prefer tabulation for dense states, deep dependency chains, or a clear evaluation order. Compress memory only after proving that each state reads a limited set of earlier layers and choosing the safe update direction.
-  A{"Are reachable states<br/>sparse or irregular?"}
-  A -->|yes| B{"Is recursion depth<br/>provably safe?"}
-  B -->|yes| C["Top-down memoization"]
-  B -->|no| D["Iterative evaluation<br/>with an explicit order"]
-  A -->|no| E{"Is dependency order<br/>easy to state?"}
-  E -->|yes| F["Bottom-up tabulation"]
-  E -->|no| G["Model dependencies as a DAG,<br/>then derive an order"]
-  C --> H{"Need less memory?"}
-  D --> H
-  F --> H
-  G --> H
-  H -->|"depends on limited<br/>earlier layers"| I["Compress only after<br/>proving update direction"]
-  H -->|"dependencies are broad"| J["Keep the full table"]
-```
+They are two evaluation strategies for the same state graph. Start with the one
+that makes correctness easiest to explain. Convert only for recursion depth,
+constant factors, memory layout, or reconstruction.
 
-Memoization and tabulation evaluate the same recurrence. The choice changes
-which states are visited, how evaluation order is enforced, and whether call
-stack depth is part of the risk.
+## Detailed guides
 
-## 0/1 knapsack
+- [State design and proof](state_design.md)
+- [1D DP: sequences, take/skip, and amounts](one_dimensional.md)
+- [2D DP: grids, two strings, and intervals](two_dimensional.md)
+- [3D DP: two agents, resources, and state machines](three_dimensional.md)
+- [Higher-dimensional, sparse, bitmask, and digit DP](higher_dimensional.md)
+- [Knapsack families and loop direction](knapsack_families.md)
+- [Interval, tree, DAG, subset, and game DP](structured_dp.md)
+- [Space optimization, reconstruction, and debugging](optimization_reconstruction.md)
 
-For each item `(weight, value)`, update capacities in descending order.
+## Tested anchor: 0/1 knapsack
 
-**State:** `dp[c]` is the best value with capacity at most `c` using only items
+For each item `(weight, value)`, update capacity in descending order.
+
+**State:** `best[c]` is the best value with capacity at most `c` using items
 processed so far.
 
-**Why descending?** Reading `dp[c - weight]` must refer to the previous item
-layer. Ascending order would permit the current item multiple times and solve
+**Invariant:** before `best[c]` is written, `best[c - weight]` still belongs to
+the previous item layer. Ascending order would reuse the current item and solve
 unbounded knapsack instead.
-
-```mermaid
-flowchart LR
-  accTitle: Zero-one knapsack state dependency
-  accDescr: The new value at capacity c is the better of skipping the item from old dp at c or taking the item from old dp at c minus its weight; updating capacities from high to low preserves both old values.
-  A["old dp[c]"] -->|"skip item"| C["new dp[c]"]
-  B["old dp[c - weight]"] -->|"+ item value"| C
-  C --> D["write capacities<br/>from high to low"]
-  D --> E["dp[c - weight] is still<br/>from the previous item layer"]
-```
 
 === "Python"
 
@@ -100,17 +158,17 @@ flowchart LR
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:knapsack"
     ```
 
-## State-design questions
+## Source-grounded practice
 
-- Which information from the past changes future legal moves?
-- Can two histories with the same chosen state variables always share an
-  optimal continuation?
-- Is a dimension derivable from the others?
-- Does the answer require exact capacity/length or at most capacity/length?
-- Are impossible states represented distinctly from a zero-value state?
+The examples are organized against the official
+[LeetCode Dynamic Programming study plan](https://leetcode.com/studyplan/dynamic-programming/)
+and HackerRank’s
+[Dynamic Programming interview kit](https://www.hackerrank.com/interview/interview-preparation-kit/dynamic-programming/challenges).
+The state-first method follows MIT’s view of DP as subproblems plus guesses in a
+dependency DAG:
+[Dynamic Programming Subproblems](https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2020/28461a74f81101874a13d9679a40584d_MIT6_006S20_lec16.pdf).
 
-## Space compression warning
+!!! note "Practice rule"
 
-Compress only after identifying the dependency direction. A one-dimensional
-array changes in place, so loop order becomes part of correctness, not merely
-an optimization detail.
+    Do not memorize a table shape from a solution. For every practice problem,
+    write the state contract and recurrence before opening an editor.

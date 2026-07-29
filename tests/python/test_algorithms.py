@@ -19,13 +19,18 @@ from dsa_atlas import (  # noqa: E402
     TimeMap,
     bfs_distances,
     binary_search,
+    cherry_pickup_two_robots,
+    count_distinct_digit_numbers,
     count_subarrays_sum,
     dijkstra,
     find_bridges,
     first_true,
     knapsack_01,
+    longest_common_subsequence_length,
     lower_bound,
+    max_non_adjacent_sum,
     max_sliding_window,
+    minimum_coins,
     minimum_spanning_tree_weight,
     topological_order,
     TreeNode,
@@ -121,6 +126,31 @@ class StateTests(unittest.TestCase):
         self.assertEqual(knapsack_01(4, [(2, 3), (2, 3), (3, 5)]), 6)
         with self.assertRaises(ValueError):
             knapsack_01(4, [(0, 9)])
+
+    def test_one_dimensional_dp_allows_the_empty_choice(self) -> None:
+        self.assertEqual(max_non_adjacent_sum([3, 7, 4, 6, 5]), 13)
+        self.assertEqual(max_non_adjacent_sum([-8, -2, -5]), 0)
+
+    def test_lcs_handles_matches_and_empty_strings(self) -> None:
+        self.assertEqual(longest_common_subsequence_length("abcde", "ace"), 3)
+        self.assertEqual(longest_common_subsequence_length("", "abc"), 0)
+
+    def test_unbounded_coin_change_distinguishes_impossible_amounts(self) -> None:
+        self.assertEqual(minimum_coins([1, 2, 5], 11), 3)
+        self.assertEqual(minimum_coins([2], 3), -1)
+        with self.assertRaises(ValueError):
+            minimum_coins([0, 1], 3)
+
+    def test_three_dimensional_dp_tracks_both_robots(self) -> None:
+        grid = [[3, 1, 1], [2, 5, 1], [1, 5, 5], [2, 1, 1]]
+        self.assertEqual(cherry_pickup_two_robots(grid), 24)
+        with self.assertRaises(ValueError):
+            cherry_pickup_two_robots([[1], [2, 3]])
+
+    def test_digit_dp_tracks_tight_started_and_used_digits(self) -> None:
+        self.assertEqual(count_distinct_digit_numbers(20), 19)
+        self.assertEqual(count_distinct_digit_numbers(5), 5)
+        self.assertEqual(count_distinct_digit_numbers(0), 0)
 
     def test_disjoint_set(self) -> None:
         groups = DisjointSet(4)

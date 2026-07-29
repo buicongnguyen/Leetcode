@@ -104,6 +104,25 @@ int main() {
     expect(subsets.size() == 6, "unique subsets must skip duplicates");
     expect(knapsack_01(4, {{2, 3}, {2, 3}, {3, 5}}) == 6,
            "0-1 knapsack must use each item once");
+    expect(max_non_adjacent_sum({3, 7, 4, 6, 5}) == 13,
+           "1D DP must enforce the non-adjacent choice");
+    expect(max_non_adjacent_sum({-8, -2, -5}) == 0,
+           "1D DP must permit the empty choice");
+    expect(longest_common_subsequence_length("abcde", "ace") == 3,
+           "2D sequence DP must find the longest common subsequence");
+    expect(longest_common_subsequence_length("", "abc") == 0,
+           "2D sequence DP must handle an empty prefix");
+    expect(minimum_coins({1, 2, 5}, 11) == 3,
+           "unbounded coin change must reuse denominations");
+    expect(minimum_coins({2}, 3) == -1,
+           "coin change must report impossible amounts");
+    expect(cherry_pickup_two_robots(
+               {{3, 1, 1}, {2, 5, 1}, {1, 5, 5}, {2, 1, 1}}) == 24,
+           "3D DP must track both robot columns");
+    expect(count_distinct_digit_numbers(20) == 19,
+           "digit DP must reject repeated digits");
+    expect(count_distinct_digit_numbers(0) == 0,
+           "digit DP must exclude the empty number");
 
     TreeNode fourth{4};
     TreeNode second{2, &fourth};

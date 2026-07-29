@@ -91,7 +91,16 @@ nav:
   - Search strategies:
       - "Chapter 7 · Search and sort": chapter_07_search_sort/index.md
       - "Chapter 8 · Backtracking": chapter_08_backtracking/index.md
-      - "Chapter 9 · Dynamic programming": chapter_09_dynamic_programming/index.md
+      - "Chapter 9 · Dynamic programming":
+          - Overview and chooser: chapter_09_dynamic_programming/index.md
+          - State design and proof: chapter_09_dynamic_programming/state_design.md
+          - "1D DP · Sequences and amounts": chapter_09_dynamic_programming/one_dimensional.md
+          - "2D DP · Grids and sequences": chapter_09_dynamic_programming/two_dimensional.md
+          - "3D DP · Agents and resources": chapter_09_dynamic_programming/three_dimensional.md
+          - Higher-dimensional DP: chapter_09_dynamic_programming/higher_dimensional.md
+          - Knapsack families: chapter_09_dynamic_programming/knapsack_families.md
+          - Structured DP: chapter_09_dynamic_programming/structured_dp.md
+          - Optimization and reconstruction: chapter_09_dynamic_programming/optimization_reconstruction.md
   - Advanced:
       - "Chapter 10 · Advanced graphs":
           - Overview and chooser: chapter_10_advanced_graphs/index.md

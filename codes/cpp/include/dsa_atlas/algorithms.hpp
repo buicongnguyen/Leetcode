@@ -369,6 +369,171 @@ inline long long knapsack_01(
 }
 // --8<-- [end:knapsack]
 
+// --8<-- [start:non-adjacent]
+inline long long max_non_adjacent_sum(const std::vector<int>& values) {
+  long long skip_previous = 0;
+  long long take_previous = 0;
+  for (const int value : values) {
+    // Taking this value requires skipping the immediately previous value.
+    const long long take_current = skip_previous + value;
+    // Skipping this value preserves the best earlier result.
+    const long long skip_current = std::max(skip_previous, take_previous);
+    take_previous = take_current;
+    skip_previous = skip_current;
+  }
+  return std::max(skip_previous, take_previous);
+}
+// --8<-- [end:non-adjacent]
+
+// --8<-- [start:lcs]
+inline int longest_common_subsequence_length(
+    const std::string& left, const std::string& right) {
+  std::vector<int> previous(right.size() + 1, 0);
+  for (const char left_character : left) {
+    std::vector<int> current(right.size() + 1, 0);
+    for (std::size_t column = 1; column <= right.size(); ++column) {
+      if (left_character == right[column - 1]) {
+        // Matching characters extend both shorter prefixes.
+        current[column] = previous[column - 1] + 1;
+      } else {
+        // Otherwise discard one final character and keep the better option.
+        current[column] = std::max(previous[column], current[column - 1]);
+      }
+    }
+    previous = std::move(current);
+  }
+  return previous.back();
+}
+// --8<-- [end:lcs]
+
+// --8<-- [start:coin-change]
+inline int minimum_coins(const std::vector<int>& coins, int amount) {
+  if (amount < 0) {
+    throw std::invalid_argument("amount must be nonnegative");
+  }
+  for (const int coin : coins) {
+    if (coin <= 0) {
+      throw std::invalid_argument("coin values must be positive");
+    }
+  }
+
+  const int impossible = amount + 1;
+  std::vector<int> best(amount + 1, impossible);
+  best[0] = 0;  // Zero coins make amount zero.
+  for (int current = 1; current <= amount; ++current) {
+    for (const int coin : coins) {
+      if (coin <= current) {
+        // Append this reusable coin to a solved smaller amount.
+        best[current] = std::min(best[current], best[current - coin] + 1);
+      }
+    }
+  }
+  return best[amount] == impossible ? -1 : best[amount];
+}
+// --8<-- [end:coin-change]
+
+// --8<-- [start:cherry-pickup]
+inline long long cherry_pickup_two_robots(
+    const std::vector<std::vector<int>>& grid) {
+  if (grid.empty() || grid.front().empty()) {
+    return 0;
+  }
+  const int rows = static_cast<int>(grid.size());
+  const int columns = static_cast<int>(grid.front().size());
+  for (const auto& row : grid) {
+    if (static_cast<int>(row.size()) != columns) {
+      throw std::invalid_argument("grid must be rectangular");
+    }
+  }
+
+  constexpr long long negative_infinity =
+      std::numeric_limits<long long>::lowest() / 4;
+  std::vector memo(
+      rows, std::vector(
+                columns, std::vector<long long>(columns, negative_infinity)));
+  std::vector seen(
+      rows, std::vector(columns, std::vector<bool>(columns, false)));
+
+  std::function<long long(int, int, int)> solve =
+      [&](int row, int first_column, int second_column) -> long long {
+    if (first_column < 0 || first_column >= columns ||
+        second_column < 0 || second_column >= columns) {
+      return negative_infinity;  // Invalid moves must never win a maximum.
+    }
+    if (seen[row][first_column][second_column]) {
+      return memo[row][first_column][second_column];
+    }
+    seen[row][first_column][second_column] = true;
+
+    long long cherries = grid[row][first_column];
+    if (first_column != second_column) {
+      cherries += grid[row][second_column];  // Count a shared cell only once.
+    }
+    if (row == rows - 1) {
+      return memo[row][first_column][second_column] = cherries;
+    }
+
+    long long best_suffix = negative_infinity;
+    for (int first_step = -1; first_step <= 1; ++first_step) {
+      for (int second_step = -1; second_step <= 1; ++second_step) {
+        // Both robot positions are required to describe the next state.
+        best_suffix =
+            std::max(best_suffix,
+                     solve(row + 1, first_column + first_step,
+                           second_column + second_step));
+      }
+    }
+    return memo[row][first_column][second_column] = cherries + best_suffix;
+  };
+
+  return solve(0, 0, columns - 1);
+}
+// --8<-- [end:cherry-pickup]
+
+// --8<-- [start:digit-dp]
+inline long long count_distinct_digit_numbers(int limit) {
+  if (limit < 0) {
+    throw std::invalid_argument("limit must be nonnegative");
+  }
+  const std::string digits = std::to_string(limit);
+  const int positions = static_cast<int>(digits.size());
+  std::vector memo(
+      positions,
+      std::vector(2, std::vector<long long>(1 << 10, -1)));
+
+  std::function<long long(int, bool, bool, int)> solve =
+      [&](int position, bool tight, bool started,
+          int used_mask) -> long long {
+    if (position == positions) {
+      return started ? 1 : 0;  // Exclude the all-leading-zero representation.
+    }
+    if (!tight && memo[position][started][used_mask] != -1) {
+      return memo[position][started][used_mask];
+    }
+
+    const int upper = tight ? digits[position] - '0' : 9;
+    long long total = 0;
+    for (int digit = 0; digit <= upper; ++digit) {
+      const bool next_tight = tight && digit == upper;
+      if (!started && digit == 0) {
+        // Leading zeros do not consume digit zero.
+        total += solve(position + 1, next_tight, false, used_mask);
+      } else if ((used_mask & (1 << digit)) == 0) {
+        // The bitmask remembers every digit chosen for the real number.
+        total += solve(position + 1, next_tight, true,
+                       used_mask | (1 << digit));
+      }
+    }
+    if (!tight) {
+      memo[position][started][used_mask] = total;
+    }
+    return total;
+  };
+
+  return solve(0, true, false, 0);
+}
+// --8<-- [end:digit-dp]
+
 // --8<-- [start:disjoint-set]
 class DisjointSet {
  public:

@@ -39,6 +39,8 @@ Advanced Graphs now has separate guides for MST, flow, negative and all-pairs
 shortest paths, SCC, connectivity failures, and LCA. Composite Structures has
 problem-oriented guides for ten multi-structure designs, with tested paired
 templates for LRU, Randomized Set, Streaming Median, TimeMap, and Min Stack.
+Dynamic Programming has a state-design guide plus dedicated 1D, 2D, 3D,
+higher-dimensional, knapsack, structured-pattern, and optimization pages.
 
 ## Local development
 
