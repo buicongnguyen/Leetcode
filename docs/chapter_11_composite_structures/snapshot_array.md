@@ -1,5 +1,6 @@
 ---
 description: Store sparse per-index version histories and binary search the value visible at a snapshot.
+sample_status: conceptual
 ---
 
 # Snapshot array
@@ -56,4 +57,3 @@ coalescing, and its final entry is the current value for that index.
 
     The sparse-history design is explained here; it is not yet part of the
     tested library.
-

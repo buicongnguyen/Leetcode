@@ -1,5 +1,6 @@
 ---
 description: Combine per-key histories with binary search for time-based key-value queries.
+sample_status: tested
 ---
 
 # Time-based key-value store
@@ -52,4 +53,3 @@ Use `upper_bound(query_timestamp) - 1`:
 ## Practice
 
 [LeetCode: Time Based Key-Value Store](https://leetcode.com/problems/time-based-key-value-store/)
-

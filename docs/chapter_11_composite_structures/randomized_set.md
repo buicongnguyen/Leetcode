@@ -1,5 +1,6 @@
 ---
 description: Combine a dense array and value-to-index map for expected constant-time insert, delete, and random choice.
+sample_status: tested
 ---
 
 # Randomized set
@@ -54,4 +55,3 @@ still be tested.
 ## Practice
 
 [LeetCode: Insert Delete GetRandom O(1)](https://leetcode.com/problems/insert-delete-getrandom-o1/)
-

@@ -1,5 +1,6 @@
 ---
 description: Recognize dynamic programming, choose a state shape, and route to detailed 1D, 2D, 3D, and higher-dimensional patterns.
+sample_status: tested
 ---
 
 # Chapter 9 · Dynamic programming

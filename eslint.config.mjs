@@ -7,8 +7,11 @@ export default defineConfig([
   ...nextTs,
   globalIgnores([
     ".codex/**",
+    ".audit-playwright-output/**",
     ".next/**",
     ".venv/**",
+    "build/cpp*/**",
+    "deploy-clean-*/**",
     "dist/**",
     "node_modules/**",
     "public/book/**",

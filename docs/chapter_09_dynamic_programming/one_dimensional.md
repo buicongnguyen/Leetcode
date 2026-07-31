@@ -1,5 +1,6 @@
 ---
 description: Solve one-dimensional dynamic programs over a sequence index, amount, time, or other single progress coordinate.
+sample_status: tested
 ---
 
 # 1D DP · Sequences, choices, and amounts

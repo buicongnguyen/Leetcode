@@ -29,6 +29,9 @@ explanation-only blueprints say so explicitly; only snippets sourced from
 - Included snippets must resolve to real source markers.
 - Algorithm behavior is tested outside the generated documentation.
 - Advanced material is labeled explanatory until its implementation has tests.
+- Chapter 9–11 pages declare `sample_status: tested` or `conceptual`; the book
+  validator requires tested pages to include paired snippets from `codes/` and
+  rejects source snippets on conceptual pages.
 - Template comments explain invariants, ownership changes, or discard logic
   instead of restating the next line of syntax.
 - New chapter changes fail validation when either language sample is absent.

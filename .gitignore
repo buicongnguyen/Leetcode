@@ -8,8 +8,14 @@ __pycache__/
 /public/book/
 
 # C++ build output (the source-level build/ directory contains a Sites plugin)
-/build/cpp/
+/build/cpp*/
 /cmake-build-*/
+
+# Local validation and deployment staging
+/.audit-playwright-output/
+/deploy-clean-*/
+/deploy-clean-*.zip
+/site-deploy-*.tar.gz
 
 # Node / vinext
 /node_modules/

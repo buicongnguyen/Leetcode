@@ -1,5 +1,6 @@
 ---
 description: Derive all-pairs shortest paths from an intermediate-vertex dynamic-programming state.
+sample_status: conceptual
 ---
 
 # Floyd–Warshall
@@ -74,4 +75,3 @@ appropriate.
 
     The recurrence is reviewed here, but Floyd–Warshall is not yet a tested
     copy-ready template in the repository.
-

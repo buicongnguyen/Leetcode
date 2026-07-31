@@ -1,5 +1,6 @@
 ---
 description: Combine key lookup with an ordered linked list of count buckets for constant-time extrema.
+sample_status: conceptual
 ---
 
 # All O(1) data structure
@@ -56,4 +57,3 @@ remove the key instead of creating a zero bucket.
 
     This is a mutation-order blueprint. It needs paired tests before becoming a
     copy-ready template.
-

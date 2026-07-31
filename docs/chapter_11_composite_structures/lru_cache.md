@@ -1,5 +1,6 @@
 ---
 description: Combine direct lookup with recency order for a tested constant-time LRU cache.
+sample_status: tested
 ---
 
 # LRU cache
@@ -63,4 +64,3 @@ syntax line.
 ## Practice
 
 [LeetCode: LRU Cache](https://leetcode.com/problems/lru-cache/)
-

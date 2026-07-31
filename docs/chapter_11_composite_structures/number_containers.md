@@ -1,5 +1,6 @@
 ---
 description: Combine index ownership with per-number ordered indices for replacement and smallest-index queries.
+sample_status: conceptual
 ---
 
 # Number containers
@@ -55,4 +56,3 @@ stale entries and makes cleanup query-driven.
 
     This page compares eager and lazy designs; neither is yet a tested library
     template.
-

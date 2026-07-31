@@ -1,5 +1,6 @@
 ---
 description: Combine a follow graph, append-only user feeds, and a heap merge for a recent-news feed.
+sample_status: conceptual
 ---
 
 # Design Twitter
@@ -60,4 +61,3 @@ candidate per source.
 
     This problem guide is a design blueprint; it is not yet included in the
     tested library.
-

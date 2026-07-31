@@ -1,5 +1,6 @@
 ---
 description: Use edge relaxation for negative weights and detect reachable negative cycles.
+sample_status: conceptual
 ---
 
 # Bellman–Ford
@@ -67,4 +68,3 @@ represents a product of exchange rates greater than one—an arbitrage cycle.
 
     Bellman–Ford remains explanatory until equivalent C++17 and Python behavior
     tests are added to the reference library.
-

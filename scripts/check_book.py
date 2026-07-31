@@ -78,6 +78,32 @@ def main() -> None:
         content = page.read_text(encoding="utf-8")
         if not content.startswith("---\n") or "\ndescription:" not in content.split("---", 2)[1]:
             raise SystemExit(f"{page.relative_to(ROOT)} needs description front matter")
+        metadata = yaml.safe_load(content.split("---", 2)[1])
+        snippets = snippet_pattern.findall(content)
+
+        if page.parent.name.startswith(
+            ("chapter_09_", "chapter_10_", "chapter_11_")
+        ):
+            sample_status = metadata.get("sample_status")
+            if sample_status not in {"tested", "conceptual"}:
+                raise SystemExit(
+                    f"{page.relative_to(ROOT)} needs sample_status: tested or conceptual"
+                )
+
+            python_snippet = any(path.startswith("codes/python/") for path, _ in snippets)
+            cpp_snippet = any(path.startswith("codes/cpp/") for path, _ in snippets)
+            visible_pair = "```python" in content and "```cpp" in content
+            if sample_status == "tested" and not (
+                python_snippet and cpp_snippet and visible_pair
+            ):
+                raise SystemExit(
+                    f"{page.relative_to(ROOT)} is tested but lacks visible paired source snippets"
+                )
+            if sample_status == "conceptual" and snippets:
+                raise SystemExit(
+                    f"{page.relative_to(ROOT)} is conceptual but includes source snippets"
+                )
+
         headings = re.findall(r"^# (.+)$", content, flags=re.MULTILINE)
         if len(headings) != 1:
             raise SystemExit(f"{page.relative_to(ROOT)} must contain exactly one h1")
@@ -89,7 +115,7 @@ def main() -> None:
                     f"Broken local link in {page.relative_to(ROOT)}: {raw_target}"
                 )
 
-        for snippet_path, marker in snippet_pattern.findall(content):
+        for snippet_path, marker in snippets:
             source = ROOT / snippet_path
             if not source.is_file():
                 raise SystemExit(

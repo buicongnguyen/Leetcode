@@ -593,6 +593,13 @@ class LRUCache {
     }
   }
 
+  // The map stores iterators into this instance's list, so shallow copying
+  // would leave the copy pointing into the original cache.
+  LRUCache(const LRUCache&) = delete;
+  LRUCache& operator=(const LRUCache&) = delete;
+  LRUCache(LRUCache&&) noexcept = default;
+  LRUCache& operator=(LRUCache&&) noexcept = default;
+
   int get(int key) {
     const auto found = nodes_.find(key);
     if (found == nodes_.end()) {

@@ -69,6 +69,34 @@ or visual identity.
 - Add device-local bookmarks and reading progress as progressive enhancements.
 - Preserve the built-in mobile chapter drawer and accessible navigation.
 
+## 2026-07-31 stabilization plan
+
+The next release executes four ordered gates:
+
+1. **Build hygiene:** isolate generated C++, audit, and deployment artifacts
+   from Git and lint without hiding the tracked Sites build plugin.
+2. **Logic and API safety:** review the expanded DP and composite structures,
+   add regressions for confirmed defects, and rebuild both language suites.
+3. **Book trust contract:** classify advanced pages as `tested` or
+   `conceptual`, enforce paired repository snippets on tested pages, and add a
+   diagram where cross-structure ownership is easier to understand visually.
+4. **Release:** run strict book, web, lint, Python, and C++ gates; commit one
+   reviewed tree; push it; then verify GitHub CI, GitHub Pages, and the Sites
+   deployment from that exact commit.
+
+### Logic review of the phase order
+
+- Hygiene comes first because generated output can create false lint findings
+  and obscure the actual source diff.
+- Implementations and tests come before documentation claims, so the book never
+  labels an unverified blueprint as copy-ready code.
+- The sample contract is checked before publication, making content drift a CI
+  failure instead of a manual review convention.
+- Both hosts receive the same committed source only after all local gates pass;
+  deployment is not allowed to create a second, unreviewed version.
+- A phase advances only after its focused logic review and regression checks
+  pass. Confirmed defects are recorded in `CODE_REVIEW.md`.
+
 ## Definition of done
 
 - Every navigation entry resolves.

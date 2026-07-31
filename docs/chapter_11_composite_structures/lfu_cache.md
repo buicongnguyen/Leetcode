@@ -1,5 +1,6 @@
 ---
 description: Combine key lookup, frequency buckets, and recency tie-breaking for an LFU cache.
+sample_status: conceptual
 ---
 
 # LFU cache
@@ -67,4 +68,3 @@ key from the key map.
 
     This is a design blueprint. Add paired behavior tests before treating an
     implementation as copy-ready.
-

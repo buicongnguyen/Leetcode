@@ -1,5 +1,6 @@
 ---
 description: Augment each stack entry with its prefix minimum for constant-time minimum queries.
+sample_status: tested
 ---
 
 # Min stack
@@ -53,4 +54,3 @@ The `≤` is necessary to preserve duplicate minima.
 ## Practice
 
 [LeetCode: Min Stack](https://leetcode.com/problems/min-stack/)
-

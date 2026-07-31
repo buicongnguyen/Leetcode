@@ -1,5 +1,6 @@
 ---
 description: Select advanced graph algorithms by objective, edge properties, and query pattern.
+sample_status: tested
 ---
 
 # Chapter 10 · Advanced graphs

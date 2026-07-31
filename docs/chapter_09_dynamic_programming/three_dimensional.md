@@ -1,5 +1,6 @@
 ---
 description: Design and control three-dimensional DP for synchronized agents, bounded actions, and resource-constrained states.
+sample_status: tested
 ---
 
 # 3D DP · Agents, resources, and state machines

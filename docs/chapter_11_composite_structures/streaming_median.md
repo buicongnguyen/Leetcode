@@ -1,5 +1,6 @@
 ---
 description: Split an online stream across two heaps to expose the middle in constant time.
+sample_status: tested
 ---
 
 # Streaming median
@@ -49,4 +50,3 @@ single sequence enforces both invariants.
 ## Practice
 
 [LeetCode: Find Median from Data Stream](https://leetcode.com/problems/find-median-from-data-stream/)
-

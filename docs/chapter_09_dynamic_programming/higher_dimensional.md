@@ -1,5 +1,6 @@
 ---
 description: Control four-or-more-dimensional DP with tuple states, sparse memoization, bitmasks, digit constraints, and state reduction.
+sample_status: tested
 ---
 
 # Higher-dimensional DP · Tuples, masks, and digits

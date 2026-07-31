@@ -1,5 +1,6 @@
 ---
 description: Combine structures so each one owns a different required operation.
+sample_status: tested
 ---
 
 # Chapter 11 · Composite structures
@@ -32,6 +33,18 @@ For every composite problem:
 3. write the cross-structure invariant;
 4. specify the exact update order for every mutation;
 5. test the boundary where two structures change together.
+
+```mermaid
+flowchart LR
+  accTitle: Designing and reviewing a composite data structure
+  accDescr: Start from the required operations, assign each costly operation to an owning structure, write the synchronization invariant, define mutation order, then test every boundary where ownership moves. A failed boundary test sends the design back to its invariant.
+  A["List operations and<br/>target complexity"] --> B["Assign each operation<br/>to an owning structure"]
+  B --> C["Write the shared<br/>representation invariant"]
+  C --> D["Define mutation order<br/>and cleanup rules"]
+  D --> E{"Boundary tests pass?"}
+  E -->|no| C
+  E -->|yes| F["Stable composite design"]
+```
 
 The invariant is the most important step. “Use a map and a list” is not yet a
 design; “every map entry points to exactly one live list node, and every real

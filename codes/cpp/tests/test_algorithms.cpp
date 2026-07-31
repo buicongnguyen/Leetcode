@@ -5,9 +5,14 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <vector>
 
 using namespace dsa_atlas;
+
+static_assert(!std::is_copy_constructible_v<LRUCache>);
+static_assert(std::is_move_constructible_v<LRUCache>);
 
 namespace {
 
@@ -156,6 +161,13 @@ int main() {
     expect(cache.get(1) == 10, "LRU get must return and refresh a value");
     cache.put(3, 30);
     expect(cache.get(2) == -1, "LRU must evict the least-recent key");
+    LRUCache moved_cache(std::move(cache));
+    expect(moved_cache.get(1) == 10,
+           "moved LRU must preserve iterator ownership");
+    LRUCache assigned_cache(1);
+    assigned_cache = std::move(moved_cache);
+    expect(assigned_cache.get(3) == 30,
+           "move-assigned LRU must preserve iterator ownership");
     LRUCache empty_cache(0);
     empty_cache.put(1, 1);
     expect(empty_cache.get(1) == -1, "zero-capacity LRU must retain nothing");

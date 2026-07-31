@@ -1,5 +1,6 @@
 ---
 description: Model capacities, residual edges, augmenting paths, and matching reductions for maximum flow.
+sample_status: conceptual
 ---
 
 # Network flow
@@ -91,4 +92,3 @@ conservation.
 
     This page is a reasoning blueprint. Dinic is not yet part of the tested
     C++17/Python library, so do not present this pseudocode as copy-ready code.
-

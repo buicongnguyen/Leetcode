@@ -89,9 +89,9 @@ def cherry_pickup_two_robots(grid: list[list[int]]) -> int:
         raise ValueError("grid must be rectangular")
 
     @cache
-    def solve(row: int, first_column: int, second_column: int) -> int:
+    def solve(row: int, first_column: int, second_column: int) -> int | None:
         if not (0 <= first_column < columns and 0 <= second_column < columns):
-            return -10**18  # Invalid moves must never win a maximum.
+            return None  # Invalid moves are absent, not a guessed low score.
 
         cherries = grid[row][first_column]
         if first_column != second_column:
@@ -99,21 +99,27 @@ def cherry_pickup_two_robots(grid: list[list[int]]) -> int:
         if row == len(grid) - 1:
             return cherries
 
-        best_suffix = -10**18
+        best_suffix: int | None = None
         for first_step in (-1, 0, 1):
             for second_step in (-1, 0, 1):
                 # Both robot positions are required to describe the next state.
-                best_suffix = max(
-                    best_suffix,
-                    solve(
-                        row + 1,
-                        first_column + first_step,
-                        second_column + second_step,
-                    ),
+                candidate = solve(
+                    row + 1,
+                    first_column + first_step,
+                    second_column + second_step,
                 )
+                if candidate is not None:
+                    best_suffix = (
+                        candidate
+                        if best_suffix is None
+                        else max(best_suffix, candidate)
+                    )
+        assert best_suffix is not None
         return cherries + best_suffix
 
-    return solve(0, 0, columns - 1)
+    answer = solve(0, 0, columns - 1)
+    assert answer is not None
+    return answer
 # --8<-- [end:cherry-pickup]
 
 

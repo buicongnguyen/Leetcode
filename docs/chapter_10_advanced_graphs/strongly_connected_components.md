@@ -1,5 +1,6 @@
 ---
 description: Collapse mutual-reachability groups into a DAG with Kosaraju or Tarjan SCC.
+sample_status: conceptual
 ---
 
 # Strongly connected components
@@ -67,4 +68,3 @@ important and you are comfortable with its stack invariant.
 
     SCC decomposition remains explanatory until the paired implementations
     receive behavior and deep-graph tests.
-

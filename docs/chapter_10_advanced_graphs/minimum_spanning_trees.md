@@ -1,5 +1,6 @@
 ---
 description: Choose Kruskal or Prim, prove the greedy edge choice, and handle disconnected weighted graphs.
+sample_status: tested
 ---
 
 # Minimum spanning trees
@@ -80,4 +81,3 @@ connections.
 
 - [Princeton: Minimum Spanning Trees](https://algs4.cs.princeton.edu/43mst/)
 - [LeetCode: Min Cost to Connect All Points](https://leetcode.com/problems/min-cost-to-connect-all-points/)
-

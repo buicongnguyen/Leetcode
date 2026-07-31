@@ -1,7 +1,9 @@
 # Logic and code review
 
 Review scope: the pre-reorganization `main` branch at `74bf53a`, followed by a
-second pass over the extracted libraries and CI at `c0cd647`.
+second pass over the extracted libraries and CI at `c0cd647`, and a third pass
+over the expanded DP, graph, composite-structure, and book build surfaces on
+2026-07-31.
 
 ## Summary
 
@@ -103,6 +105,51 @@ the C++ implementation guards distance addition.
 domain contract.
 
 **Resolution:** both implementations reject negative sizes.
+
+### High — Two-robot DP confused an invalid move with a valid score
+
+The Python implementation used `-10**18` as an impossible-state sentinel. A
+valid grid may contain smaller values, allowing an out-of-bounds move to beat
+the only legal path.
+
+**Resolution:** invalid moves now return `None`, only valid suffixes participate
+in maximization, and an extreme-negative regression locks the behavior.
+
+### High — Copying the C++ LRU cache invalidated its ownership model
+
+The generated copy constructor copied list iterators stored in the lookup map.
+Those iterators still referred to the original cache's list, so later access
+could mutate the wrong instance or dereference invalid state.
+
+**Resolution:** `LRUCache` is explicitly non-copyable and movable. Compile-time
+tests enforce both sides of that contract.
+
+### Medium — Generated deployment artifacts polluted lint input
+
+Local audit and deployment staging directories were not ignored consistently.
+ESLint could scan generated JavaScript and report failures unrelated to source.
+
+**Resolution:** Git and ESLint now share explicit rules for audit output, C++
+build variants, clean deployment trees, and packaged site archives. The tracked
+`build/sites-vite-plugin.ts` source remains included.
+
+### Medium — Sample verification existed only as prose
+
+Advanced pages described some examples as tested and others as blueprints, but
+the validator did not enforce that distinction.
+
+**Resolution:** Chapter 9–11 pages now declare a sample status. Tested pages
+must include paired Python and C++ snippets from repository sources;
+conceptual pages cannot embed source snippets.
+
+## Current verification
+
+- Python behavior suite: 23 tests pass.
+- C++17 Release build: compiles and passes the always-on behavior suite.
+- Randomized differential review: 14,801 assertion groups across DP and
+  composite structures passed against small reference models.
+- Book validation checks navigation, links, snippet markers, diagram
+  accessibility, sample-status contracts, and Pages artifact isolation.
 
 ## Remaining follow-up
 

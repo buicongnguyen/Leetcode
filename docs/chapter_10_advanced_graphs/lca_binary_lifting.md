@@ -1,5 +1,6 @@
 ---
 description: Preprocess a static rooted tree for fast ancestor, distance, and path queries.
+sample_status: conceptual
 ---
 
 # LCA and binary lifting
@@ -76,4 +77,3 @@ different ancestor subtrees while moving them as high as safely possible.
 
     Binary lifting is currently a detailed blueprint, not a tested library
     template.
-

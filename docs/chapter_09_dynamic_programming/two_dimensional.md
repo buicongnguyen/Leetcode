@@ -1,5 +1,6 @@
 ---
 description: Design two-dimensional DP for grids, pairs of sequences, intervals, and item-by-capacity states.
+sample_status: tested
 ---
 
 # 2D DP · Grids, two sequences, and intervals

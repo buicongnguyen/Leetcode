@@ -1,5 +1,6 @@
 ---
 description: Recognize interval, tree, DAG, subset, and minimax dynamic programming by the structure of the state graph.
+sample_status: conceptual
 ---
 
 # Structured DP · Intervals, trees, DAGs, subsets, and games

@@ -1,5 +1,6 @@
 ---
 description: Use DFS discovery and low-link values to find single points of undirected connectivity failure.
+sample_status: tested
 ---
 
 # Bridges and articulation points
@@ -64,4 +65,3 @@ and may falsely report a bridge. Skip only the exact parent **edge ID**.
 
 Articulation-point extraction is described here but is not yet exposed as a
 tested library function.
-

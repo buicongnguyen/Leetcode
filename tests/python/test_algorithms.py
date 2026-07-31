@@ -144,6 +144,10 @@ class StateTests(unittest.TestCase):
     def test_three_dimensional_dp_tracks_both_robots(self) -> None:
         grid = [[3, 1, 1], [2, 5, 1], [1, 5, 5], [2, 1, 1]]
         self.assertEqual(cherry_pickup_two_robots(grid), 24)
+        self.assertEqual(
+            cherry_pickup_two_robots([[-10**19], [-10**19]]),
+            -2 * 10**19,
+        )
         with self.assertRaises(ValueError):
             cherry_pickup_two_robots([[1], [2, 3]])
 

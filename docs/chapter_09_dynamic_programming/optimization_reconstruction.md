@@ -1,5 +1,6 @@
 ---
 description: Optimize DP memory safely, reconstruct choices, debug recurrences, and decide when recursion or iteration is the better evaluator.
+sample_status: conceptual
 ---
 
 # DP optimization, reconstruction, and debugging

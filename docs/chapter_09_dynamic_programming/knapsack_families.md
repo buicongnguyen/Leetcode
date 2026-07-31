@@ -1,5 +1,6 @@
 ---
 description: Distinguish 0/1, unbounded, bounded, subset-sum, counting, and multi-resource knapsack by state meaning and loop direction.
+sample_status: tested
 ---
 
 # Knapsack families · Capacity and loop direction

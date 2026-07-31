@@ -1,5 +1,6 @@
 ---
 description: Derive a dynamic-programming state from brute-force decisions and prove that it contains exactly the information the future needs.
+sample_status: conceptual
 ---
 
 # Dynamic-programming state design
