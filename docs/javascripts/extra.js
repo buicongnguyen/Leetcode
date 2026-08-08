@@ -86,7 +86,7 @@
     rail.setAttribute("aria-label", "Reading tools");
     rail.innerHTML = `
       <p class="reader-rail__eyebrow">Book contents</p>
-      <p class="reader-rail__title">12 chapters · C++17 + Python 3</p>
+      <p class="reader-rail__title">12 chapters · C++11/17 + Python 3</p>
       <div class="reader-bookmark">
         <button class="reader-bookmark__save" type="button">Save current place</button>
         <button class="reader-bookmark__resume" type="button"></button>

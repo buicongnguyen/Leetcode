@@ -101,7 +101,33 @@ The next release executes four ordered gates:
 
 - Every navigation entry resolves.
 - Python tests pass.
-- C++17 tests compile and pass.
+- C++11 and C++17 tests compile and pass from the same reference source.
 - MkDocs builds in strict mode.
 - GitHub Pages deploys from `main`.
 - The production book and repository links are reachable.
+
+## 2026-08-08 C++11 compatibility plan
+
+1. Inventory every real paired language group rather than counting unrelated
+   standalone code fences. The audit found 32 Python/C++17 groups on 24 pages.
+2. Remove C++17-only dependencies from tested templates before changing the
+   book UI, then run the complete behavior suite under both standards.
+3. Add C++11 as the third tab in every paired group. Use explicit C++11 forms
+   for conceptual examples that intentionally demonstrate newer C++17 syntax.
+4. Make the validator enforce the repeating Python, C++17, C++11 order and the
+   presence of both C++ test targets.
+5. Run strict documentation, application, lint, Python, C++11, and C++17 gates
+   before publishing.
+
+### Logic review
+
+- Compatibility is proved at the compiler boundary, not inferred from visual
+  similarity between tabs.
+- One shared tested header prevents C++11 and C++17 implementations from
+  drifting apart while still letting conceptual examples teach their syntax
+  differences explicitly.
+- The unrelated Chapter 2 Python amortization and C++ numeric-safety examples
+  remain standalone because presenting them as equivalent language tabs would
+  be misleading.
+- Validation checks structure as well as totals, so 32 tabs on the wrong pages
+  cannot satisfy the rule accidentally.

@@ -43,6 +43,12 @@ still be tested.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:randomized-set"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:randomized-set"
+    ```
+
 ## Complexity and traps
 
 - Insert: `O(1)` expected.

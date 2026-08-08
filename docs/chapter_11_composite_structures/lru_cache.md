@@ -53,6 +53,12 @@ syntax line.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:lru-cache"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:lru-cache"
+    ```
+
 ## Boundary tests
 
 - capacity zero;

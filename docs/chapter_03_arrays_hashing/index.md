@@ -51,6 +51,12 @@ index.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:two-sum"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:two-sum"
+    ```
+
 Checking before insertion prevents reusing the same element.
 
 ## Prefix-sum frequency
@@ -77,6 +83,12 @@ current endpoint.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:prefix-sum"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:prefix-sum"

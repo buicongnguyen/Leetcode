@@ -56,6 +56,13 @@ MST.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:kruskal"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:disjoint-set"
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:kruskal"
+    ```
+
 ## Worked example
 
 For edges `(A,C,1)`, `(B,D,1)`, `(B,C,2)`, `(A,B,4)`, `(C,D,5)`:

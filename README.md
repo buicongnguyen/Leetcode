@@ -1,7 +1,8 @@
 # DSA Atlas
 
 DSA Atlas is a chapter-based problem-solving handbook for LeetCode practice.
-It pairs concise explanations with tested C++17 and Python 3 implementations.
+It pairs concise explanations with tested C++11, C++17, and Python 3
+implementations.
 
 [Read the book](https://buicongnguyen.github.io/Leetcode/) ·
 [Browse the code](codes/) ·
@@ -16,7 +17,7 @@ It pairs concise explanations with tested C++17 and Python 3 implementations.
 .
 ├── docs/                 # Book source, one directory per chapter
 ├── codes/
-│   ├── cpp/              # Reusable C++17 headers and executable tests
+│   ├── cpp/              # C++11-compatible headers tested in C++11 and C++17
 │   └── python/           # Importable Python package
 ├── tests/                # Python behavior and regression tests
 ├── scripts/              # Book and repository validation
@@ -44,7 +45,7 @@ higher-dimensional, knapsack, structured-pattern, and optimization pages.
 
 ## Local development
 
-Prerequisites: Python 3.11+, Node.js 22+, and a C++17 compiler.
+Prerequisites: Python 3.11+, Node.js 22+, and a compiler supporting C++11.
 
 ```bash
 python -m pip install -r requirements.txt

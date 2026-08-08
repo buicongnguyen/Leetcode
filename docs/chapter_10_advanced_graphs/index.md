@@ -96,6 +96,13 @@ graph.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:kruskal"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:disjoint-set"
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:kruskal"
+    ```
+
 The implementations validate every endpoint, accept negative edge weights, and
 reject a disconnected graph instead of silently returning a forest. The
 [complete MST guide](minimum_spanning_trees.md) explains when Prim is the

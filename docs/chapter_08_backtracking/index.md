@@ -86,6 +86,12 @@ Skip a duplicate only when it appears later in the *same decision layer*.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:subsets"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:subsets"
+    ```
+
 The condition `i > start` preserves the ability to choose the same value at a
 deeper layer while preventing identical sibling branches.
 

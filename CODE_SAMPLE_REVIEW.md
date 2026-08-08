@@ -12,11 +12,11 @@ useful for decision flows, but it does not count as a copy-ready sample.
 | --- | --- | --- |
 | Home | One pseudocode block and six chapter cards | Added a paired tested example and the complete chapter map. |
 | Chapter 1 | Method only | Added a worked Two Sum example that derives the map invariant from repeated waste. |
-| Chapter 5 | Tree-height prose only | Added tested `TreeNode` and `tree_height` implementations in both languages. |
+| Chapter 5 | Tree-height prose only | Added tested `TreeNode` and `tree_height` implementations in Python, C++17, and C++11. |
 | Chapter 6 | Topological sort and bridges were described but hidden in source | Exposed both tested implementations as paired samples. |
 | Chapter 9 | One 0/1-knapsack example covered the entire DP family | Added dimensional and pattern subpages plus tested take/skip, LCS, coin-change, two-robot, and digit-DP templates. |
-| Chapter 10 | Advanced algorithms were explanation-only | Added a tested Kruskal minimum-spanning-tree implementation in both languages. |
-| Chapter 11 | Only the streaming-median combination was tested | Added tested LRU cache, Randomized Set, TimeMap, and Min Stack implementations in both languages. |
+| Chapter 10 | Advanced algorithms were explanation-only | Added a tested Kruskal minimum-spanning-tree implementation in Python, C++17, and C++11. |
+| Chapter 11 | Only the streaming-median combination was tested | Added tested LRU cache, Randomized Set, TimeMap, and Min Stack implementations in Python, C++17, and C++11. |
 | Chapters 2–4 and 7–9 | At least one paired or equivalent example | Retained existing tested examples and verified coverage automatically. |
 
 Advanced Graphs and Composite Structures now use subpages. Pages with
@@ -25,7 +25,9 @@ explanation-only blueprints say so explicitly; only snippets sourced from
 
 ## Quality rules
 
-- Chapters 1–11 must contain both Python and C++17 code.
+- Every paired sample repeats the tab order Python, C++17, C++11.
+- The C++ templates must pass the same behavior suite under both language
+  standards; a C++11 tab is never a label-only compatibility claim.
 - Included snippets must resolve to real source markers.
 - Algorithm behavior is tested outside the generated documentation.
 - Advanced material is labeled explanatory until its implementation has tests.
@@ -34,4 +36,5 @@ explanation-only blueprints say so explicitly; only snippets sourced from
   rejects source snippets on conceptual pages.
 - Template comments explain invariants, ownership changes, or discard logic
   instead of restating the next line of syntax.
-- New chapter changes fail validation when either language sample is absent.
+- New paired samples fail validation when any of the three language tabs is
+  absent or out of order.

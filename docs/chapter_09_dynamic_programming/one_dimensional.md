@@ -51,6 +51,12 @@ The names `take_previous` and `skip_previous` make the invariant clearer than
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:non-adjacent"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:non-adjacent"
+    ```
+
 ### Thinking variations
 
 - **Circular sequence:** first and last conflict. Solve two linear cases:
@@ -104,6 +110,12 @@ Unreachable amounts need an infinity sentinel, not zero.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:coin-change"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:coin-change"

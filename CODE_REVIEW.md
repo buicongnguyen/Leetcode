@@ -3,7 +3,8 @@
 Review scope: the pre-reorganization `main` branch at `74bf53a`, followed by a
 second pass over the extracted libraries and CI at `c0cd647`, and a third pass
 over the expanded DP, graph, composite-structure, and book build surfaces on
-2026-07-31.
+2026-07-31. A fourth compatibility pass on 2026-08-08 reviewed every paired
+language sample and the complete C++ library under C++11 and C++17.
 
 ## Summary
 
@@ -142,14 +143,37 @@ the validator did not enforce that distinction.
 must include paired Python and C++ snippets from repository sources;
 conceptual pages cannot embed source snippets.
 
+### Medium — A C++11 tab could become an unverified label
+
+Duplicating a C++17 snippet into a tab named C++11 would look complete while
+still allowing `optional`, structured bindings, class template argument
+deduction, or generic lambdas to break on the older standard.
+
+**Resolution:** the shared reference header now uses C++11-compatible syntax,
+with explicit types where newer deduction features were previously used. CMake
+builds and executes the complete suite separately under C++11 and C++17. The
+book validator requires every paired sample to repeat the exact Python,
+C++17, C++11 tab order.
+
+### Medium — Two Sum exposed a C++17-only return type
+
+The reference API returned `std::optional`, preventing the otherwise portable
+header from compiling under C++11.
+
+**Resolution:** the C++ API now returns the conventional LeetCode-style vector
+of two indices, or an empty vector when no solution exists. Existing distinct-
+index and overflow regressions cover the revised contract in both standards.
+
 ## Current verification
 
 - Python behavior suite: 23 tests pass.
-- C++17 Release build: compiles and passes the always-on behavior suite.
+- C++11 and C++17 Release builds compile from the same source and pass the
+  same always-on behavior suite.
 - Randomized differential review: 14,801 assertion groups across DP and
   composite structures passed against small reference models.
 - Book validation checks navigation, links, snippet markers, diagram
-  accessibility, sample-status contracts, and Pages artifact isolation.
+  accessibility, sample-status contracts, three-tab language order, dual C++
+  test targets, and Pages artifact isolation.
 
 ## Remaining follow-up
 

@@ -72,6 +72,12 @@ flowchart TD
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:sliding-window"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:sliding-window"
+    ```
+
 Every index enters and leaves at most once, so the total time is `O(n)`.
 
 ## Stack as unresolved work

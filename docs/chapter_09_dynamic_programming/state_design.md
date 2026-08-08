@@ -201,6 +201,38 @@ This is a shape, not a problem solution. Replace the state fields and decisions.
     };
     ```
 
+=== "C++11"
+
+    ```cpp
+    // Encode the complete state as a tuple or a small integer key.
+    typedef std::tuple<int, int, int> State;
+    std::map<State, long long> memo;
+
+    std::function<long long(int, int, int)> solve =
+        [&] (int index, int remaining, int mode) -> long long {
+      // Terminal states must distinguish valid completion from impossible.
+      if (index == static_cast<int>(data.size())) {
+        return remaining == 0 ? 0 : NEGATIVE_INFINITY;
+      }
+
+      const State key(index, remaining, mode);
+      std::map<State, long long>::iterator found = memo.find(key);
+      if (found != memo.end()) {
+        return found->second;  // Reuse this future-equivalent state.
+      }
+
+      long long best = solve(index + 1, remaining, mode);
+      if (legal_to_take(data[index], remaining, mode)) {
+        best = std::max(
+            best,
+            reward(data[index]) +
+                solve(index + 1, remaining - cost(data[index]),
+                      next_mode(mode)));
+      }
+      return memo[key] = best;
+    };
+    ```
+
 ## State review checklist
 
 Before accepting a recurrence:

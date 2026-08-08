@@ -63,6 +63,12 @@ flowchart LR
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:knapsack"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:knapsack"
+    ```
+
 ## Complete or unbounded knapsack · Reuse allowed
 
 Iterate capacity upward so `best[c - weight]` may already include the current
@@ -86,6 +92,12 @@ than MAX.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:coin-change"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:coin-change"

@@ -73,6 +73,9 @@ def main() -> None:
     link_pattern = re.compile(r"(?<!!)\[[^\]]+\]\(([^)\s]+)(?:\s+[^)]*)?\)")
     snippet_pattern = re.compile(r'--8<-- "([^"]+?)(?::([^"]+))?"')
     mermaid_pattern = re.compile(r"```mermaid\s*\n(.*?)```", flags=re.DOTALL)
+    language_tab_pattern = re.compile(
+        r'^=== "(Python|C\+\+17|C\+\+11)"\s*$', flags=re.MULTILINE
+    )
 
     for page in sorted(markdown_files):
         content = page.read_text(encoding="utf-8")
@@ -80,6 +83,32 @@ def main() -> None:
             raise SystemExit(f"{page.relative_to(ROOT)} needs description front matter")
         metadata = yaml.safe_load(content.split("---", 2)[1])
         snippets = snippet_pattern.findall(content)
+        language_tabs = language_tab_pattern.findall(content)
+
+        if language_tabs:
+            expected_tabs = ["Python", "C++17", "C++11"] * (
+                len(language_tabs) // 3
+            )
+            if language_tabs != expected_tabs:
+                raise SystemExit(
+                    f"{page.relative_to(ROOT)} language tabs must repeat "
+                    "Python, C++17, C++11"
+                )
+            for language, fence in (
+                ("Python", "python"),
+                ("C++17", "cpp"),
+                ("C++11", "cpp"),
+            ):
+                populated_tabs = re.findall(
+                    rf'^=== "{re.escape(language)}"\s*\n\n    ```{fence}',
+                    content,
+                    flags=re.MULTILINE,
+                )
+                if len(populated_tabs) != language_tabs.count(language):
+                    raise SystemExit(
+                        f"{page.relative_to(ROOT)} has an empty or malformed "
+                        f"{language} tab"
+                    )
 
         if page.parent.name.startswith(
             ("chapter_09_", "chapter_10_", "chapter_11_")
@@ -92,7 +121,11 @@ def main() -> None:
 
             python_snippet = any(path.startswith("codes/python/") for path, _ in snippets)
             cpp_snippet = any(path.startswith("codes/cpp/") for path, _ in snippets)
-            visible_pair = "```python" in content and "```cpp" in content
+            visible_pair = (
+                "```python" in content
+                and "```cpp" in content
+                and '=== "C++11"' in content
+            )
             if sample_status == "tested" and not (
                 python_snippet and cpp_snippet and visible_pair
             ):
@@ -151,6 +184,11 @@ def main() -> None:
     ):
         if not required.exists():
             raise SystemExit(f"Required project surface is missing: {required}")
+
+    cpp_cmake = (ROOT / "codes/cpp/CMakeLists.txt").read_text(encoding="utf-8")
+    for target in ("dsa_atlas_tests_cpp11 11", "dsa_atlas_tests_cpp17 17"):
+        if target not in cpp_cmake:
+            raise SystemExit(f"C++ dual-standard test target is missing: {target}")
 
     pages_workflow = (ROOT / ".github/workflows/pages.yml").read_text(encoding="utf-8")
     if re.search(r"path:\s*\.\s*$", pages_workflow, flags=re.MULTILINE):

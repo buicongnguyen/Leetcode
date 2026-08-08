@@ -41,6 +41,12 @@ Use `upper_bound(query_timestamp) - 1`:
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:time-map"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:time-map"
+    ```
+
 ## Complexity and traps
 
 - Set: `O(1)` amortized under increasing timestamps.

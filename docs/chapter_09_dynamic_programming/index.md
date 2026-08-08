@@ -159,6 +159,12 @@ unbounded knapsack instead.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:knapsack"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:knapsack"
+    ```
+
 ## Source-grounded practice
 
 The examples are organized against the official

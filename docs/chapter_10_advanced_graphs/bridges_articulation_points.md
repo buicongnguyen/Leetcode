@@ -44,6 +44,12 @@ that subtree.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bridges"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bridges"
+    ```
+
 ## Why edge IDs are necessary
 
 In a multigraph, two parallel edges connect the same endpoint pair. If DFS

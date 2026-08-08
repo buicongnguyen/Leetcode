@@ -63,7 +63,7 @@ list node has one map entry” is testable.
 
 ## Detailed problem guides
 
-The first five guides include tested C++17 and Python implementations:
+The first five guides include tested C++11, C++17, and Python implementations:
 
 - [LRU cache](lru_cache.md)
 - [Randomized set](randomized_set.md)
@@ -97,6 +97,12 @@ operations while representing the same live entries:
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:lru-cache"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:lru-cache"

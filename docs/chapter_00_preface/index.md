@@ -20,7 +20,7 @@ flowchart LR
 
 1. **Signal** — what wording or input shape suggests the pattern.
 2. **Invariant** — what remains true during execution.
-3. **Implementation** — a compact C++17 and Python 3 reference.
+3. **Implementation** — compact C++11, C++17, and Python 3 references.
 4. **Test** — a normal case, a boundary, and a hostile case.
 
 ## Where should I go next?
@@ -77,7 +77,7 @@ The source tree is intentionally conventional:
 
 ```text
 codes/python/dsa_atlas/   # importable package
-codes/cpp/include/        # reusable C++17 headers
+codes/cpp/include/        # reusable headers verified in C++11 and C++17
 tests/python/             # Python behavior tests
 codes/cpp/tests/          # C++ executable tests
 ```

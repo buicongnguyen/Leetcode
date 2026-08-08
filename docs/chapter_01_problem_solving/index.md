@@ -166,6 +166,12 @@ element from matching itself.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:two-sum"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:two-sum"
+    ```
+
 Trace `[3, 3]` with target `6`: the first `3` is stored, then the second finds
 its complement at index `0`. This simultaneously tests duplicates and the
 distinct-index rule.

@@ -84,6 +84,12 @@ flowchart LR
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:lcs"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:lcs"
+    ```
+
 The implementation stores only the previous and current rows. To reconstruct
 an actual subsequence, retain the full table or store parent choices.
 

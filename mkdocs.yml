@@ -1,7 +1,7 @@
 site_name: DSA Atlas
 site_url: https://buicongnguyen.github.io/Leetcode/
 site_author: buicongnguyen
-site_description: A tested, chapter-based LeetCode problem-solving handbook in C++17 and Python 3.
+site_description: A tested, chapter-based LeetCode problem-solving handbook in C++11, C++17, and Python 3.
 repo_name: buicongnguyen/Leetcode
 repo_url: https://github.com/buicongnguyen/Leetcode
 edit_uri: edit/main/docs/

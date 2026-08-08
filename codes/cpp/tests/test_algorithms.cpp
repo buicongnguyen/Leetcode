@@ -11,8 +11,10 @@
 
 using namespace dsa_atlas;
 
-static_assert(!std::is_copy_constructible_v<LRUCache>);
-static_assert(std::is_move_constructible_v<LRUCache>);
+static_assert(!std::is_copy_constructible<LRUCache>::value,
+              "LRUCache must not copy iterators into another list");
+static_assert(std::is_move_constructible<LRUCache>::value,
+              "LRUCache must remain movable");
 
 namespace {
 
@@ -36,11 +38,12 @@ void expect_throws(Callable callable, const std::string& message) {
 
 int main() {
   try {
-    const auto pair = two_sum({3, 3}, 6);
-    expect(pair && pair->first == 0 && pair->second == 1,
+    const std::vector<int> pair = two_sum({3, 3}, 6);
+    expect(pair == std::vector<int>({0, 1}),
            "two_sum must use distinct indices");
-    expect(!two_sum({1, 2}, 9), "two_sum must report no solution");
-    expect(!two_sum({INT_MIN}, INT_MAX), "two_sum must avoid overflow matches");
+    expect(two_sum({1, 2}, 9).empty(), "two_sum must report no solution");
+    expect(two_sum({INT_MIN}, INT_MAX).empty(),
+           "two_sum must avoid overflow matches");
 
     expect(count_subarrays_sum({1, -1, 1, -1}, 0) == 4,
            "prefix sums must count zero-sum ranges");

@@ -3,14 +3,25 @@ project(dsa_atlas LANGUAGES CXX)
 
 enable_testing()
 
-add_executable(dsa_atlas_tests tests/test_algorithms.cpp)
-target_include_directories(dsa_atlas_tests PRIVATE include)
-target_compile_features(dsa_atlas_tests PRIVATE cxx_std_17)
+function(add_dsa_atlas_test_target target standard)
+  add_executable(${target} tests/test_algorithms.cpp)
+  target_include_directories(${target} PRIVATE include)
+  set_target_properties(
+    ${target}
+    PROPERTIES
+      CXX_STANDARD ${standard}
+      CXX_STANDARD_REQUIRED YES
+      CXX_EXTENSIONS NO
+  )
 
-if(MSVC)
-  target_compile_options(dsa_atlas_tests PRIVATE /W4 /permissive-)
-else()
-  target_compile_options(dsa_atlas_tests PRIVATE -Wall -Wextra -Wpedantic)
-endif()
+  if(MSVC)
+    target_compile_options(${target} PRIVATE /W4 /permissive-)
+  else()
+    target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+  endif()
 
-add_test(NAME dsa_atlas_tests COMMAND dsa_atlas_tests)
+  add_test(NAME ${target} COMMAND ${target})
+endfunction()
+
+add_dsa_atlas_test_target(dsa_atlas_tests_cpp11 11)
+add_dsa_atlas_test_target(dsa_atlas_tests_cpp17 17)

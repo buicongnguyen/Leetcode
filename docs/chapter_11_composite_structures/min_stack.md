@@ -38,6 +38,12 @@ Then:
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:min-stack"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:min-stack"
+    ```
+
 ## Alternative two-stack design
 
 Keep one value stack and one minimum stack. Push into the minimum stack when the

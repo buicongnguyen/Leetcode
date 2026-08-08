@@ -31,7 +31,7 @@ export default function Home() {
             Turn problem signals into <em>working code.</em>
           </h1>
           <p className="lede">
-            A chapter-based handbook with tested C++17 and Python 3
+            A chapter-based handbook with tested C++11, C++17, and Python 3
             implementations, built around constraints, invariants, and boundary
             cases.
           </p>

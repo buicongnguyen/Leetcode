@@ -71,6 +71,12 @@ The last row returns its gain with no further move.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:cherry-pickup"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:cherry-pickup"
+    ```
+
 ## Pattern A · Time × budget × mode
 
 LeetCode

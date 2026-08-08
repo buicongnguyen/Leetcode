@@ -38,6 +38,12 @@ single sequence enforces both invariants.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:median"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:median"
+    ```
+
 ## Complexity and traps
 
 - Add: `O(log n)`.

@@ -8,7 +8,6 @@
 #include <iterator>
 #include <list>
 #include <limits>
-#include <optional>
 #include <queue>
 #include <random>
 #include <stdexcept>
@@ -29,9 +28,13 @@ inline void validate_vertex(int vertex, std::size_t vertex_count,
 
 // --8<-- [start:tree-height]
 struct TreeNode {
+  explicit TreeNode(int node_value, TreeNode* left_child = nullptr,
+                    TreeNode* right_child = nullptr)
+      : value(node_value), left(left_child), right(right_child) {}
+
   int value;
-  TreeNode* left = nullptr;
-  TreeNode* right = nullptr;
+  TreeNode* left;
+  TreeNode* right;
 };
 
 inline int tree_height(const TreeNode* root) {
@@ -47,7 +50,7 @@ inline int tree_height(const TreeNode* root) {
 // --8<-- [end:tree-height]
 
 // --8<-- [start:two-sum]
-inline std::optional<std::pair<int, int>> two_sum(
+inline std::vector<int> two_sum(
     const std::vector<int>& values, int target) {
   std::unordered_map<long long, int> position;
   for (int index = 0; index < static_cast<int>(values.size()); ++index) {
@@ -56,12 +59,12 @@ inline std::optional<std::pair<int, int>> two_sum(
     const auto found = position.find(complement);
     // Search before insertion so an element cannot match itself.
     if (found != position.end()) {
-      return std::pair<int, int>{found->second, index};
+      return std::vector<int>{found->second, index};
     }
     // Remember this index for complements that appear later.
     position[static_cast<long long>(values[index])] = index;
   }
-  return std::nullopt;
+  return std::vector<int>();
 }
 // --8<-- [end:two-sum]
 
@@ -197,7 +200,9 @@ inline std::vector<long long> dijkstra(
     const WeightedGraph& graph, int source) {
   validate_vertex(source, graph.size(), "source");
   for (const auto& edges : graph) {
-    for (const auto [neighbor, weight] : edges) {
+    for (const auto& edge : edges) {
+      const int neighbor = edge.first;
+      const long long weight = edge.second;
       validate_vertex(neighbor, graph.size(), "neighbor");
       if (weight < 0) {
         throw std::invalid_argument("Dijkstra requires nonnegative weights");
@@ -212,13 +217,17 @@ inline std::vector<long long> dijkstra(
   frontier.push({0, source});
 
   while (!frontier.empty()) {
-    const auto [current, node] = frontier.top();
+    const State state = frontier.top();
+    const long long current = state.first;
+    const int node = state.second;
     frontier.pop();
     // Ignore heap entries superseded by a shorter route.
     if (current != distance[node]) {
       continue;
     }
-    for (const auto [neighbor, weight] : graph[node]) {
+    for (const auto& edge : graph[node]) {
+      const int neighbor = edge.first;
+      const long long weight = edge.second;
       if (current > infinity - weight) {
         continue;
       }
@@ -283,7 +292,8 @@ inline std::vector<std::pair<int, int>> find_bridges(
   std::vector<std::vector<std::pair<int, int>>> graph(
       static_cast<std::size_t>(vertex_count));
   for (int id = 0; id < static_cast<int>(edges.size()); ++id) {
-    const auto [left, right] = edges[id];
+    const int left = edges[id].first;
+    const int right = edges[id].second;
     validate_vertex(left, graph.size(), "edge endpoint");
     validate_vertex(right, graph.size(), "edge endpoint");
     // Edge IDs distinguish parallel edges from the exact parent edge.
@@ -296,7 +306,9 @@ inline std::vector<std::pair<int, int>> find_bridges(
   int timer = 0;
   std::function<void(int, int)> search = [&](int node, int parent_edge) {
     entered[node] = low[node] = timer++;
-    for (const auto [neighbor, edge_id] : graph[node]) {
+    for (const auto& edge : graph[node]) {
+      const int neighbor = edge.first;
+      const int edge_id = edge.second;
       if (edge_id == parent_edge) {
         continue;
       }
@@ -355,7 +367,9 @@ inline long long knapsack_01(
     throw std::invalid_argument("capacity must be nonnegative");
   }
   std::vector<long long> best(capacity + 1, 0);
-  for (const auto [weight, value] : items) {
+  for (const auto& item : items) {
+    const int weight = item.first;
+    const int value = item.second;
     if (weight <= 0) {
       throw std::invalid_argument("item weights must be positive");
     }
@@ -448,11 +462,12 @@ inline long long cherry_pickup_two_robots(
 
   constexpr long long negative_infinity =
       std::numeric_limits<long long>::lowest() / 4;
-  std::vector memo(
-      rows, std::vector(
+  std::vector<std::vector<std::vector<long long>>> memo(
+      rows, std::vector<std::vector<long long>>(
                 columns, std::vector<long long>(columns, negative_infinity)));
-  std::vector seen(
-      rows, std::vector(columns, std::vector<bool>(columns, false)));
+  std::vector<std::vector<std::vector<bool>>> seen(
+      rows, std::vector<std::vector<bool>>(
+                columns, std::vector<bool>(columns, false)));
 
   std::function<long long(int, int, int)> solve =
       [&](int row, int first_column, int second_column) -> long long {
@@ -497,9 +512,10 @@ inline long long count_distinct_digit_numbers(int limit) {
   }
   const std::string digits = std::to_string(limit);
   const int positions = static_cast<int>(digits.size());
-  std::vector memo(
+  std::vector<std::vector<std::vector<long long>>> memo(
       positions,
-      std::vector(2, std::vector<long long>(1 << 10, -1)));
+      std::vector<std::vector<long long>>(
+          2, std::vector<long long>(1 << 10, -1)));
 
   std::function<long long(int, bool, bool, int)> solve =
       [&](int position, bool tight, bool started,
@@ -697,7 +713,10 @@ inline long long minimum_spanning_tree_weight(
   if (vertex_count < 0) {
     throw std::invalid_argument("vertex_count must be nonnegative");
   }
-  for (const auto [left, right, weight] : edges) {
+  for (const auto& edge : edges) {
+    const int left = std::get<0>(edge);
+    const int right = std::get<1>(edge);
+    const long long weight = std::get<2>(edge);
     static_cast<void>(weight);
     if (left < 0 || right < 0 || left >= vertex_count ||
         right >= vertex_count) {
@@ -707,7 +726,8 @@ inline long long minimum_spanning_tree_weight(
 
   auto ordered = edges;
   std::sort(ordered.begin(), ordered.end(),
-            [](const auto& left, const auto& right) {
+            [](const std::tuple<int, int, long long>& left,
+               const std::tuple<int, int, long long>& right) {
               return std::get<2>(left) < std::get<2>(right);
             });
 
@@ -715,7 +735,10 @@ inline long long minimum_spanning_tree_weight(
   long long total = 0;
   int accepted = 0;
   // The cheapest safe edge is justified by the MST cut property.
-  for (const auto [left, right, weight] : ordered) {
+  for (const auto& edge : ordered) {
+    const int left = std::get<0>(edge);
+    const int right = std::get<1>(edge);
+    const long long weight = std::get<2>(edge);
     if (groups.unite(left, right)) {
       if ((weight > 0 &&
            total > std::numeric_limits<long long>::max() - weight) ||
@@ -791,7 +814,9 @@ class TimeMap {
     // upper_bound(timestamp) - 1 is the newest value not after the query.
     const auto after = std::upper_bound(
         entries.begin(), entries.end(), timestamp,
-        [](int query, const auto& entry) { return query < entry.first; });
+        [](int query, const std::pair<int, std::string>& entry) {
+          return query < entry.first;
+        });
     return after == entries.begin() ? "" : std::prev(after)->second;
   }
 

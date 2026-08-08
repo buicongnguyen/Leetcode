@@ -1,5 +1,5 @@
 ---
-description: A tested, chapter-based LeetCode problem-solving handbook in C++17 and Python 3.
+description: A tested, chapter-based LeetCode problem-solving handbook in C++11, C++17, and Python 3.
 ---
 
 # Turn problem signals into working code
@@ -49,6 +49,12 @@ search into expected constant time while preserving the earlier index.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:two-sum"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:two-sum"
@@ -145,8 +151,8 @@ exercised by the repository's behavior tests.
 
 - **Chapters explain decisions.** Templates are grouped by the reasoning that
   selects them, not just by data-structure name.
-- **Code is real source.** C++17 compiles and Python imports; both are exercised
-  by behavior tests.
+- **Code is real source.** C++11 and C++17 compile from the same templates, and
+  Python imports; all are exercised by behavior tests.
 - **Invariants come first.** Every core pattern states what must remain true as
   its loop or recursion advances.
 - **The repository is the book.** Fixes to explanations, code, and tests travel

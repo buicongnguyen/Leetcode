@@ -91,4 +91,4 @@ conservation.
 !!! note "Implementation status"
 
     This page is a reasoning blueprint. Dinic is not yet part of the tested
-    C++17/Python library, so do not present this pseudocode as copy-ready code.
+    C++11/17 and Python library, so do not present this pseudocode as copy-ready code.

@@ -9,7 +9,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const origin = `${protocol}://${host}`;
   const title = "DSA Atlas — LeetCode problem-solving handbook";
   const description =
-    "A tested, chapter-based data structures and algorithms handbook in C++17 and Python 3.";
+    "A tested, chapter-based data structures and algorithms handbook in C++11, C++17, and Python 3.";
 
   return {
     metadataBase: new URL(origin),

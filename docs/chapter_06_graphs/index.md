@@ -53,6 +53,12 @@ source. The first discovery of a vertex gives its shortest unweighted distance.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bfs"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bfs"
+    ```
+
 Mark a vertex when enqueuing, not when dequeuing, or the queue may contain many
 duplicates.
 
@@ -70,6 +76,12 @@ that distance is final.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:dijkstra"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:dijkstra"
@@ -96,6 +108,12 @@ partial list as a valid order is a correctness bug.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:topological-order"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:topological-order"
+    ```
+
 ## Bridge edges
 
 An undirected edge is a bridge when its child subtree cannot reach the parent
@@ -112,6 +130,12 @@ parallel-edge regression case.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bridges"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bridges"

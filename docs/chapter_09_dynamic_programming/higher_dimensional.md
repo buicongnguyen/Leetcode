@@ -79,6 +79,25 @@ A tuple preserves meaning and avoids allocating unreachable combinations.
     };
     ```
 
+=== "C++11"
+
+    ```cpp
+    // C++11 names the iterator type because if-initializers arrived later.
+    typedef std::tuple<int, int, int, int> State;
+    std::map<State, long long> memo;
+
+    std::function<long long(int, int, int, int)> solve =
+        [&] (int index, int budget_a, int budget_b, int mode) -> long long {
+      const State state(index, budget_a, budget_b, mode);
+      std::map<State, long long>::iterator found = memo.find(state);
+      if (found != memo.end()) {
+        return found->second;  // Only reachable tuples occupy memory.
+      }
+      // Add problem-specific base cases and transitions here.
+      return memo[state] = evaluate_transitions(state);
+    };
+    ```
+
 Once correct, encode a tuple into an integer or dense table only if profiling or
 constraints justify it.
 
@@ -126,6 +145,12 @@ positive integer.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:digit-dp"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:digit-dp"

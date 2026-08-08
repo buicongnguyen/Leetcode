@@ -66,5 +66,5 @@ represents a product of exchange rates greater than one—an arbitrage cycle.
 
 !!! note "Implementation status"
 
-    Bellman–Ford remains explanatory until equivalent C++17 and Python behavior
+    Bellman–Ford remains explanatory until equivalent C++11/17 and Python behavior
     tests are added to the reference library.

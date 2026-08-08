@@ -50,6 +50,12 @@ interval.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:binary-search"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:binary-search"
+    ```
+
 ### First true
 
 The predicate must be monotone:
@@ -70,6 +76,12 @@ remains in `[lo, hi)`. Returning `n` is meaningful: no position is true.
     ```
 
 === "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:first-true"
+    ```
+
+=== "C++11"
 
     ```cpp
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:first-true"

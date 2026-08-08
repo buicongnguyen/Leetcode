@@ -62,6 +62,12 @@ From that contract:
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:tree-height"
     ```
 
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:tree-height"
+    ```
+
 The base case and return statement are direct translations of the contract.
 For a chain of three nodes the calls return `1`, then `2`, then `3`; for an
 empty root they return `0`.
