@@ -74,6 +74,7 @@ markdown_extensions:
 extra_css:
   - stylesheets/extra.css
 extra_javascript:
+  - javascripts/mermaid.mjs
   - javascripts/extra.js
 
 nav:
@@ -111,6 +112,7 @@ nav:
           - Strongly connected components: chapter_10_advanced_graphs/strongly_connected_components.md
           - Bridges and articulation points: chapter_10_advanced_graphs/bridges_articulation_points.md
           - LCA and binary lifting: chapter_10_advanced_graphs/lca_binary_lifting.md
+          - A* heuristic search: chapter_10_advanced_graphs/a_star.md
       - "Chapter 11 · Composite structures":
           - Overview and design method: chapter_11_composite_structures/index.md
           - LRU cache: chapter_11_composite_structures/lru_cache.md
@@ -123,6 +125,19 @@ nav:
           - All O(1) data structure: chapter_11_composite_structures/all_one.md
           - Number containers: chapter_11_composite_structures/number_containers.md
           - Snapshot array: chapter_11_composite_structures/snapshot_array.md
+      - "Chapter 12 · Core interview toolkit":
+          - Overview and chooser: chapter_12_core_toolkit/index.md
+          - Linked lists: chapter_12_core_toolkit/linked_lists.md
+          - Greedy algorithms: chapter_12_core_toolkit/greedy.md
+          - Bit manipulation: chapter_12_core_toolkit/bit_manipulation.md
+          - String matching: chapter_12_core_toolkit/string_matching.md
+      - "Chapter 13 · Advanced trees":
+          - Overview and chooser: chapter_13_advanced_trees/index.md
+          - Balanced search trees: chapter_13_advanced_trees/balanced_search_trees.md
+          - Tries: chapter_13_advanced_trees/tries.md
+          - Fenwick and segment trees: chapter_13_advanced_trees/range_structures.md
+          - KD trees: chapter_13_advanced_trees/kd_trees.md
   - Appendix:
       - Quick reference: appendix/quick_reference.md
+      - Problem catalog: appendix/problem_catalog.md
       - Contributing: appendix/contributing.md

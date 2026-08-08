@@ -1,6 +1,6 @@
 ---
 description: Collapse mutual-reachability groups into a DAG with Kosaraju or Tarjan SCC.
-sample_status: conceptual
+sample_status: tested
 ---
 
 # Strongly connected components
@@ -64,7 +64,26 @@ important and you are comfortable with its stack invariant.
 - [Princeton: Directed Graphs and strong connectivity](https://algs4.cs.princeton.edu/42digraph/)
 - [Princeton: Tarjan SCC API](https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/TarjanSCC.html)
 
-!!! note "Implementation status"
+## Tested iterative Kosaraju template
 
-    SCC decomposition remains explanatory until the paired implementations
-    receive behavior and deep-graph tests.
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/graph.py:scc"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:scc"
+    ```
+
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:scc"
+    ```
+
+Both passes use explicit stacks, so a long directed chain does not consume the
+language call stack. Component order is an implementation detail; membership is
+the contract.

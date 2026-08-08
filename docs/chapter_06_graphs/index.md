@@ -135,6 +135,18 @@ parallel-edge regression case.
     --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bridges"
     ```
 
+## Practice ladder · model vertices and edges first
+
+| Rung | Problem | Thinking prompt |
+| --- | --- | --- |
+| 1 | [Number of Islands](https://leetcode.com/problems/number-of-islands/) | What creates an edge between two cells? |
+| 2 | [Rotting Oranges](https://leetcode.com/problems/rotting-oranges/) | Which sources enter BFS at distance zero? |
+| 3 | [Course Schedule](https://leetcode.com/problems/course-schedule/) | Is the request an order, or only proof of a cycle? |
+| 4 | [Network Delay Time](https://leetcode.com/problems/network-delay-time/) | Which weight property licenses Dijkstra? |
+
+Before coding, write `vertex = ...` and `edge = ...`; this catches modeling
+mistakes earlier than traversal debugging.
+
 === "C++11"
 
     ```cpp

@@ -86,7 +86,7 @@
     rail.setAttribute("aria-label", "Book navigation and reading tools");
     rail.innerHTML = `
       <p class="reader-rail__eyebrow">Book contents</p>
-      <p class="reader-rail__title">12 chapters · C++11/17 + Python 3</p>
+      <p class="reader-rail__title">14 chapters · C++11/17 + Python 3</p>
       <a
         class="reader-companion-link"
         href="https://buicongnguyen.github.io/SystemDesign/"

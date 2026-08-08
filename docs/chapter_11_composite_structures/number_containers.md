@@ -1,6 +1,6 @@
 ---
 description: Combine index ownership with per-number ordered indices for replacement and smallest-index queries.
-sample_status: conceptual
+sample_status: tested
 ---
 
 # Number containers
@@ -52,7 +52,25 @@ stale entries and makes cleanup query-driven.
 
 [LeetCode: Number Containers System](https://leetcode.com/problems/design-a-number-container-system/)
 
-!!! note "Implementation status"
+## Tested templates
 
-    This page compares eager and lazy designs; neither is yet a tested library
-    template.
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/structures.py:number-containers"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:number-containers"
+    ```
+
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:number-containers"
+    ```
+
+Python demonstrates lazy heap cleanup; C++ demonstrates eager `std::set`
+removal. Both preserve the same smallest-index contract.

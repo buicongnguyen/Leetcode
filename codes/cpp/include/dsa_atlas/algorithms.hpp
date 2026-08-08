@@ -10,6 +10,7 @@
 #include <limits>
 #include <queue>
 #include <random>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <tuple>
@@ -863,5 +864,787 @@ class MinStack {
   std::vector<std::pair<int, int>> entries_;
 };
 // --8<-- [end:min-stack]
+
+// --8<-- [start:reverse-linked-list]
+struct ListNode {
+  explicit ListNode(int node_value, ListNode* next_node = nullptr)
+      : value(node_value), next(next_node) {}
+
+  int value;
+  ListNode* next;
+};
+
+inline ListNode* reverse_linked_list(ListNode* head) {
+  ListNode* previous = nullptr;
+  ListNode* current = head;
+  while (current != nullptr) {
+    // Save the unread suffix before changing the only forward link.
+    ListNode* following = current->next;
+    current->next = previous;
+    // Advance both boundaries of the reversed prefix.
+    previous = current;
+    current = following;
+  }
+  return previous;
+}
+// --8<-- [end:reverse-linked-list]
+
+// --8<-- [start:interval-scheduling]
+inline int max_non_overlapping_intervals(
+    std::vector<std::pair<int, int>> intervals) {
+  for (const auto& interval : intervals) {
+    if (interval.first > interval.second) {
+      throw std::invalid_argument("interval start must not exceed end");
+    }
+  }
+  std::sort(intervals.begin(), intervals.end(),
+            [](const std::pair<int, int>& left,
+               const std::pair<int, int>& right) {
+              return left.second < right.second;
+            });
+  int selected = 0;
+  int previous_end = 0;
+  bool has_previous = false;
+  for (const auto& interval : intervals) {
+    if (!has_previous || interval.first >= previous_end) {
+      // The earliest finishing compatible interval leaves most room.
+      ++selected;
+      previous_end = interval.second;
+      has_previous = true;
+    }
+  }
+  return selected;
+}
+// --8<-- [end:interval-scheduling]
+
+// --8<-- [start:count-set-bits]
+inline int count_set_bits(long long value) {
+  if (value < 0) {
+    throw std::invalid_argument("value must be nonnegative");
+  }
+  unsigned long long remaining = static_cast<unsigned long long>(value);
+  int count = 0;
+  while (remaining != 0) {
+    // Clearing the lowest set bit makes one unit of progress.
+    remaining &= remaining - 1;
+    ++count;
+  }
+  return count;
+}
+// --8<-- [end:count-set-bits]
+
+// --8<-- [start:kmp-search]
+inline int kmp_search(const std::string& text, const std::string& pattern) {
+  if (pattern.empty()) {
+    return 0;
+  }
+  std::vector<int> longest_border(pattern.size(), 0);
+  int border = 0;
+  for (int index = 1; index < static_cast<int>(pattern.size()); ++index) {
+    // Reuse the next-shorter border after a mismatch.
+    while (border > 0 && pattern[index] != pattern[border]) {
+      border = longest_border[border - 1];
+    }
+    if (pattern[index] == pattern[border]) {
+      ++border;
+    }
+    longest_border[index] = border;
+  }
+
+  int matched = 0;
+  for (int index = 0; index < static_cast<int>(text.size()); ++index) {
+    while (matched > 0 && text[index] != pattern[matched]) {
+      matched = longest_border[matched - 1];
+    }
+    if (text[index] == pattern[matched]) {
+      ++matched;
+      if (matched == static_cast<int>(pattern.size())) {
+        // Convert the ending index into the match's start.
+        return index - matched + 1;
+      }
+    }
+  }
+  return -1;
+}
+// --8<-- [end:kmp-search]
+
+// --8<-- [start:trie]
+class Trie {
+ public:
+  Trie() : nodes_(1) {}
+
+  void insert(const std::string& word) {
+    int node = 0;
+    for (const char character : word) {
+      const auto found = nodes_[node].children.find(character);
+      if (found == nodes_[node].children.end()) {
+        // Create only the missing suffix; existing prefixes are shared.
+        const int child = static_cast<int>(nodes_.size());
+        nodes_[node].children[character] = child;
+        nodes_.push_back(Node());
+        node = child;
+      } else {
+        node = found->second;
+      }
+    }
+    nodes_[node].terminal = true;
+  }
+
+  bool contains(const std::string& word) const {
+    const int node = walk(word);
+    return node >= 0 && nodes_[node].terminal;
+  }
+
+  bool starts_with(const std::string& prefix) const {
+    return walk(prefix) >= 0;
+  }
+
+ private:
+  struct Node {
+    std::unordered_map<char, int> children;
+    bool terminal = false;
+  };
+
+  int walk(const std::string& text) const {
+    int node = 0;
+    for (const char character : text) {
+      const auto found = nodes_[node].children.find(character);
+      if (found == nodes_[node].children.end()) {
+        return -1;
+      }
+      node = found->second;
+    }
+    return node;
+  }
+
+  std::vector<Node> nodes_;
+};
+// --8<-- [end:trie]
+
+// --8<-- [start:fenwick-tree]
+class FenwickTree {
+ public:
+  explicit FenwickTree(int size) : size_(size) {
+    if (size < 0) {
+      throw std::invalid_argument("size must be nonnegative");
+    }
+    tree_.assign(static_cast<std::size_t>(size) + 1, 0);
+  }
+
+  void add(int index, long long delta) {
+    require_index(index);
+    for (int cursor = index + 1; cursor <= size_;
+         cursor += cursor & -cursor) {
+      // Each visited node owns a larger range containing index.
+      tree_[cursor] += delta;
+    }
+  }
+
+  long long prefix_sum(int end) const {
+    if (end < 0 || end > size_) {
+      throw std::out_of_range("prefix end outside Fenwick tree");
+    }
+    long long total = 0;
+    for (int cursor = end; cursor > 0; cursor -= cursor & -cursor) {
+      // Removing the lowest set bit visits the parent prefix.
+      total += tree_[cursor];
+    }
+    return total;
+  }
+
+  long long range_sum(int left, int right) const {
+    if (left < 0 || left > right || right > size_) {
+      throw std::out_of_range("range outside Fenwick tree");
+    }
+    return prefix_sum(right) - prefix_sum(left);
+  }
+
+ private:
+  void require_index(int index) const {
+    if (index < 0 || index >= size_) {
+      throw std::out_of_range("index outside Fenwick tree");
+    }
+  }
+
+  int size_;
+  std::vector<long long> tree_;
+};
+// --8<-- [end:fenwick-tree]
+
+// --8<-- [start:segment-tree]
+class SegmentTree {
+ public:
+  explicit SegmentTree(const std::vector<int>& values)
+      : size_(static_cast<int>(values.size())), tree_(2 * values.size(), 0) {
+    std::copy(values.begin(), values.end(), tree_.begin() + size_);
+    for (int node = size_ - 1; node > 0; --node) {
+      // Each internal node owns the sum of its two children.
+      tree_[node] = tree_[2 * node] + tree_[2 * node + 1];
+    }
+  }
+
+  void set(int index, long long value) {
+    if (index < 0 || index >= size_) {
+      throw std::out_of_range("index outside segment tree");
+    }
+    int node = index + size_;
+    tree_[node] = value;
+    while (node > 1) {
+      node /= 2;
+      tree_[node] = tree_[2 * node] + tree_[2 * node + 1];
+    }
+  }
+
+  long long range_sum(int left, int right) const {
+    if (left < 0 || left > right || right > size_) {
+      throw std::out_of_range("range outside segment tree");
+    }
+    left += size_;
+    right += size_;
+    long long total = 0;
+    while (left < right) {
+      if (left % 2 == 1) {
+        total += tree_[left++];
+      }
+      if (right % 2 == 1) {
+        total += tree_[--right];
+      }
+      // Move from the selected boundary nodes to their parents.
+      left /= 2;
+      right /= 2;
+    }
+    return total;
+  }
+
+ private:
+  int size_;
+  std::vector<long long> tree_;
+};
+// --8<-- [end:segment-tree]
+
+// --8<-- [start:bellman-ford]
+inline std::vector<long long> bellman_ford(
+    int vertex_count,
+    const std::vector<std::tuple<int, int, long long>>& edges, int source) {
+  if (vertex_count <= 0) {
+    throw std::invalid_argument("vertex_count must be positive");
+  }
+  validate_vertex(source, static_cast<std::size_t>(vertex_count), "source");
+  for (const auto& edge : edges) {
+    validate_vertex(std::get<0>(edge), vertex_count, "edge endpoint");
+    validate_vertex(std::get<1>(edge), vertex_count, "edge endpoint");
+  }
+  const long long infinity = std::numeric_limits<long long>::max();
+  std::vector<long long> distance(vertex_count, infinity);
+  distance[source] = 0;
+  for (int pass = 0; pass < vertex_count - 1; ++pass) {
+    bool changed = false;
+    for (const auto& edge : edges) {
+      const int left = std::get<0>(edge);
+      const int right = std::get<1>(edge);
+      const long long weight = std::get<2>(edge);
+      if (distance[left] == infinity) {
+        continue;
+      }
+      if ((weight > 0 && distance[left] > infinity - weight) ||
+          (weight < 0 &&
+           distance[left] < std::numeric_limits<long long>::min() - weight)) {
+        throw std::overflow_error("Bellman-Ford distance overflow");
+      }
+      const long long candidate = distance[left] + weight;
+      if (candidate < distance[right]) {
+        // Relax only from a vertex the source can reach.
+        distance[right] = candidate;
+        changed = true;
+      }
+    }
+    if (!changed) {
+      break;
+    }
+  }
+  for (const auto& edge : edges) {
+    const int left = std::get<0>(edge);
+    const int right = std::get<1>(edge);
+    const long long weight = std::get<2>(edge);
+    if (distance[left] == infinity) {
+      continue;
+    }
+    if ((weight > 0 && distance[left] > infinity - weight) ||
+        (weight < 0 &&
+         distance[left] < std::numeric_limits<long long>::min() - weight)) {
+      throw std::overflow_error("Bellman-Ford distance overflow");
+    }
+    if (distance[left] + weight < distance[right]) {
+      throw std::invalid_argument("reachable negative cycle");
+    }
+  }
+  return distance;
+}
+// --8<-- [end:bellman-ford]
+
+// --8<-- [start:floyd-warshall]
+inline std::vector<std::vector<long long>> floyd_warshall(
+    std::vector<std::vector<long long>> distance) {
+  const int size = static_cast<int>(distance.size());
+  const long long infinity = std::numeric_limits<long long>::max();
+  for (const auto& row : distance) {
+    if (static_cast<int>(row.size()) != size) {
+      throw std::invalid_argument("distance matrix must be square");
+    }
+  }
+  for (int vertex = 0; vertex < size; ++vertex) {
+    distance[vertex][vertex] = std::min(0LL, distance[vertex][vertex]);
+  }
+  for (int middle = 0; middle < size; ++middle) {
+    for (int left = 0; left < size; ++left) {
+      if (distance[left][middle] == infinity) {
+        continue;
+      }
+      for (int right = 0; right < size; ++right) {
+        if (distance[middle][right] == infinity) {
+          continue;
+        }
+        const long long suffix = distance[middle][right];
+        if ((suffix > 0 && distance[left][middle] > infinity - suffix) ||
+            (suffix < 0 && distance[left][middle] <
+                               std::numeric_limits<long long>::min() - suffix)) {
+          throw std::overflow_error("Floyd-Warshall distance overflow");
+        }
+        const long long candidate =
+            distance[left][middle] + distance[middle][right];
+        if (candidate < distance[left][right]) {
+          // Phase middle permits vertices 0..middle as internal vertices.
+          distance[left][right] = candidate;
+        }
+      }
+    }
+  }
+  for (int vertex = 0; vertex < size; ++vertex) {
+    if (distance[vertex][vertex] < 0) {
+      throw std::invalid_argument("graph contains a negative cycle");
+    }
+  }
+  return distance;
+}
+// --8<-- [end:floyd-warshall]
+
+// --8<-- [start:scc]
+inline std::vector<std::vector<int>> strongly_connected_components(
+    const std::vector<std::vector<int>>& graph) {
+  for (const auto& neighbors : graph) {
+    for (const int neighbor : neighbors) {
+      validate_vertex(neighbor, graph.size(), "neighbor");
+    }
+  }
+  std::vector<bool> visited(graph.size(), false);
+  std::vector<int> finish_order;
+  for (int start = 0; start < static_cast<int>(graph.size()); ++start) {
+    if (visited[start]) {
+      continue;
+    }
+    visited[start] = true;
+    std::vector<std::pair<int, std::size_t>> stack(1, {start, 0});
+    while (!stack.empty()) {
+      const int node = stack.back().first;
+      std::size_t& edge_index = stack.back().second;
+      if (edge_index < graph[node].size()) {
+        const int neighbor = graph[node][edge_index++];
+        if (!visited[neighbor]) {
+          visited[neighbor] = true;
+          stack.push_back({neighbor, 0});
+        }
+      } else {
+        // Postorder records a vertex only after its suffix is complete.
+        finish_order.push_back(node);
+        stack.pop_back();
+      }
+    }
+  }
+
+  std::vector<std::vector<int>> reversed(graph.size());
+  for (int node = 0; node < static_cast<int>(graph.size()); ++node) {
+    for (const int neighbor : graph[node]) {
+      reversed[neighbor].push_back(node);
+    }
+  }
+  std::vector<int> component_of(graph.size(), -1);
+  std::vector<std::vector<int>> components;
+  for (auto position = finish_order.rbegin(); position != finish_order.rend();
+       ++position) {
+    const int start = *position;
+    if (component_of[start] != -1) {
+      continue;
+    }
+    const int component_id = static_cast<int>(components.size());
+    components.push_back(std::vector<int>());
+    std::vector<int> stack(1, start);
+    component_of[start] = component_id;
+    while (!stack.empty()) {
+      const int node = stack.back();
+      stack.pop_back();
+      components.back().push_back(node);
+      for (const int neighbor : reversed[node]) {
+        if (component_of[neighbor] == -1) {
+          component_of[neighbor] = component_id;
+          stack.push_back(neighbor);
+        }
+      }
+    }
+    std::sort(components.back().begin(), components.back().end());
+  }
+  return components;
+}
+// --8<-- [end:scc]
+
+// --8<-- [start:binary-lifting]
+class BinaryLiftingTree {
+ public:
+  explicit BinaryLiftingTree(const std::vector<std::vector<int>>& tree,
+                             int root = 0)
+      : depth_(tree.size(), 0) {
+    validate_vertex(root, tree.size(), "root");
+    for (const auto& neighbors : tree) {
+      for (const int neighbor : neighbors) {
+        validate_vertex(neighbor, tree.size(), "neighbor");
+      }
+    }
+    std::vector<std::set<int>> neighbor_sets(tree.size());
+    std::size_t directed_edge_count = 0;
+    for (int node = 0; node < static_cast<int>(tree.size()); ++node) {
+      neighbor_sets[node].insert(tree[node].begin(), tree[node].end());
+      if (neighbor_sets[node].size() != tree[node].size()) {
+        throw std::invalid_argument("input tree cannot contain parallel edges");
+      }
+      if (neighbor_sets[node].count(node) != 0) {
+        throw std::invalid_argument("input tree cannot contain self-loops");
+      }
+      directed_edge_count += tree[node].size();
+    }
+    if (directed_edge_count != 2 * (tree.size() - 1)) {
+      throw std::invalid_argument(
+          "input must contain exactly n - 1 undirected edges");
+    }
+    for (int node = 0; node < static_cast<int>(tree.size()); ++node) {
+      for (const int neighbor : neighbor_sets[node]) {
+        if (neighbor_sets[neighbor].count(node) == 0) {
+          throw std::invalid_argument(
+              "every tree edge must appear in both directions");
+        }
+      }
+    }
+    std::vector<int> parent(tree.size(), -1);
+    parent[root] = root;
+    std::vector<int> stack(1, root);
+    while (!stack.empty()) {
+      const int node = stack.back();
+      stack.pop_back();
+      for (const int neighbor : tree[node]) {
+        if (neighbor == parent[node]) {
+          continue;
+        }
+        if (parent[neighbor] != -1) {
+          throw std::invalid_argument("input must be an undirected tree");
+        }
+        parent[neighbor] = node;
+        depth_[neighbor] = depth_[node] + 1;
+        stack.push_back(neighbor);
+      }
+    }
+    if (std::find(parent.begin(), parent.end(), -1) != parent.end()) {
+      throw std::invalid_argument("input tree must be connected");
+    }
+
+    int levels = 1;
+    while ((1LL << levels) <= static_cast<long long>(tree.size())) {
+      ++levels;
+    }
+    up_.push_back(parent);
+    for (int level = 1; level < levels; ++level) {
+      up_.push_back(std::vector<int>(tree.size()));
+      for (int node = 0; node < static_cast<int>(tree.size()); ++node) {
+        // Doubling composes two jumps of length 2^(level - 1).
+        up_[level][node] = up_[level - 1][up_[level - 1][node]];
+      }
+    }
+  }
+
+  int lca(int left, int right) const {
+    validate_vertex(left, depth_.size(), "left");
+    validate_vertex(right, depth_.size(), "right");
+    if (depth_[left] < depth_[right]) {
+      std::swap(left, right);
+    }
+    int difference = depth_[left] - depth_[right];
+    for (int level = 0; level < static_cast<int>(up_.size()); ++level) {
+      if ((difference & (1 << level)) != 0) {
+        left = up_[level][left];
+      }
+    }
+    if (left == right) {
+      return left;
+    }
+    for (int level = static_cast<int>(up_.size()) - 1; level >= 0; --level) {
+      if (up_[level][left] != up_[level][right]) {
+        // Lift together while their 2^level ancestors still differ.
+        left = up_[level][left];
+        right = up_[level][right];
+      }
+    }
+    return up_[0][left];
+  }
+
+ private:
+  std::vector<int> depth_;
+  std::vector<std::vector<int>> up_;
+};
+// --8<-- [end:binary-lifting]
+
+// --8<-- [start:dinic]
+class Dinic {
+ public:
+  explicit Dinic(int vertex_count) {
+    if (vertex_count < 0) {
+      throw std::invalid_argument("vertex_count must be nonnegative");
+    }
+    graph_.resize(static_cast<std::size_t>(vertex_count));
+  }
+
+  void add_edge(int left, int right, long long capacity) {
+    validate_vertex(left, graph_.size(), "edge endpoint");
+    validate_vertex(right, graph_.size(), "edge endpoint");
+    if (capacity < 0) {
+      throw std::invalid_argument("capacity must be nonnegative");
+    }
+    const int left_reverse = static_cast<int>(graph_[right].size());
+    const int right_reverse = static_cast<int>(graph_[left].size());
+    graph_[left].push_back(Edge(right, left_reverse, capacity));
+    graph_[right].push_back(Edge(left, right_reverse, 0));
+  }
+
+  long long max_flow(int source, int sink) {
+    validate_vertex(source, graph_.size(), "source");
+    validate_vertex(sink, graph_.size(), "sink");
+    if (source == sink) {
+      return 0;
+    }
+    long long total = 0;
+    while (build_levels(source, sink)) {
+      next_edge_.assign(graph_.size(), 0);
+      while (true) {
+        const long long sent =
+            push(source, sink, std::numeric_limits<long long>::max());
+        if (sent == 0) {
+          break;
+        }
+        if (total > std::numeric_limits<long long>::max() - sent) {
+          throw std::overflow_error("maximum flow overflow");
+        }
+        total += sent;
+      }
+    }
+    return total;
+  }
+
+ private:
+  struct Edge {
+    Edge(int edge_to, int reverse_index, long long residual_capacity)
+        : to(edge_to), reverse(reverse_index), capacity(residual_capacity) {}
+    int to;
+    int reverse;
+    long long capacity;
+  };
+
+  bool build_levels(int source, int sink) {
+    level_.assign(graph_.size(), -1);
+    level_[source] = 0;
+    std::queue<int> queue;
+    queue.push(source);
+    while (!queue.empty()) {
+      const int node = queue.front();
+      queue.pop();
+      for (const auto& edge : graph_[node]) {
+        if (edge.capacity > 0 && level_[edge.to] == -1) {
+          level_[edge.to] = level_[node] + 1;
+          queue.push(edge.to);
+        }
+      }
+    }
+    return level_[sink] != -1;
+  }
+
+  long long push(int node, int sink, long long available) {
+    if (node == sink) {
+      return available;
+    }
+    for (int& index = next_edge_[node];
+         index < static_cast<int>(graph_[node].size()); ++index) {
+      Edge& edge = graph_[node][index];
+      if (edge.capacity == 0 || level_[edge.to] != level_[node] + 1) {
+        continue;
+      }
+      const long long sent = push(edge.to, sink, std::min(available, edge.capacity));
+      if (sent > 0) {
+        // Forward and reverse residual capacities change together.
+        edge.capacity -= sent;
+        graph_[edge.to][edge.reverse].capacity += sent;
+        return sent;
+      }
+    }
+    return 0;
+  }
+
+  std::vector<std::vector<Edge>> graph_;
+  std::vector<int> level_;
+  std::vector<int> next_edge_;
+};
+// --8<-- [end:dinic]
+
+// --8<-- [start:a-star-grid]
+inline int a_star_grid(const std::vector<std::vector<int>>& grid,
+                       std::pair<int, int> start,
+                       std::pair<int, int> goal) {
+  if (grid.empty() || grid.front().empty()) {
+    throw std::invalid_argument("grid must be nonempty and rectangular");
+  }
+  const int rows = static_cast<int>(grid.size());
+  const int columns = static_cast<int>(grid.front().size());
+  for (const auto& row : grid) {
+    if (static_cast<int>(row.size()) != columns) {
+      throw std::invalid_argument("grid must be nonempty and rectangular");
+    }
+  }
+  const auto valid_cell = [&](const std::pair<int, int>& cell) {
+    return cell.first >= 0 && cell.first < rows && cell.second >= 0 &&
+           cell.second < columns;
+  };
+  if (!valid_cell(start) || !valid_cell(goal)) {
+    throw std::invalid_argument("endpoint outside grid");
+  }
+  if (grid[start.first][start.second] != 0 ||
+      grid[goal.first][goal.second] != 0) {
+    return -1;
+  }
+
+  typedef std::tuple<int, int, int, int> State;
+  std::priority_queue<State, std::vector<State>, std::greater<State>> frontier;
+  std::vector<std::vector<int>> best(
+      rows, std::vector<int>(columns, std::numeric_limits<int>::max()));
+  best[start.first][start.second] = 0;
+  frontier.push(State(std::abs(start.first - goal.first) +
+                          std::abs(start.second - goal.second),
+                      0, start.first, start.second));
+  const int moves[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+  while (!frontier.empty()) {
+    const State state = frontier.top();
+    frontier.pop();
+    const int distance = std::get<1>(state);
+    const int row = std::get<2>(state);
+    const int column = std::get<3>(state);
+    if (distance != best[row][column]) {
+      continue;
+    }
+    if (row == goal.first && column == goal.second) {
+      return distance;
+    }
+    for (int move = 0; move < 4; ++move) {
+      const int next_row = row + moves[move][0];
+      const int next_column = column + moves[move][1];
+      if (next_row < 0 || next_row >= rows || next_column < 0 ||
+          next_column >= columns || grid[next_row][next_column] != 0) {
+        continue;
+      }
+      const int candidate = distance + 1;
+      if (candidate < best[next_row][next_column]) {
+        best[next_row][next_column] = candidate;
+        // Manhattan distance is admissible for four-direction unit moves.
+        const int heuristic = std::abs(next_row - goal.first) +
+                              std::abs(next_column - goal.second);
+        frontier.push(
+            State(candidate + heuristic, candidate, next_row, next_column));
+      }
+    }
+  }
+  return -1;
+}
+// --8<-- [end:a-star-grid]
+
+// --8<-- [start:number-containers]
+class NumberContainers {
+ public:
+  void change(int index, int value) {
+    if (index < 0) {
+      throw std::invalid_argument("index must be nonnegative");
+    }
+    const auto existing = index_value_.find(index);
+    if (existing != index_value_.end()) {
+      value_indices_[existing->second].erase(index);
+    }
+    index_value_[index] = value;
+    value_indices_[value].insert(index);
+  }
+
+  int find(int value) const {
+    const auto found = value_indices_.find(value);
+    return found == value_indices_.end() || found->second.empty()
+               ? -1
+               : *found->second.begin();
+  }
+
+ private:
+  std::unordered_map<int, int> index_value_;
+  std::unordered_map<int, std::set<int>> value_indices_;
+};
+// --8<-- [end:number-containers]
+
+// --8<-- [start:snapshot-array]
+class SnapshotArray {
+ public:
+  explicit SnapshotArray(int length) {
+    if (length < 0) {
+      throw std::invalid_argument("length must be nonnegative");
+    }
+    history_.assign(static_cast<std::size_t>(length),
+                    std::vector<std::pair<int, int>>(1, {0, 0}));
+  }
+
+  void set(int index, int value) {
+    require_index(index);
+    auto& entries = history_[index];
+    if (entries.back().first == current_snapshot_) {
+      // Coalesce repeated writes in the current in-progress version.
+      entries.back().second = value;
+    } else {
+      entries.push_back({current_snapshot_, value});
+    }
+  }
+
+  int snap() { return current_snapshot_++; }
+
+  int get(int index, int snapshot) const {
+    require_index(index);
+    if (snapshot < 0 || snapshot >= current_snapshot_) {
+      throw std::invalid_argument("snapshot has not been created");
+    }
+    const auto& entries = history_[index];
+    // upper_bound(snapshot) - 1 is the newest visible change.
+    const auto after = std::upper_bound(
+        entries.begin(), entries.end(), snapshot,
+        [](int query, const std::pair<int, int>& entry) {
+          return query < entry.first;
+        });
+    return std::prev(after)->second;
+  }
+
+ private:
+  void require_index(int index) const {
+    if (index < 0 || index >= static_cast<int>(history_.size())) {
+      throw std::out_of_range("index outside snapshot array");
+    }
+  }
+
+  int current_snapshot_ = 0;
+  std::vector<std::vector<std::pair<int, int>>> history_;
+};
+// --8<-- [end:snapshot-array]
 
 }  // namespace dsa_atlas

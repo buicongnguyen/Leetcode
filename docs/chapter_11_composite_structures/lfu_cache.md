@@ -24,6 +24,15 @@ One global recency list orders by time only. LFU needs a two-level order:
 | direct access to a frequency list | `frequency → list` hash map |
 | globally smallest live frequency | `min_frequency` scalar |
 
+```mermaid
+flowchart LR
+  accTitle: LFU cache ownership across lookup and frequency buckets
+  accDescr: A key lookup points to each entry, frequency buckets own recency order among equal-frequency entries, and min frequency points to the only bucket eligible for eviction.
+  M["key → entry map"] --> E["entry<br/>key, value, frequency"]
+  E --> B["frequency bucket<br/>least recent ... most recent"]
+  F["min_frequency"] --> B
+```
+
 **Invariant:** each key appears in exactly one frequency list matching the
 frequency stored in its node. `min_frequency` names the smallest nonempty
 bucket.

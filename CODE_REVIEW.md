@@ -4,7 +4,9 @@ Review scope: the pre-reorganization `main` branch at `74bf53a`, followed by a
 second pass over the extracted libraries and CI at `c0cd647`, and a third pass
 over the expanded DP, graph, composite-structure, and book build surfaces on
 2026-07-31. A fourth compatibility pass on 2026-08-08 reviewed every paired
-language sample and the complete C++ library under C++11 and C++17.
+language sample and the complete C++ library under C++11 and C++17. A fifth
+curriculum-completeness pass on 2026-08-08 reviewed the new core, advanced-tree,
+advanced-graph, composite, catalog, and deployment surfaces.
 
 ## Summary
 
@@ -164,23 +166,64 @@ header from compiling under C++11.
 of two indices, or an empty vector when no solution exists. Existing distinct-
 index and overflow regressions cover the revised contract in both standards.
 
+### High — Negative constructor sizes could allocate before validation
+
+The first C++ review draft validated `Dinic`, `FenwickTree`, and
+`SnapshotArray` sizes in the constructor body. Their vectors had already seen
+the signed size in the initializer list, so a negative input could convert to a
+huge unsigned allocation before the guard ran.
+
+**Resolution:** validate before `resize`/`assign`; invalid sizes are rejected
+without attempting allocation.
+
+### Medium — LCA preprocessing could accept malformed “trees”
+
+Skipping every edge to a parent allowed a root self-loop or parallel parent
+edges to evade the traversal cycle check. One-way adjacency could also be
+accepted even though the API promises an undirected tree.
+
+**Resolution:** both languages now reject self-loops and duplicates, require
+exactly `n - 1` undirected edges, verify reverse adjacency, and still check
+connectedness and cycles during iterative preprocessing.
+
+### Medium — Maximum-flow accumulation lacked an overflow boundary
+
+Individual capacities used `long long`, but adding several valid blocking flows
+could overflow the total even when every edge value was representable.
+
+**Resolution:** the C++ Dinic template checks the aggregate before addition;
+the Python integer remains unbounded.
+
+### High — Diagram source rendered as blank space
+
+The Markdown validator proved that every Mermaid fence had accessible text, but
+browser review showed that the theme replaced each fence with an empty diagram
+container. The runtime needed to be made explicit for this theme build.
+
+**Resolution:** load a pinned Mermaid 11 runtime using Material's documented
+integration, expose it to the theme, validate that configuration in
+`check_book.py`, and visually verify diagrams on desktop and mobile. Dense
+mobile diagrams remain inside a horizontal scroll region at a readable width.
+
 ## Current verification
 
-- Python behavior suite: 23 tests pass.
+- Python behavior suite: 31 tests pass.
 - C++11 and C++17 Release builds compile from the same source and pass the
   same always-on behavior suite.
 - Randomized differential review: 14,801 assertion groups across DP and
   composite structures passed against small reference models.
-- Book validation checks navigation, links, snippet markers, diagram
+- Book validation covers 52 navigated pages and checks links, snippet markers, diagram
   accessibility, sample-status contracts, three-tab language order, dual C++
-  test targets, and Pages artifact isolation.
+  test targets, the pinned diagram runtime, and Pages artifact isolation.
 
 ## Remaining follow-up
 
 - Add randomized parity tests that run identical fixtures against C++ and
   Python.
-- Add complete tested implementations for Dinic, SCC, LCA, and A* before
-  presenting them as copy-ready library code.
-- Add a structured problem catalog instead of embedding problem lists in prose.
 - Replace recursive bridge search before positioning it as safe for graphs deep
   enough to exceed the Python or native call stack.
+- Add tested LFU, Design Twitter, and All O(1) implementations only if their
+  larger mutation surfaces receive reference-model and randomized tests.
+- Consider a configurable KD-tree implementation only after the book chooses a
+  dimension, distance metric, and update contract; the current page is
+  intentionally conceptual.

@@ -38,6 +38,120 @@ void expect_throws(Callable callable, const std::string& message) {
 
 int main() {
   try {
+    ListNode third_list_node(3);
+    ListNode second_list_node(2, &third_list_node);
+    ListNode first_list_node(1, &second_list_node);
+    ListNode* reversed = reverse_linked_list(&first_list_node);
+    expect(reversed == &third_list_node && reversed->next == &second_list_node &&
+               reversed->next->next == &first_list_node &&
+               reversed->next->next->next == nullptr,
+           "linked-list reversal must preserve and reverse every node");
+    expect(max_non_overlapping_intervals({{1, 3}, {2, 4}, {3, 5}}) == 2,
+           "interval scheduling must select the earliest compatible finishes");
+    expect(count_set_bits(45) == 4,
+           "bit counting must clear one set bit per iteration");
+    expect_throws<std::invalid_argument>(
+        [] { static_cast<void>(count_set_bits(-1)); },
+        "bit counting must reject negative values");
+    expect(kmp_search("abxabcabcaby", "abcaby") == 6,
+           "KMP must reuse borders to find the first match");
+    expect(kmp_search("abc", "") == 0,
+           "an empty string pattern must match at position zero");
+
+    Trie words;
+    words.insert("cat");
+    words.insert("car");
+    expect(words.contains("cat") && !words.contains("ca") &&
+               words.starts_with("ca"),
+           "trie queries must distinguish full words from prefixes");
+
+    expect_throws<std::invalid_argument>(
+        [] { static_cast<void>(FenwickTree(-1)); },
+        "Fenwick tree must validate before allocating a negative size");
+    FenwickTree fenwick(4);
+    const std::vector<int> fenwick_values{2, -1, 4, 3};
+    for (int index = 0; index < 4; ++index) {
+      fenwick.add(index, fenwick_values[index]);
+    }
+    expect(fenwick.prefix_sum(3) == 5 && fenwick.range_sum(1, 4) == 6,
+           "Fenwick tree must answer half-open prefix and range sums");
+    SegmentTree segments({1, 2, 3, 4});
+    expect(segments.range_sum(1, 3) == 5,
+           "segment tree must answer the original range sum");
+    segments.set(2, 10);
+    expect(segments.range_sum(1, 3) == 12,
+           "segment tree must repair ancestors after point assignment");
+
+    expect((bellman_ford(3, {{0, 1, 4}, {0, 2, 5}, {1, 2, -2}}, 0) ==
+            std::vector<long long>{0, 4, 2}),
+           "Bellman-Ford must handle a negative edge without a cycle");
+    expect_throws<std::invalid_argument>(
+        [] {
+          static_cast<void>(
+              bellman_ford(2, {{0, 1, -1}, {1, 0, -1}}, 0));
+        },
+        "Bellman-Ford must reject a reachable negative cycle");
+
+    const long long infinity = std::numeric_limits<long long>::max();
+    expect((floyd_warshall({{0, 3, infinity},
+                            {infinity, 0, 2},
+                            {1, infinity, 0}}) ==
+            std::vector<std::vector<long long>>{{0, 3, 5},
+                                                {3, 0, 2},
+                                                {1, 4, 0}}),
+           "Floyd-Warshall must expose each newly allowed intermediate");
+
+    expect((strongly_connected_components({{1}, {2, 3}, {0}, {4}, {}}) ==
+            std::vector<std::vector<int>>{{0, 1, 2}, {3}, {4}}),
+           "Kosaraju must partition the graph into maximal mutual regions");
+    BinaryLiftingTree ancestors({{1, 2}, {0, 3, 4}, {0}, {1}, {1}});
+    expect(ancestors.lca(3, 4) == 1 && ancestors.lca(2, 4) == 0,
+           "binary lifting must align depth before lifting both vertices");
+    expect_throws<std::invalid_argument>(
+        [] { static_cast<void>(BinaryLiftingTree({{0}})); },
+        "binary lifting must reject a self-loop disguised as a tree");
+
+    expect_throws<std::invalid_argument>(
+        [] { static_cast<void>(Dinic(-1)); },
+        "Dinic must validate before allocating a negative vertex count");
+    Dinic flow(4);
+    flow.add_edge(0, 1, 3);
+    flow.add_edge(0, 2, 2);
+    flow.add_edge(1, 2, 1);
+    flow.add_edge(1, 3, 2);
+    flow.add_edge(2, 3, 3);
+    expect(flow.max_flow(0, 3) == 5,
+           "Dinic must combine blocking flows across the level graph");
+
+    expect(a_star_grid({{0, 0, 0}, {1, 1, 0}, {0, 0, 0}}, {0, 0},
+                       {2, 2}) == 4,
+           "A-star must find a shortest route with an admissible heuristic");
+    expect(a_star_grid({{0, 1}}, {0, 0}, {0, 1}) == -1,
+           "A-star must reject a blocked destination");
+
+    NumberContainers containers;
+    containers.change(2, 10);
+    containers.change(1, 10);
+    expect(containers.find(10) == 1,
+           "number containers must return the smallest matching index");
+    containers.change(1, 20);
+    expect(containers.find(10) == 2 && containers.find(20) == 1,
+           "number containers must synchronize both lookup directions");
+
+    expect_throws<std::invalid_argument>(
+        [] { static_cast<void>(SnapshotArray(-1)); },
+        "snapshot array must validate before allocating a negative length");
+    SnapshotArray snapshots(2);
+    snapshots.set(0, 5);
+    snapshots.set(0, 6);
+    const int first_snapshot = snapshots.snap();
+    snapshots.set(0, 9);
+    const int second_snapshot = snapshots.snap();
+    expect(snapshots.get(0, first_snapshot) == 6 &&
+               snapshots.get(0, second_snapshot) == 9 &&
+               snapshots.get(1, first_snapshot) == 0,
+           "snapshot array must binary-search sparse per-index histories");
+
     const std::vector<int> pair = two_sum({3, 3}, 6);
     expect(pair == std::vector<int>({0, 1}),
            "two_sum must use distinct indices");

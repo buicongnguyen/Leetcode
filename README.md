@@ -36,12 +36,16 @@ The published book uses a persistent chapter rail, an inline page outline,
 device-local reading bookmarks, and scroll progress. GitHub Pages is the
 canonical public website; any workspace-restricted Sites build is only an
 internal companion preview.
-Advanced Graphs now has separate guides for MST, flow, negative and all-pairs
-shortest paths, SCC, connectivity failures, and LCA. Composite Structures has
-problem-oriented guides for ten multi-structure designs, with tested paired
-templates for LRU, Randomized Set, Streaming Median, TimeMap, and Min Stack.
+Advanced Graphs has separate tested guides for MST, flow, negative and all-pairs
+shortest paths, SCC, connectivity failures, LCA, and A*. Composite Structures
+has problem-oriented guides for ten multi-structure designs, with seven tested
+paired templates including Number Containers and Snapshot Array.
 Dynamic Programming has a state-design guide plus dedicated 1D, 2D, 3D,
 higher-dimensional, knapsack, structured-pattern, and optimization pages.
+The Core Interview Toolkit fills linked-list, greedy, bit, and string-matching
+gaps; Advanced Trees covers red-black/AVL decisions, Tries, Fenwick/segment
+trees, and KD trees. A searchable problem catalog maps practice signals back to
+the relevant chapter and first reasoning question.
 
 ## Local development
 

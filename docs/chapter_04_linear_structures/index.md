@@ -105,3 +105,14 @@ values (or the entire prefix if it contains fewer than `k` values).
 - Do equal values dominate one another?
 - Must stale heap entries be removed lazily?
 - Can `k` be zero or larger than the input?
+
+## Practice ladder · identify the expiration rule
+
+| Rung | Problem | Thinking prompt |
+| --- | --- | --- |
+| 1 | [Valid Parentheses](https://leetcode.com/problems/valid-parentheses/) | What unmatched obligation belongs on the stack? |
+| 2 | [Daily Temperatures](https://leetcode.com/problems/daily-temperatures/) | Which earlier indices does the new value resolve? |
+| 3 | [Longest Substring Without Repeating Characters](https://leetcode.com/problems/longest-substring-without-repeating-characters/) | What forces the left boundary forward? |
+| 4 | [Sliding Window Maximum](https://leetcode.com/problems/sliding-window-maximum/) | Which candidates expire, and which are dominated? |
+
+Write the container's order, membership, and removal condition before the loop.

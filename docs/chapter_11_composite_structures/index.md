@@ -63,13 +63,15 @@ list node has one map entry” is testable.
 
 ## Detailed problem guides
 
-The first five guides include tested C++11, C++17, and Python implementations:
+Seven guides include tested C++11, C++17, and Python implementations:
 
 - [LRU cache](lru_cache.md)
 - [Randomized set](randomized_set.md)
 - [Streaming median](streaming_median.md)
 - [Time-based key-value store](time_map.md)
 - [Min stack](min_stack.md)
+- [Number containers](number_containers.md)
+- [Snapshot array](snapshot_array.md)
 
 The remaining guides focus on the ownership model and mutation order for more
 complex interview designs:
@@ -77,8 +79,6 @@ complex interview designs:
 - [LFU cache](lfu_cache.md)
 - [Design Twitter](design_twitter.md)
 - [All O(1) data structure](all_one.md)
-- [Number containers](number_containers.md)
-- [Snapshot array](snapshot_array.md)
 
 Composite structures most often fail at synchronization boundaries. Test
 overwriting, deleting the last array element, moving between buckets, removing

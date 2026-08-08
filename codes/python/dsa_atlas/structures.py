@@ -217,3 +217,63 @@ class MinStack:
             raise IndexError("minimum of empty MinStack")
         return self.entries[-1][1]
 # --8<-- [end:min-stack]
+
+
+# --8<-- [start:number-containers]
+class NumberContainers:
+    """Map indices to numbers and numbers to lazy min-heaps of indices."""
+
+    def __init__(self) -> None:
+        self.index_value: dict[int, int] = {}
+        self.value_indices: dict[int, list[int]] = {}
+
+    def change(self, index: int, value: int) -> None:
+        if index < 0:
+            raise ValueError("index must be nonnegative")
+        self.index_value[index] = value
+        # Old heap entries remain; find removes them only when exposed.
+        heappush(self.value_indices.setdefault(value, []), index)
+
+    def find(self, value: int) -> int:
+        candidates = self.value_indices.get(value, [])
+        while candidates and self.index_value.get(candidates[0]) != value:
+            heappop(candidates)
+        return candidates[0] if candidates else -1
+# --8<-- [end:number-containers]
+
+
+# --8<-- [start:snapshot-array]
+class SnapshotArray:
+    """Store sparse per-index histories instead of copying every snapshot."""
+
+    def __init__(self, length: int) -> None:
+        if length < 0:
+            raise ValueError("length must be nonnegative")
+        self.current_snapshot = 0
+        self.history = [[(0, 0)] for _ in range(length)]
+
+    def set(self, index: int, value: int) -> None:
+        if not 0 <= index < len(self.history):
+            raise IndexError("index outside snapshot array")
+        entries = self.history[index]
+        if entries[-1][0] == self.current_snapshot:
+            # Coalesce repeated writes in the current in-progress version.
+            entries[-1] = (self.current_snapshot, value)
+        else:
+            entries.append((self.current_snapshot, value))
+
+    def snap(self) -> int:
+        snapshot = self.current_snapshot
+        self.current_snapshot += 1
+        return snapshot
+
+    def get(self, index: int, snapshot: int) -> int:
+        if not 0 <= index < len(self.history):
+            raise IndexError("index outside snapshot array")
+        if not 0 <= snapshot < self.current_snapshot:
+            raise ValueError("snapshot has not been created")
+        entries = self.history[index]
+        # Right-bias finds the newest entry whose snapshot is not later.
+        position = bisect_right(entries, (snapshot, float("inf"))) - 1
+        return entries[position][1]
+# --8<-- [end:snapshot-array]

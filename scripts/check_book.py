@@ -59,6 +59,17 @@ def main() -> None:
         (ROOT / "mkdocs.yml").read_text(encoding="utf-8"),
         Loader=ConfigurationLoader,
     )
+    extra_javascript = configuration.get("extra_javascript", [])
+    if "javascripts/mermaid.mjs" not in extra_javascript:
+        raise SystemExit("mkdocs.yml must load the Mermaid runtime")
+    mermaid_runtime = (DOCS / "javascripts" / "mermaid.mjs").read_text(
+        encoding="utf-8"
+    )
+    if (
+        "window.mermaid = mermaid" not in mermaid_runtime
+        or "mermaid@11.16.0" not in mermaid_runtime
+    ):
+        raise SystemExit("Mermaid runtime must be pinned and exposed to Material")
     declared = {DOCS / page for page in nav_pages(configuration["nav"])}
     markdown_files = set(DOCS.rglob("*.md"))
 
@@ -111,7 +122,13 @@ def main() -> None:
                     )
 
         if page.parent.name.startswith(
-            ("chapter_09_", "chapter_10_", "chapter_11_")
+            (
+                "chapter_09_",
+                "chapter_10_",
+                "chapter_11_",
+                "chapter_12_",
+                "chapter_13_",
+            )
         ):
             sample_status = metadata.get("sample_status")
             if sample_status not in {"tested", "conceptual"}:
@@ -215,7 +232,7 @@ def main() -> None:
             "System Design Atlas must be linked from both the reader rail and book landing page"
         )
 
-    for chapter_number in range(1, 12):
+    for chapter_number in range(1, 14):
         matches = sorted(DOCS.glob(f"chapter_{chapter_number:02d}_*/index.md"))
         if len(matches) != 1:
             raise SystemExit(

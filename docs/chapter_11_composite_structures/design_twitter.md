@@ -23,6 +23,16 @@ work.
 Each user's post list is already sorted by time. The news feed is therefore the
 merge of several sorted lists, but only the newest `k` results are needed.
 
+```mermaid
+flowchart LR
+  accTitle: Twitter feed as a k-way merge
+  accDescr: The user and followed accounts each own a newest-first tweet stream. One heap entry represents the current head of each stream; popping one tweet advances only that stream.
+  U["user stream"] --> H["max-heap of stream heads"]
+  F1["followee A stream"] --> H
+  F2["followee B stream"] --> H
+  H --> R["up to ten newest tweets"]
+```
+
 ```text
 get_feed(user):
     sources = followed users plus user

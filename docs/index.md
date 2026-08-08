@@ -139,10 +139,28 @@ exercised by the repository's behavior tests.
 <span>Assign each required operation to the structure that owns it.</span>
 </a>
 
+<a class="chapter-card" href="chapter_12_core_toolkit/">
+<small>12 · Toolkit</small>
+<strong>Interview primitives</strong>
+<span>Linked lists, greedy proofs, bit state, and string matching.</span>
+</a>
+
+<a class="chapter-card" href="chapter_13_advanced_trees/">
+<small>13 · Indexes</small>
+<strong>Advanced trees</strong>
+<span>Balanced order, prefixes, mutable ranges, and spatial search.</span>
+</a>
+
 <a class="chapter-card" href="appendix/quick_reference/">
 <small>Appendix</small>
 <strong>Quick reference</strong>
 <span>Signals, invariants, and complexity at a glance.</span>
+</a>
+
+<a class="chapter-card" href="appendix/problem_catalog/">
+<small>Practice</small>
+<strong>Problem catalog</strong>
+<span>Map recognition signals to patterns and first questions.</span>
 </a>
 
 </div>

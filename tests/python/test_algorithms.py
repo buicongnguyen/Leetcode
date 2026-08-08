@@ -11,33 +11,148 @@ PYTHON_CODES = Path(__file__).resolve().parents[2] / "codes" / "python"
 sys.path.insert(0, str(PYTHON_CODES))
 
 from dsa_atlas import (  # noqa: E402
+    BinaryLiftingTree,
+    Dinic,
     DisjointSet,
+    FenwickTree,
     LRUCache,
+    ListNode,
     MedianFinder,
     MinStack,
+    NumberContainers,
     RandomizedSet,
+    SegmentTree,
+    SnapshotArray,
     TimeMap,
+    Trie,
+    a_star_grid,
+    bellman_ford,
     bfs_distances,
     binary_search,
     cherry_pickup_two_robots,
     count_distinct_digit_numbers,
+    count_set_bits,
     count_subarrays_sum,
     dijkstra,
     find_bridges,
+    floyd_warshall,
     first_true,
+    kmp_search,
     knapsack_01,
+    linked_values,
     longest_common_subsequence_length,
     lower_bound,
     max_non_adjacent_sum,
+    max_non_overlapping_intervals,
     max_sliding_window,
     minimum_coins,
     minimum_spanning_tree_weight,
+    reverse_linked_list,
+    strongly_connected_components,
     topological_order,
     TreeNode,
     tree_height,
     two_sum,
     unique_subsets,
 )
+
+
+class CoreToolkitTests(unittest.TestCase):
+    def test_linked_list_reversal_preserves_every_node(self) -> None:
+        head = ListNode(1, ListNode(2, ListNode(3)))
+        self.assertEqual(linked_values(reverse_linked_list(head)), [3, 2, 1])
+        self.assertIsNone(reverse_linked_list(None))
+
+    def test_greedy_bit_and_string_templates(self) -> None:
+        self.assertEqual(max_non_overlapping_intervals([(1, 3), (2, 4), (3, 5)]), 2)
+        with self.assertRaises(ValueError):
+            max_non_overlapping_intervals([(3, 1)])
+        self.assertEqual(count_set_bits(0b101101), 4)
+        with self.assertRaises(ValueError):
+            count_set_bits(-1)
+        self.assertEqual(kmp_search("abxabcabcaby", "abcaby"), 6)
+        self.assertEqual(kmp_search("abc", ""), 0)
+        self.assertEqual(kmp_search("abc", "z"), -1)
+
+
+class AdvancedTreeTests(unittest.TestCase):
+    def test_trie_distinguishes_word_from_prefix(self) -> None:
+        words = Trie()
+        words.insert("cat")
+        words.insert("car")
+        self.assertTrue(words.contains("cat"))
+        self.assertFalse(words.contains("ca"))
+        self.assertTrue(words.starts_with("ca"))
+
+    def test_fenwick_and_segment_tree_ranges(self) -> None:
+        with self.assertRaises(ValueError):
+            FenwickTree(-1)
+        fenwick = FenwickTree(4)
+        for index, value in enumerate([2, -1, 4, 3]):
+            fenwick.add(index, value)
+        self.assertEqual(fenwick.prefix_sum(3), 5)
+        self.assertEqual(fenwick.range_sum(1, 4), 6)
+
+        segments = SegmentTree([1, 2, 3, 4])
+        self.assertEqual(segments.range_sum(1, 3), 5)
+        segments.set(2, 10)
+        self.assertEqual(segments.range_sum(1, 3), 12)
+
+
+class AdvancedGraphTests(unittest.TestCase):
+    def test_negative_edges_and_all_pairs_shortest_paths(self) -> None:
+        edges = [(0, 1, 4), (0, 2, 5), (1, 2, -2)]
+        self.assertEqual(bellman_ford(3, edges, 0), [0, 4, 2])
+        with self.assertRaises(ValueError):
+            bellman_ford(2, [(0, 1, -1), (1, 0, -1)], 0)
+
+        matrix = [[0, 3, math.inf], [math.inf, 0, 2], [1, math.inf, 0]]
+        self.assertEqual(floyd_warshall(matrix), [[0, 3, 5], [3, 0, 2], [1, 4, 0]])
+
+    def test_scc_lca_flow_and_a_star(self) -> None:
+        components = strongly_connected_components([[1], [2, 3], [0], [4], []])
+        self.assertEqual({frozenset(group) for group in components}, {frozenset({0, 1, 2}), frozenset({3}), frozenset({4})})
+
+        ancestors = BinaryLiftingTree([[1, 2], [0, 3, 4], [0], [1], [1]])
+        self.assertEqual(ancestors.lca(3, 4), 1)
+        self.assertEqual(ancestors.lca(2, 4), 0)
+        with self.assertRaises(ValueError):
+            BinaryLiftingTree([[0]])
+
+        with self.assertRaises(ValueError):
+            Dinic(-1)
+        flow = Dinic(4)
+        for left, right, capacity in [(0, 1, 3), (0, 2, 2), (1, 2, 1), (1, 3, 2), (2, 3, 3)]:
+            flow.add_edge(left, right, capacity)
+        self.assertEqual(flow.max_flow(0, 3), 5)
+
+        grid = [[0, 0, 0], [1, 1, 0], [0, 0, 0]]
+        self.assertEqual(a_star_grid(grid, (0, 0), (2, 2)), 4)
+        self.assertEqual(a_star_grid([[0, 1]], (0, 0), (0, 1)), -1)
+
+
+class AdditionalCompositeTests(unittest.TestCase):
+    def test_number_containers_discards_stale_membership(self) -> None:
+        values = NumberContainers()
+        values.change(2, 10)
+        values.change(1, 10)
+        self.assertEqual(values.find(10), 1)
+        values.change(1, 20)
+        self.assertEqual(values.find(10), 2)
+        self.assertEqual(values.find(20), 1)
+
+    def test_snapshot_array_reads_sparse_history(self) -> None:
+        with self.assertRaises(ValueError):
+            SnapshotArray(-1)
+        values = SnapshotArray(2)
+        values.set(0, 5)
+        values.set(0, 6)
+        first = values.snap()
+        values.set(0, 9)
+        second = values.snap()
+        self.assertEqual(values.get(0, first), 6)
+        self.assertEqual(values.get(0, second), 9)
+        self.assertEqual(values.get(1, first), 0)
 
 
 class ArrayTests(unittest.TestCase):
@@ -220,3 +335,7 @@ class StateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+    kmp_search,
+    linked_values,
+    reverse_linked_list,
+    strongly_connected_components,

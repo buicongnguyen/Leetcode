@@ -105,3 +105,14 @@ Sorting is useful when order makes candidate elimination provable: merge
 intervals, two pointers, sweep lines, greedy scheduling, and adjacency-based
 duplicate skipping. Record whether sorting mutates input and whether original
 indices must be retained.
+
+## Practice ladder · write the search contract
+
+| Rung | Problem | Thinking prompt |
+| --- | --- | --- |
+| 1 | [Binary Search](https://leetcode.com/problems/binary-search/) | What exactly means “not found”? |
+| 2 | [Find First and Last Position](https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/) | Which two monotone boundaries define the answer? |
+| 3 | [Search in Rotated Sorted Array](https://leetcode.com/problems/search-in-rotated-sorted-array/) | Which half is provably sorted this iteration? |
+| 4 | [Koko Eating Bananas](https://leetcode.com/problems/koko-eating-bananas/) | Why does feasibility stay true above the boundary? |
+
+State the interval style and final return meaning before calculating a midpoint.

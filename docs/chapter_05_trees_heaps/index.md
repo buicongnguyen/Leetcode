@@ -119,3 +119,15 @@ When averaging two C++ `int` tops, convert before addition to avoid overflow.
 The tested implementation is in
 [`structures.py`](https://github.com/buicongnguyen/Leetcode/blob/main/codes/python/dsa_atlas/structures.py)
 and its C++ counterpart in `algorithms.hpp`.
+
+## Practice ladder · define the subtree contract
+
+| Rung | Problem | Thinking prompt |
+| --- | --- | --- |
+| 1 | [Maximum Depth of Binary Tree](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | What does one call return for an empty subtree? |
+| 2 | [Binary Tree Level Order Traversal](https://leetcode.com/problems/binary-tree-level-order-traversal/) | How does the queue separate levels? |
+| 3 | [Validate Binary Search Tree](https://leetcode.com/problems/validate-binary-search-tree/) | Which ancestor bounds reach this node? |
+| 4 | [Binary Tree Maximum Path Sum](https://leetcode.com/problems/binary-tree-maximum-path-sum/) | What may extend upward, and what may finish here? |
+
+For heap practice, add [Kth Largest Element in an Array](https://leetcode.com/problems/kth-largest-element-in-an-array/)
+and explain why sorting the whole input is unnecessary.

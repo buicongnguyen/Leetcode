@@ -116,3 +116,15 @@ If you cannot justify the discard, two pointers is only a guess.
 - Can duplicates overwrite safely?
 - Does the map represent the past only, or the full input?
 - Is expected hash behavior acceptable?
+
+## Practice ladder · name the remembered state
+
+| Rung | Problem | Thinking prompt |
+| --- | --- | --- |
+| 1 | [Two Sum](https://leetcode.com/problems/two-sum/) | What does the map know before index `i`? |
+| 2 | [Product of Array Except Self](https://leetcode.com/problems/product-of-array-except-self/) | Which directional aggregates exclude this value? |
+| 3 | [Subarray Sum Equals K](https://leetcode.com/problems/subarray-sum-equals-k/) | Which earlier prefix completes the target? |
+| 4 | [Longest Consecutive Sequence](https://leetcode.com/problems/longest-consecutive-sequence/) | Which value proves a sequence starts here? |
+
+After each solution, record the map or set meaning in one sentence. The
+[problem catalog](../appendix/problem_catalog.md) groups more problems by signal.

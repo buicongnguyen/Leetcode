@@ -111,6 +111,13 @@
   height: auto;
 }
 
+@media screen and (max-width: 44.9844em) {
+  .md-typeset .mermaid svg {
+    min-width: 38rem;
+    max-width: none;
+  }
+}
+
 .md-sidebar--primary .md-sidebar__scrollwrap {
   scrollbar-color: color-mix(in srgb, var(--dsa-blue) 28%, transparent) transparent;
   scrollbar-width: thin;

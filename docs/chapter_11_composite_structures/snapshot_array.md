@@ -1,6 +1,6 @@
 ---
 description: Store sparse per-index version histories and binary search the value visible at a snapshot.
-sample_status: conceptual
+sample_status: tested
 ---
 
 # Snapshot array
@@ -53,7 +53,25 @@ coalescing, and its final entry is the current value for that index.
 
 [LeetCode: Snapshot Array](https://leetcode.com/problems/snapshot-array/)
 
-!!! note "Implementation status"
+## Tested template
 
-    The sparse-history design is explained here; it is not yet part of the
-    tested library.
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/structures.py:snapshot-array"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:snapshot-array"
+    ```
+
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:snapshot-array"
+    ```
+
+Repeated writes before `snap()` coalesce into one history entry. `get()`
+right-biases its search to the newest version not after the query.

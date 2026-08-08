@@ -113,3 +113,14 @@ obvious.
 State the number of candidate states and the work per emitted answer. For
 subsets, there are `2^n` outputs and copying each path can make the total
 `O(n 2^n)`.
+
+## Practice ladder · draw one decision level
+
+| Rung | Problem | Thinking prompt |
+| --- | --- | --- |
+| 1 | [Subsets](https://leetcode.com/problems/subsets/) | What binary choice advances one level? |
+| 2 | [Combination Sum](https://leetcode.com/problems/combination-sum/) | Does choosing a value keep or advance its index? |
+| 3 | [Word Search](https://leetcode.com/problems/word-search/) | Which mutation must be undone after the call? |
+| 4 | [N-Queens](https://leetcode.com/problems/n-queens/) | Which conflict sets make pruning constant-time? |
+
+Sketch two levels and label choose → explore → unchoose before coding.

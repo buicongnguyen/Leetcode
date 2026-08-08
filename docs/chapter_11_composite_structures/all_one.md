@@ -21,6 +21,15 @@ problem worse.
 - Each bucket owns a hash set of keys with exactly that count.
 - Head and tail sentinels expose minimum and maximum buckets.
 
+```mermaid
+flowchart LR
+  accTitle: All O one bucket ownership
+  accDescr: Count buckets form an increasing doubly linked list, each bucket owns all keys with that exact count, and a key lookup points directly to its current bucket.
+  K["key → bucket map"] --> B2["count 2<br/>{a, c}"]
+  B1["count 1<br/>{b}"] <--> B2
+  B2 <--> B4["count 4<br/>{d}"]
+```
+
 **Invariant:** bucket counts strictly increase along the list, every bucket is
 nonempty, and every live key appears in exactly one matching bucket.
 

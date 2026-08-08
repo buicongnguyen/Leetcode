@@ -1,6 +1,6 @@
 ---
 description: Preprocess a static rooted tree for fast ancestor, distance, and path queries.
-sample_status: conceptual
+sample_status: tested
 ---
 
 # LCA and binary lifting
@@ -73,7 +73,25 @@ different ancestor subtrees while moving them as high as safely possible.
 
 - [LeetCode: Lowest Common Ancestor of a Binary Tree](https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/)
 
-!!! note "Implementation status"
+## Tested template
 
-    Binary lifting is currently a detailed blueprint, not a tested library
-    template.
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/graph.py:binary-lifting"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:binary-lifting"
+    ```
+
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:binary-lifting"
+    ```
+
+Construction validates a connected acyclic input and uses an explicit stack.
+Queries first align depth, then lift both vertices from the largest jump down.

@@ -131,3 +131,88 @@ The next release executes four ordered gates:
   be misleading.
 - Validation checks structure as well as totals, so 32 tabs on the wrong pages
   cannot satisfy the rule accidentally.
+
+## 2026-08-08 curriculum-completeness release
+
+### Verified baseline
+
+- Local `main`, `origin/main`, and the public repository all pointed to
+  `eb50ec1` before this release began.
+- GitHub's CI and Pages workflows both completed successfully for that commit.
+- `https://buicongnguyen.github.io/Leetcode/` returned HTTP 200 from the
+  canonical project URL.
+- The remaining review backlog named advanced-graph templates and a structured
+  problem catalog; the chapter audit also found missing linked-list, greedy,
+  bit, string, trie, range-query, red-black-tree, and KD-tree coverage.
+
+### Detailed execution plan
+
+1. **Preserve the trust boundary.** Add executable source before changing any
+   page from `conceptual` to `tested`. Exercise every new API in Python and in
+   the one shared C++ header compiled under C++11 and C++17.
+2. **Close core curriculum gaps.** Add Chapter 12 with linked-list reversal,
+   interval scheduling, bit-counting, and KMP templates. Each lesson begins
+   with recognition signals, states the invariant, uses purposeful line
+   comments, and ends with failure checks and a short practice ladder.
+3. **Give tree topics their own home.** Add Chapter 13 with a chooser, tested
+   Trie/Fenwick/segment-tree templates, and detailed conceptual lessons for
+   red-black trees and KD trees. This avoids misclassifying tree structures as
+   advanced graph algorithms.
+4. **Finish the graph implementation gap.** Promote Bellman–Ford,
+   Floyd–Warshall, Kosaraju SCC, binary-lifting LCA, and Dinic from blueprints
+   to tested templates. Add a grid-focused A* lesson so heuristic search has a
+   precise, testable contract.
+5. **Deepen composite reasoning.** Promote Number Containers and Snapshot
+   Array as tested examples of bidirectional indexes and sparse version
+   history. Keep LFU, Design Twitter, and All O(1) conceptual, but strengthen
+   their ownership and operation visuals instead of presenting unverified
+   large implementations.
+6. **Build a practice path.** Add four-rung ladders to Chapters 3–8 and a
+   searchable catalog organized by signal, pattern, difficulty, and chapter.
+7. **Review and release.** Run source-marker validation, the full Python suite,
+   C++11 and C++17 Release tests, strict MkDocs, web build, and lint. Review the
+   generated navigation and diagrams, commit only intentional source, push
+   `main`, then verify both workflows and the live Pages commit.
+
+### Review of the plan
+
+- **Scope:** The release closes foundational omissions and the explicitly
+  recorded graph/catalog backlog. Cross-language randomized parity and an
+  iterative bridge implementation remain separate follow-ups because neither
+  is required to publish the new templates honestly.
+- **No duplication:** Chapter 10 owns graph optimization/connectivity;
+  Chapter 11 owns multi-structure design; Chapter 12 owns missing interview
+  primitives; Chapter 13 owns ordered, prefix, range, and spatial trees.
+- **Testability:** “Tested” means repository-owned snippets plus behavior tests
+  in Python, C++11, and C++17. Pages without those artifacts must say
+  `conceptual` and cannot embed source snippets.
+- **Compatibility:** The C++ reference remains one C++11-compatible header.
+  C++17 receives the same implementation, preventing language-tab drift.
+- **Pedagogy:** Each new lesson follows recognition → model/invariant → visual
+  trace → template → complexity → failure checks → practice. Diagrams are used
+  only when state ownership or transitions are clearer visually.
+- **Deployment:** GitHub Pages remains the only canonical public book. The
+  release follows the repository's established direct-to-`main` Pages flow;
+  no alternate `chatgpt.site` URL is introduced.
+
+### Acceptance criteria
+
+- Chapters 12 and 13, A*, and the problem catalog appear in navigation and
+  pass strict link/front-matter/diagram validation.
+- All promoted templates carry concise purpose comments and pass Python,
+  C++11, and C++17 behavior tests.
+- Every conceptual/tested label matches the snippets actually present.
+- CI and Pages succeed for the pushed commit, and the canonical live URL serves
+  that commit's book.
+
+### Local execution result
+
+- Added 15 tested templates across core, tree/range, advanced-graph, and
+  composite families, with the same C++ source compiled under C++11 and C++17.
+- Expanded the book to 52 navigated pages and added a 40-problem structured
+  catalog plus practice ladders for Chapters 3–8.
+- Passed 31 Python behavior tests, both C++ Release suites, strict book
+  validation/build, ESLint, and the production web build.
+- Browser review verified rendered flowcharts, three-language tabs, Chapter
+  12–13 navigation, the 14-chapter rail label, no page-level horizontal
+  overflow, mobile layout, and the continuous desktop rail on a long page.

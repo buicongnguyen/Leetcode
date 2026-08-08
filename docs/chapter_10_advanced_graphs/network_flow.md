@@ -1,6 +1,6 @@
 ---
 description: Model capacities, residual edges, augmenting paths, and matching reductions for maximum flow.
-sample_status: conceptual
+sample_status: tested
 ---
 
 # Network flow
@@ -88,7 +88,25 @@ conservation.
 - [Princeton: Maximum Flow lecture](https://algs4.cs.princeton.edu/lectures/)
 - [Princeton: Ford–Fulkerson API and complexity](https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/FordFulkerson.html)
 
-!!! note "Implementation status"
+## Tested Dinic template
 
-    This page is a reasoning blueprint. Dinic is not yet part of the tested
-    C++11/17 and Python library, so do not present this pseudocode as copy-ready code.
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/graph.py:dinic"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:dinic"
+    ```
+
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:dinic"
+    ```
+
+The implementation keeps reverse-edge indices beside every residual edge.
+Each blocking-flow phase scans only edges that advance one level.

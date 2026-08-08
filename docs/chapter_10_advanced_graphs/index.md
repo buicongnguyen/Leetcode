@@ -16,11 +16,12 @@ Advanced graph selection starts with the result that must be proved.
 | mutual reachability groups | directed graph | [SCC](strongly_connected_components.md) |
 | critical undirected links | connectivity after removal | [bridge / articulation DFS](bridges_articulation_points.md) |
 | repeated ancestor queries | static rooted tree | [LCA with binary lifting](lca_binary_lifting.md) |
+| one target with a useful lower bound | nonnegative costs | [A* heuristic search](a_star.md) |
 
 ```mermaid
 flowchart TD
   accTitle: Choosing an advanced graph algorithm by the result to prove
-  accDescr: Choose minimum spanning tree algorithms to connect all vertices cheaply, max flow to maximize movement through capacities, Bellman-Ford or Floyd-Warshall for specialized shortest paths, strongly connected components for mutual reachability, bridge search for critical links, and binary lifting for repeated ancestor queries.
+  accDescr: Choose minimum spanning tree algorithms to connect all vertices cheaply, max flow to maximize movement through capacities, Bellman-Ford or Floyd-Warshall for specialized shortest paths, A-star for one target with a lower-bound heuristic, strongly connected components for mutual reachability, bridge search for critical links, and binary lifting for repeated ancestor queries.
   A{"What must the answer prove?"}
   A -->|"cheapest connection<br/>of all vertices"| B{"How are edges consumed?"}
   B -->|"sorted edge list"| C["Kruskal + DSU"]
@@ -31,6 +32,7 @@ flowchart TD
   A -->|"mutual reachability<br/>groups"| H["Strongly connected<br/>components"]
   A -->|"links whose removal<br/>disconnects the graph"| I["Bridges / articulation points"]
   A -->|"many ancestor or<br/>path queries on a tree"| J["LCA / binary lifting"]
+  A -->|"one target with a<br/>useful lower bound"| K["A* heuristic search"]
 ```
 
 This selection begins with the output contract. Edge direction, weights,
@@ -55,6 +57,8 @@ cases:
   times, low links, parallel edges, and root handling.
 - [LCA and binary lifting](lca_binary_lifting.md): preprocessing a static tree
   for repeated ancestor queries.
+- [A* heuristic search](a_star.md): admissible heuristics and a tested
+  four-direction grid contract.
 
 ## Tested example: minimum spanning tree
 

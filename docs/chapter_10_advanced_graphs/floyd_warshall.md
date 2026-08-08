@@ -1,6 +1,6 @@
 ---
 description: Derive all-pairs shortest paths from an intermediate-vertex dynamic-programming state.
-sample_status: conceptual
+sample_status: tested
 ---
 
 # Floyd–Warshall
@@ -71,7 +71,25 @@ appropriate.
 - [Princeton: Floyd–Warshall API](https://algs4.cs.princeton.edu/code/javadoc/edu/princeton/cs/algs4/FloydWarshall.html)
 - [Princeton: shortest-path chapter](https://algs4.cs.princeton.edu/44sp/)
 
-!!! note "Implementation status"
+## Tested template
 
-    The recurrence is reviewed here, but Floyd–Warshall is not yet a tested
-    copy-ready template in the repository.
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/graph.py:floyd-warshall"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:floyd-warshall"
+    ```
+
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:floyd-warshall"
+    ```
+
+The tested template accepts an infinity sentinel, guards unreachable additions,
+normalizes the diagonal, and rejects a negative diagonal after all phases.

@@ -1,6 +1,6 @@
 ---
 description: Use edge relaxation for negative weights and detect reachable negative cycles.
-sample_status: conceptual
+sample_status: tested
 ---
 
 # Bellman–Ford
@@ -64,7 +64,25 @@ represents a product of exchange rates greater than one—an arbitrage cycle.
 - [Princeton: shortest paths and Bellman–Ford](https://algs4.cs.princeton.edu/44sp/)
 - [Princeton: Bellman–Ford reference implementation](https://algs4.cs.princeton.edu/code/edu/princeton/cs/algs4/BellmanFordSP.java.html)
 
-!!! note "Implementation status"
+## Tested template
 
-    Bellman–Ford remains explanatory until equivalent C++11/17 and Python behavior
-    tests are added to the reference library.
+=== "Python"
+
+    ```python
+    --8<-- "codes/python/dsa_atlas/graph.py:bellman-ford"
+    ```
+
+=== "C++17"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bellman-ford"
+    ```
+
+=== "C++11"
+
+    ```cpp
+    --8<-- "codes/cpp/include/dsa_atlas/algorithms.hpp:bellman-ford"
+    ```
+
+The tested contract raises only for a negative cycle reachable from `source`;
+an unreachable negative cycle cannot affect those distances.
