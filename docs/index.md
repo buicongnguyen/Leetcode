@@ -17,7 +17,7 @@ Then write the invariant before the loop.
 
 [Start with the solve loop](chapter_01_problem_solving/index.md){ .md-button .md-button--primary }
 [Browse tested code](https://github.com/buicongnguyen/Leetcode/tree/main/codes){ .md-button }
-[Explore System Design](https://buicongnguyen.github.io/SystemDesign/){ .md-button }
+[Explore System Design Atlas](https://buicongnguyen.github.io/SystemDesign/){ .md-button }
 
 </div>
 

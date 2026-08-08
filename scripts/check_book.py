@@ -202,6 +202,19 @@ def main() -> None:
         if selector not in reader_css or selector not in reader_js:
             raise SystemExit(f"Reader interface is missing required component: {selector}")
 
+    companion_book_url = "https://buicongnguyen.github.io/SystemDesign/"
+    landing_page = (DOCS / "index.md").read_text(encoding="utf-8")
+    if (
+        ".reader-companion-link" not in reader_css
+        or 'class="reader-companion-link"' not in reader_js
+        or "System Design Atlas" not in reader_js
+        or companion_book_url not in reader_js
+        or companion_book_url not in landing_page
+    ):
+        raise SystemExit(
+            "System Design Atlas must be linked from both the reader rail and book landing page"
+        )
+
     for chapter_number in range(1, 12):
         matches = sorted(DOCS.glob(f"chapter_{chapter_number:02d}_*/index.md"))
         if len(matches) != 1:

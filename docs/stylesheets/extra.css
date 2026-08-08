@@ -175,6 +175,48 @@
   font-weight: 800;
 }
 
+.reader-companion-link {
+  min-height: 44px;
+  padding: .55rem .6rem;
+  display: grid;
+  gap: .12rem;
+  color: var(--dsa-ink);
+  border: 1px solid color-mix(in srgb, var(--dsa-blue) 38%, var(--dsa-line));
+  border-radius: .5rem;
+  background: color-mix(in srgb, var(--dsa-blue-soft) 58%, var(--dsa-panel));
+  text-decoration: none;
+}
+
+.reader-companion-link > span {
+  color: color-mix(in srgb, var(--dsa-orange) 68%, var(--dsa-ink));
+  font-size: .65rem;
+  font-weight: 850;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.reader-companion-link > strong {
+  font-size: .7rem;
+  line-height: 1.35;
+}
+
+.reader-companion-link > small {
+  color: var(--md-default-fg-color--light);
+  font-size: .65rem;
+  line-height: 1.35;
+}
+
+.reader-companion-link:hover,
+.reader-companion-link:focus-visible {
+  color: var(--dsa-blue);
+  border-color: var(--dsa-blue);
+}
+
+.reader-companion-link:focus-visible {
+  outline: 2px solid var(--dsa-blue);
+  outline-offset: 2px;
+}
+
 .reader-bookmark {
   display: grid;
   gap: .45rem;

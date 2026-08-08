@@ -83,10 +83,18 @@
 
     const rail = document.createElement("section");
     rail.className = "reader-rail";
-    rail.setAttribute("aria-label", "Reading tools");
+    rail.setAttribute("aria-label", "Book navigation and reading tools");
     rail.innerHTML = `
       <p class="reader-rail__eyebrow">Book contents</p>
       <p class="reader-rail__title">12 chapters · C++11/17 + Python 3</p>
+      <a
+        class="reader-companion-link"
+        href="https://buicongnguyen.github.io/SystemDesign/"
+      >
+        <span>Companion book</span>
+        <strong>System Design Atlas <span aria-hidden="true">↗</span></strong>
+        <small>Systems, backend, hardware, embedded, and ACiM design</small>
+      </a>
       <div class="reader-bookmark">
         <button class="reader-bookmark__save" type="button">Save current place</button>
         <button class="reader-bookmark__resume" type="button"></button>
