@@ -24,6 +24,29 @@ The tested template routes every new value through the lower heap, moves the
 largest lower value into the upper heap, then restores the size rule. This
 single sequence enforces both invariants.
 
+```mermaid
+flowchart LR
+  accTitle: Two heaps preserve the streaming median invariants
+  accDescr: Insert a new value into the lower max-heap, move its largest value to the upper min-heap to restore order, then move the upper minimum back only when the lower heap is too small.
+  subgraph O["1 · Restore order"]
+    direction TB
+    A["New value"] --> B["Push into lower max-heap"]
+    B --> C["Move lower maximum<br/>to upper min-heap"]
+  end
+  subgraph S["2 · Restore size"]
+    direction TB
+    D{"Is lower smaller<br/>than upper?"} -->|"yes"| E["Move upper minimum<br/>back to lower"]
+    D -->|"no"| F["Keep the heaps"]
+    E --> G["Balanced"]
+    F --> G
+  end
+  C --> D
+  G --> H["Invariant holds<br/>median is exposed at heap roots"]
+```
+
+Order is repaired before size. Once all lower values are no greater than all
+upper values, at most one root move is needed to restore the size rule.
+
 ## Tested templates
 
 === "Python"

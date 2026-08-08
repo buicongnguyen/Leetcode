@@ -29,6 +29,19 @@ To remove a value at index `i`:
 This stays correct when the removed value is already last, but that case should
 still be tested.
 
+```mermaid
+flowchart LR
+  accTitle: Randomized set removes an array hole with swap-delete
+  accDescr: To remove value twenty from the middle, copy the last value forty into its slot, update forty's map index, pop the duplicate tail, and erase twenty from the map.
+  A["values [10, 20, 30, 40]<br/>remove 20 at index 1"] --> B["Copy last value 40<br/>into index 1"]
+  B --> C["Repair ownership<br/>position[40] = 1<br/>pop tail · erase 20"]
+  C --> D["values [10, 40, 30]<br/>map and array agree"]
+  D --> E["Dense array restored<br/>uniform random index remains valid"]
+```
+
+The order of values is deliberately disposable. Density, not sortedness or
+insertion order, is what makes uniform random indexing constant time.
+
 ## Tested templates
 
 === "Python"

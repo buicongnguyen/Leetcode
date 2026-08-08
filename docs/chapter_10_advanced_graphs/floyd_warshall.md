@@ -26,6 +26,20 @@ distance[i][j] =
     min(distance[i][j], distance[i][k] + distance[k][j])
 ```
 
+```mermaid
+flowchart LR
+  accTitle: Floyd-Warshall considers whether a shortest path uses k
+  accDescr: At stage k, the best path from i to j is the smaller of the previous path that skips k and the two-part route from i to k to j.
+  A["Previous best i to j<br/>skip k"] --> M{"Take the smaller cost"}
+  B["Best i to k"] --> C["Add the two route pieces"]
+  D["Best k to j"] --> C
+  C -->|"use k"| M
+  M --> E["New best i to j<br/>internal vertices through k allowed"]
+```
+
+This is staged DP on the **allowed intermediate set**: `k` must be the
+outer loop because it defines which subproblem answers are legal to combine.
+
 ## Annotated blueprint
 
 ```text

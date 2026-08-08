@@ -39,6 +39,19 @@ get(index, snapshot):
 **Invariant:** each index history has strictly increasing snapshot IDs after
 coalescing, and its final entry is the current value for that index.
 
+```mermaid
+flowchart LR
+  accTitle: Snapshot array finds the newest version visible to a query
+  accDescr: An index history contains changes at snapshots zero, two, and five. A get at snapshot three searches to the first later entry at five, steps back, and returns the value from snapshot two.
+  H["History for one index<br/>(0,5) → (2,9) → (5,4)"] --> Q["get(index, snapshot 3)"]
+  Q --> U["upper_bound finds<br/>first ID greater than 3: ID 5"]
+  U --> P["Step back once<br/>newest ID at most 3: ID 2"]
+  P --> R["Return value 9"]
+```
+
+The search is for a predecessor, not necessarily an exact version. Ask which
+change was most recent **as of** the requested snapshot.
+
 ## Complexity and traps
 
 - Set: `O(1)` amortized.

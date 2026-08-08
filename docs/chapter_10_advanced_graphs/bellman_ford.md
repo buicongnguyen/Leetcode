@@ -22,6 +22,32 @@ After pass `i`, every shortest path using at most `i` edges has been accounted
 for. Any simple shortest path contains at most `V - 1` edges, so `V - 1`
 passes are enough when no reachable negative cycle exists.
 
+```mermaid
+flowchart LR
+  accTitle: Bellman-Ford relaxation and negative-cycle flow
+  accDescr: Initialize the source, relax every reachable edge for at most V minus one passes, stop at a fixed point, then use one extra pass to detect a reachable negative cycle.
+  subgraph S["Build distances"]
+    direction TB
+    A["Initialize<br/>source 0 · others infinity"] --> B["Relax every reachable edge<br/>for one full pass"]
+    B --> C["Repeat until unchanged<br/>or V-1 passes total"]
+  end
+  subgraph V["Explain why iteration stopped"]
+    direction TB
+    D{"Fixed point reached early?"} -->|"yes"| E["Distances are final"]
+    D -->|"no, pass limit reached"| F["Scan every edge<br/>one extra time"]
+  end
+  subgraph P["Proof check"]
+    direction TB
+    G{"Reachable improvement?"} -->|"yes"| H["Negative cycle"]
+    G -->|"no"| I["Distances are final"]
+  end
+  C --> D
+  F --> G
+```
+
+Read each full edge scan as one DP layer: it permits shortest paths with one
+more edge. The final scan is a proof check, not another distance-building pass.
+
 ## Annotated blueprint
 
 ```text

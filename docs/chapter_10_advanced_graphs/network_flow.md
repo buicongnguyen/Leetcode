@@ -31,6 +31,21 @@ The residual graph records what can still change:
 Reverse edges are not optional bookkeeping. Without them, an early valid choice
 can permanently block a better global solution.
 
+```mermaid
+flowchart LR
+  accTitle: A residual edge supports both augmentation and cancellation
+  accDescr: Sending delta units from u to v decreases the forward residual capacity and increases the reverse residual capacity, allowing later augmenting paths to cancel or reroute that flow.
+  U["u"] -->|"forward residual = capacity - flow"| V["v"]
+  V -.->|"reverse residual = flow"| U
+  P["Augment by delta"] --> F["Forward residual<br/>subtract delta"]
+  P --> R["Reverse residual<br/>add delta"]
+  F --> Q["More capacity used"]
+  R --> Z["Same flow can be cancelled<br/>and rerouted later"]
+```
+
+Think of the reverse edge as an undo budget. Every unit already sent forward
+creates one unit of permission to revise that choice.
+
 ## Annotated Dinic blueprint
 
 ```text

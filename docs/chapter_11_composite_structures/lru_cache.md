@@ -26,6 +26,25 @@ recent.
 
 That sentence is the proof obligation for every mutation.
 
+```mermaid
+flowchart LR
+  accTitle: LRU cache synchronizes a hash map with recency order
+  accDescr: The map points directly to list nodes, the list orders keys from most to least recent, successful access moves one node to the front, and eviction removes the tail from both structures.
+  M["Hash map<br/>key → list node"] --> N2["key 2"]
+  M --> N7["key 7"]
+  M --> N4["key 4"]
+  H["MRU sentinel"] <--> N2
+  N2 <--> N7
+  N7 <--> N4
+  N4 <--> T["LRU sentinel"]
+  G["get key 7"] --> X["Detach node 7"]
+  X --> Y["Insert node 7 after MRU"]
+  T -->|"evict tail key 4"| E["Erase node 4<br/>and map entry 4"]
+```
+
+Follow one key through both owners: lookup starts in the map, recency changes
+in the list, and eviction must delete the same key from both.
+
 ## Thinking flow
 
 1. A map solves lookup but cannot answer which key is oldest.

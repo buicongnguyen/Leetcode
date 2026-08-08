@@ -24,6 +24,19 @@ Then:
 **Invariant:** the saved minimum in entry `i` equals the minimum of values
 `0 .. i`.
 
+```mermaid
+flowchart LR
+  accTitle: Min stack stores the minimum with every prefix
+  accDescr: Entries pair each pushed value with the minimum through that position. Popping the top value two automatically reveals the previous minimum three.
+  A["bottom<br/>(value 3, min 3)"] --> B["(value 5, min 3)"]
+  B --> C["top<br/>(value 2, min 2)"]
+  C -->|"pop 2"| D["new top<br/>(value 5, min 3)"]
+  D --> E["get_min returns 3<br/>no rescan needed"]
+```
+
+The second field is a cached answer for that exact prefix. A pop restores an
+older prefix and therefore restores its answer in the same operation.
+
 ## Tested templates
 
 === "Python"

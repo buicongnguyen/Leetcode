@@ -4,6 +4,33 @@ description: Fast mapping from problem signals to patterns, invariants, and cost
 
 # Quick reference
 
+## Fast pattern router
+
+```mermaid
+flowchart TD
+  accTitle: Route a problem signal to the first algorithm family to investigate
+  accDescr: Decide whether the problem is about contiguous input, relationships, ordered lookup, changing ranges, enumerated choices, or overlapping states, then investigate the matching family and verify its invariant and complexity.
+  A["Read the required output<br/>and constraints"] --> B{"What structure does<br/>the answer depend on?"}
+  B -->|"contiguous segment"| C["Sliding window<br/>or prefix sums"]
+  B -->|"relationships or paths"| D["Graph or tree algorithm"]
+  B -->|"ordered boundary"| E["Binary search<br/>or ordered structure"]
+  B -->|"mutable range"| F["Fenwick or segment tree"]
+  B -->|"enumerate choices"| G["Backtracking"]
+  B -->|"overlapping state"| H["Dynamic programming"]
+  B -->|"identity plus another order"| I["Composite structure"]
+  C --> J["Write the state or invariant"]
+  D --> J
+  E --> J
+  F --> J
+  G --> J
+  H --> J
+  I --> J
+  J --> K["Check complexity against limits<br/>then test boundary cases"]
+```
+
+Use this as a shortlist generator, not an automatic answer. The tables below
+help refine the choice after the first family is identified.
+
 | Signal | Pattern | Invariant to write | Typical cost |
 | --- | --- | --- | --- |
 | complement / count | hash map | map describes processed prefix | `O(n)` expected |

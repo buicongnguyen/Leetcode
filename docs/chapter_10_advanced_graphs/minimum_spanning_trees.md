@@ -42,6 +42,21 @@ some minimum spanning tree.
 **Invariant:** accepted edges are a forest that can still be extended to an
 MST.
 
+```mermaid
+flowchart LR
+  accTitle: Kruskal builds a minimum spanning tree by joining components
+  accDescr: Sort the example edges by weight, accept the three edges that join different components, and reject later edges because all four vertices are already connected.
+  S["Sorted edges<br/>AC 1 · BD 1 · BC 2 · AB 4 · CD 5"] --> A["Accept AC<br/>{A,C} {B} {D}"]
+  A --> B["Accept BD, then BC<br/>{A,B,C,D}"]
+  B --> C["Chosen edges<br/>AC 1 · BD 1 · BC 2"]
+  C --> D["V-1 edges accepted<br/>MST cost = 4"]
+  D -.-> E["AB and CD are skipped<br/>they would create cycles"]
+```
+
+At every accepted edge, read the braces as the DSU state. Kruskal never asks
+whether an edge is locally short on a path; it asks whether the cheapest
+remaining edge safely joins two whole components.
+
 === "Python"
 
     ```python

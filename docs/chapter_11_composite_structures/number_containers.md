@@ -34,6 +34,19 @@ find(number):
 **Invariant:** `index` appears in exactly the ordered collection named by
 `assignment[index]`.
 
+```mermaid
+flowchart LR
+  accTitle: Number containers update forward and reverse ownership together
+  accDescr: Changing index one from number ten to number twenty removes one from the ordered set for ten, updates the forward assignment, and inserts one into the ordered set for twenty.
+  A["Before<br/>assignment 1 → 10<br/>10 → {1,4}"] --> B["change(1, 20)"]
+  B --> C["One synchronized update<br/>remove from set 10<br/>assign 1 → 20<br/>insert into set 20"]
+  C --> D["After<br/>10 → {4}<br/>20 → {1}"]
+  D --> E["find(10) = 4<br/>find(20) = 1"]
+```
+
+Treat reassignment as one logical transaction: remove the old reverse fact,
+replace the forward fact, then create the new reverse fact.
+
 ## Lazy-heap alternative
 
 Push every new `(index)` into the heap for its number. During `find(number)`,

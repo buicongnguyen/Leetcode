@@ -30,6 +30,21 @@ The strict versus non-strict comparison is deliberate. A back edge from the
 child subtree to `u` protects the edge `u-v`, but removing `u` still separates
 that subtree.
 
+```mermaid
+flowchart LR
+  accTitle: Low-link values distinguish a cycle edge from a bridge
+  accDescr: Vertices zero, one, and two form a cycle, so the subtree at two can escape to ancestor zero. Vertex three is a leaf below one with no escape, so edge one-three is a bridge.
+  A["0<br/>tin 0"] ---|"DFS tree edge"| B["1<br/>tin 1"]
+  B ---|"DFS tree edge"| C["2<br/>tin 2"]
+  C -.->|"back edge lowers low to 0"| A
+  B ---|"bridge: low of 3 is greater than tin of 1"| D["3<br/>tin 3 · low 3"]
+  C --> E["Cycle edge is protected<br/>subtree can reach an ancestor"]
+  D --> F["Tail edge is critical<br/>subtree has no escape"]
+```
+
+The question at a DFS child is always: “Can this entire subtree escape above
+its parent without using the tree edge back to that parent?”
+
 ## Tested bridge template
 
 === "Python"

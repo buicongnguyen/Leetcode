@@ -49,6 +49,31 @@ lca(u, v):
 Descending powers are essential: each accepted jump keeps the two vertices in
 different ancestor subtrees while moving them as high as safely possible.
 
+```mermaid
+flowchart LR
+  accTitle: Lowest common ancestor query with binary lifting
+  accDescr: First lift the deeper vertex to equal depth, return if the vertices meet, otherwise try jumps from largest to smallest while their ancestors differ, then return their shared parent.
+  subgraph A1["1 · Align depth"]
+    direction TB
+    A["Query u and v"] --> B["Lift the deeper vertex<br/>by bits of the depth gap"]
+    B --> C{"u equals v?"}
+    C -->|"yes"| D["That vertex is the LCA"]
+  end
+  subgraph A2["2 · Stay below the LCA"]
+    direction TB
+    E["Scan powers<br/>largest to zero"] --> F{"Proposed ancestors differ?"}
+    F -->|"yes"| G["Lift both vertices"]
+    F -->|"no"| H["Reject that jump"]
+    G --> I["Try next smaller power"]
+    H --> I
+  end
+  C -->|"no"| E
+  I --> J["Return parent of u<br/>first shared ancestor"]
+```
+
+The query has two phases with different goals: equalize depth, then maximize
+safe jumps that keep `u` and `v` in different subtrees.
+
 ## Derived queries
 
 - `k`-th ancestor: apply jumps for the set bits of `k`.

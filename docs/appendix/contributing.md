@@ -4,6 +4,31 @@ description: How to contribute reliable explanations and tested algorithms.
 
 # Contributing
 
+```mermaid
+flowchart LR
+  accTitle: Contribution and documentation validation pipeline
+  accDescr: Update source and documentation together, add boundary-focused tests, run language tests and the book validator, build the site strictly, review the rendered result, then commit and deploy only when every gate passes.
+  subgraph P["Prepare"]
+    direction TB
+    A["Change algorithm<br/>and explanation together"] --> B["Update Python and C++<br/>plus boundary tests"]
+  end
+  subgraph V["Verify"]
+    direction TB
+    C["Run language tests"] --> D["Run book validator<br/>and strict site build"]
+    D --> E["Review rendered page<br/>wide and narrow"]
+  end
+  subgraph R["Release gate"]
+    direction TB
+    F{"Every gate passes?"} -->|"yes"| G["Commit and deploy"]
+    F -->|"no"| H["Fix the failed gate<br/>then repeat verification"]
+  end
+  B --> C
+  E --> F
+```
+
+Treat the diagram as a set of release gates. A correct algorithm with a stale
+explanation—or a polished page with untested code—is not complete.
+
 ## Content change
 
 1. Edit the relevant `docs/chapter_*` page.

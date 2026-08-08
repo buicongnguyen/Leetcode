@@ -10,6 +10,25 @@ the state, invariant, and target complexity.
 
 Difficulty labels are orientation only: `E` easy, `M` medium, `H` hard.
 
+```mermaid
+flowchart LR
+  accTitle: Deliberate practice loop for algorithm problems
+  accDescr: Start from a problem signal, choose a candidate chapter, write the state and invariant before coding, test the solution, record the failure mode, and retry a related harder problem.
+  A["Name the problem signal"] --> B["Choose a candidate pattern<br/>from this catalog"]
+  B --> C["Write state, invariant,<br/>transition, and target cost"]
+  C --> D["Implement without<br/>opening the solution"]
+  D --> E["Test normal, boundary,<br/>and adversarial cases"]
+  E --> F{"Accepted and<br/>proof still holds?"}
+  F -->|"no"| G["Record the failed assumption<br/>and repair the model"]
+  G --> C
+  F -->|"yes"| H["Solve a nearby problem<br/>with one changed constraint"]
+  H --> A
+```
+
+The catalog is most useful when the first written artifact is the invariant,
+not code. A wrong invariant exposes a modeling error earlier than a failed
+submission does.
+
 ## Arrays, hashing, and windows
 
 | Problem | Level | Signal → pattern | Ask first |

@@ -26,6 +26,32 @@ Therefore the condensation graph is always a DAG.
 This often changes the real problem from “work on a cyclic directed graph” to
 “work on a DAG of components.”
 
+```mermaid
+flowchart LR
+  accTitle: Strongly connected components collapse cycles into a DAG
+  accDescr: Two directed cycles and one singleton vertex collapse into three component nodes with one-way edges, producing an acyclic condensation graph.
+  subgraph O["Original directed graph"]
+    A0["0"] --> A1["1"]
+    A1 --> A2["2"]
+    A2 --> A0
+    A2 --> B3["3"]
+    B3 --> B4["4"]
+    B4 --> B3
+    B4 --> C5["5"]
+  end
+  subgraph C["Condensation graph"]
+    X["SCC {0,1,2}"] --> Y["SCC {3,4}"]
+    Y --> Z["SCC {5}"]
+  end
+  A0 -.->|"collapse"| X
+  B3 -.->|"collapse"| Y
+  C5 -.->|"collapse"| Z
+```
+
+After assigning component IDs, forget the internal cycles and solve the
+remaining problem on the condensation DAG whenever only inter-component
+relationships matter.
+
 ## Kosaraju thinking flow
 
 ```text
